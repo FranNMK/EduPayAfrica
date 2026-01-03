@@ -1,0 +1,948 @@
+
+
+# 🎓 EduPay Africa - Complete Technical Requirements Specification
+**Version:** 1.0 | **Date:** January 03, 2026 | **Status:** Active Development
+
+---
+
+## 📋 EXECUTIVE SUMMARY
+EduPay Africa is a continent-wide school payment platform designed specifically for African educational institutions. Starting in Kenya and expanding across Africa, the platform simplifies fee collection, management, and reconciliation for schools while providing parents with a seamless payment experience.
+
+---
+
+## 🎯 CORE BUSINESS OBJECTIVES
+1. **Simplify School Fee Payments**: Eliminate complex payment details (paybill numbers, account numbers)
+2. **Real-time Reconciliation**: Schools see payments instantly without manual reconciliation
+3. **Digital Receipts**: Replace paper receipts with digital, instant receipts
+4. **Pan-African Scalability**: Design for expansion across African countries
+5. **Financial Inclusion**: Support all payment methods (mobile money, cards, bank transfers)
+6. **Compliance**: Meet regulatory requirements across different African countries
+
+---
+
+## 🏗️ TECHNOLOGY ARCHITECTURE
+
+### **Backend Stack**
+```
+Python 3.11+
+Django 5.0.6
+Django REST Framework 3.14.0
+PostgreSQL 15+ with TimescaleDB
+Redis 7.0+ for caching and Celery
+Celery for async tasks
+Nginx as reverse proxy
+Gunicorn/Uvicorn application server
+```
+
+### **Frontend Stack**
+```
+HTML5, CSS3, JavaScript ES6+
+Bootstrap 5.3.2
+jQuery 3.7.1 (for legacy compatibility)
+Chart.js 4.4.1 for analytics
+DataTables 2.1.1 for data tables
+Select2 4.1.0 for enhanced dropdowns
+Font Awesome 6.4.0 icons
+```
+
+### **Payment Infrastructure**
+```
+M-Pesa Daraja API (Kenya)
+Stripe for international cards
+Flutterwave for West Africa
+Paystack for Nigeria/Ghana
+Local mobile money integrations per country
+Bank transfer integrations
+```
+
+### **Communication Services**
+```
+Twilio for SMS/WhatsApp
+SendGrid for emails
+Africa's Talking for African SMS
+Google Maps API for location services
+GeoNames for location data
+```
+
+---
+
+## 👥 USER ROLES & PERMISSIONS
+
+### **1. Super Admin (Platform Administrator)**
+- Full system access
+- School verification and approval
+- Platform configuration
+- User management
+- System monitoring and reports
+- Payment gateway configuration
+- Fee structure templates management
+
+### **2. School Administrator**
+- School profile management
+- Student enrollment and management
+- Fee structure setup
+- Payment monitoring and reconciliation
+- Report generation
+- Staff/user management within school
+- Communication with parents
+- Receipt management
+
+### **3. Teacher/Staff**
+- View assigned classes/students
+- Mark attendance
+- View student payment status
+- Send announcements to parents
+- Generate basic reports for their classes
+
+### **4. Parent/Guardian**
+- View children's fee statements
+- Make payments (one-click)
+- View payment history
+- Download receipts
+- Receive notifications
+- Update contact information
+- Communicate with school
+
+### **5. Student (if applicable)**
+- View own fee statement
+- View payment history
+- Download personal receipts
+- Update basic profile information
+
+---
+
+## 🏫 SCHOOL REGISTRATION SYSTEM
+
+### **1. Multi-Step Registration Process**
+```
+Step 1: Basic Information
+- School name
+- Registration number (government issued)
+- Institution type (Primary, Secondary, University, College, TVET)
+- Ownership type (Public, Private, International)
+
+Step 2: Location Information (Cascading Dropdowns)
+- Country selection → loads Regions
+- Region selection → loads Counties
+- County selection → loads Constituencies (optional)
+- Constituency selection → loads Wards (optional)
+- Physical address
+- Town/City
+- Village/Estate
+
+Step 3: Contact Information
+- Official email
+- Phone numbers (multiple)
+- Website
+- Social media links
+
+Step 4: School Branding
+- Logo upload (auto-resized to 300x300px)
+- School colors selection
+- Banner image (optional)
+
+Step 5: Payment Configuration
+- M-Pesa Paybill number (for Kenya)
+- Bank account details
+- Payment terms (due dates, penalties)
+- Preferred payment methods
+
+Step 6: Verification
+- Upload registration certificate
+- Upload KRA PIN certificate (Kenya)
+- Admin verification required before activation
+```
+
+### **2. School Profile Management**
+- Edit all registration information
+- Multiple branch management (for group of schools)
+- Academic year configuration
+- Term structure setup
+- Holiday calendar
+- School-specific fee categories
+
+---
+
+## 👨‍🎓 STUDENT MANAGEMENT SYSTEM
+
+### **1. Individual Student Registration**
+```
+Required Fields:
+- Admission number (auto-generated or manual)
+- Full name (first, middle, last)
+- Date of birth
+- Gender
+- National ID/Birth certificate number
+- Photo upload (optional, auto-cropped)
+- Enrollment date
+- Class/Form/Year
+- Stream/Section (if applicable)
+
+Parent/Guardian Information:
+- Primary parent name and phone
+- Secondary parent/guardian details
+- Email addresses
+- Physical address
+- Relationship to student
+- Emergency contacts
+
+Medical Information:
+- Allergies
+- Chronic conditions
+- Special needs
+- Doctor contact information
+```
+
+### **2. MASS STUDENT UPLOAD SYSTEM - FEATURE DETAIL**
+
+#### **A. CSV/Excel Template System**
+```
+Template Features:
+- Download pre-formatted Excel/CSV template
+- Template includes all required fields with validation rules
+- Dropdown options for classes, streams pre-filled
+- Sample data row for guidance
+- Clear column headers with descriptions
+
+Template Columns:
+1. admission_number (required, unique)
+2. first_name (required)
+3. middle_name (optional)
+4. last_name (required)
+5. date_of_birth (YYYY-MM-DD format)
+6. gender (M/F/O)
+7. national_id (optional)
+8. class_name (must exist in school)
+9. stream_name (optional)
+10. enrollment_date (YYYY-MM-DD)
+11. parent1_name (required)
+12. parent1_phone (required, format: +2547XXXXXXXX)
+13. parent1_email (optional)
+14. parent1_relationship (Mother/Father/Guardian)
+15. parent2_name (optional)
+16. parent2_phone (optional)
+17. medical_notes (optional)
+18. special_needs (optional)
+```
+
+#### **B. Upload Process Flow**
+```
+Step 1: File Selection
+- Drag-and-drop interface OR file browser
+- Accepts .csv, .xlsx, .xls formats
+- Maximum file size: 10MB
+- Maximum records: 5,000 per upload
+
+Step 2: File Validation
+- File format check
+- Column header validation
+- Required fields check
+- Data format validation (dates, phones, emails)
+- Duplicate admission number check
+- Class/stream existence validation
+
+Step 3: Data Preview
+- Display first 10 rows for confirmation
+- Show validation errors with line numbers
+- Summary statistics:
+  * Total records: 250
+  * Valid records: 245
+  * Errors: 5
+  * Warnings: 10
+- Option to download error report
+
+Step 4: Error Handling
+- Click on error to see details
+- Option to fix errors in-line
+- Download error report (CSV with error column)
+- Bulk error correction suggestions
+
+Step 5: Confirmation & Mapping
+- Map CSV columns to system fields
+- Confirm class assignments
+- Set default values for missing fields
+- Preview how data will appear
+
+Step 6: Processing
+- Progress bar with real-time updates
+- Background processing for large files
+- Email notification when complete
+- Success/failure report
+```
+
+#### **C. Advanced Upload Features**
+```
+1. Duplicate Handling:
+   - Skip duplicates
+   - Update existing records
+   - Create new and flag duplicates
+   - Merge duplicate information
+
+2. Bulk Operations During Upload:
+   - Assign all to same class
+   - Set same enrollment date
+   - Assign same parent phone for siblings
+   - Apply bulk discounts
+
+3. Photo Upload Integration:
+   - Separate ZIP file for photos
+   - Photos named by admission_number.jpg
+   - Auto-match to students
+   - Bulk resize and optimization
+
+4. Sibling Detection:
+   - Auto-detect same parent phone
+   - Link sibling records
+   - Apply sibling discounts automatically
+   - Group family communications
+
+5. Validation Rules:
+   - Phone number format per country
+   - Email format validation
+   - Date range validation (no future birth dates)
+   - Age-appropriate class assignment
+   - Unique constraint enforcement
+```
+
+#### **D. Post-Upload Actions**
+```
+1. Success Report:
+   - Number of students created
+   - Number of students updated
+   - List of admission numbers created
+   - Download full import report
+
+2. Batch Management:
+   - View all upload batches
+   - Filter by date, user, status
+   - Revert batch (with confirmation)
+   - Download original upload file
+
+3. Follow-up Actions:
+   - Send welcome messages to parents
+   - Generate student ID cards
+   - Print class lists
+   - Create parent portal accounts
+   - Assign initial fee structures
+```
+
+#### **E. Template Management**
+```
+1. School-Specific Templates:
+   - Save frequently used templates
+   - Custom columns for school needs
+   - Pre-filled values for specific classes
+   - School-specific validation rules
+
+2. Template Versioning:
+   - Track template changes
+   - Download previous versions
+   - Compare template differences
+   - Archive old templates
+
+3. Bulk Update Templates:
+   - Update multiple students at once
+   - Change class promotions
+   - Update contact information
+   - Apply fee changes
+```
+
+### **3. Student Search & Filtering**
+- Search by name, admission number, parent phone
+- Filter by class, stream, payment status
+- Advanced filters (fee balance, medical needs)
+- Export filtered lists
+- Bulk actions on filtered students
+
+### **4. Student ID Card System**
+- Auto-generate ID cards with QR codes
+- Customizable ID card templates
+- Bulk print ID cards
+- QR code contains student details for verification
+- ID card number tracking
+
+### **5. Student Promotion System**
+- End-of-year bulk promotion
+- Individual student promotion/demotion
+- Promotion history tracking
+- Class capacity checking
+- Transfer students between streams
+
+---
+
+## 💰 FEE MANAGEMENT SYSTEM
+
+### **1. Fee Structure Configuration**
+```
+Fee Categories:
+- Tuition fees
+- Activity fees
+- Exam fees
+- Library fees
+- Laboratory fees
+- Sports fees
+- Transport fees (if applicable)
+- Boarding fees (if applicable)
+- Development levy
+- Caution money (refundable)
+
+Fee Setup Features:
+- Per class fee structures
+- Per term or per year configuration
+- Installment plans support
+- Early payment discounts
+- Late payment penalties
+- Sibling discounts (configurable %)
+- Scholarship/waiver management
+- Fee component visibility control
+```
+
+### **2. Fee Assignment**
+- Assign fee structures to classes
+- Individual student fee overrides
+- Bulk fee assignment
+- Fee proration for mid-term admissions
+- Fee adjustment history tracking
+
+### **3. Arrears Management**
+- Automatic arrears calculation
+- Ageing analysis (30, 60, 90+ days)
+- Automated reminder schedules
+- Arrears report generation
+- Payment plan suggestions for large arrears
+
+---
+
+## 💳 PAYMENT PROCESSING SYSTEM
+
+### **1. M-Pesa Integration (Kenya Focus)**
+```
+STK Push Flow:
+1. Parent selects student and amount
+2. System sends STK Push to parent's phone
+3. Parent enters PIN on phone
+4. Payment confirmed via Daraja callback
+5. Receipt generated and sent automatically
+6. School dashboard updated in real-time
+
+Features:
+- Multiple M-Pesa paybills per school
+- Transaction status polling
+- Failed transaction retry
+- Partial payments handling
+- Payment splitting across multiple students
+```
+
+### **2. Multiple Payment Methods**
+```
+Supported Methods:
+1. M-Pesa (Kenya)
+2. Airtel Money (Kenya)
+3. MTN Mobile Money (Uganda, Rwanda, Ghana)
+4. Vodafone Cash (Ghana)
+5. Card payments (Visa, MasterCard, UnionPay)
+6. Bank transfers (equity, KCB, Co-op etc.)
+7. Cash payments (recorded at school)
+8. Cheque payments (with clearance tracking)
+
+Payment Gateway Features:
+- Payment method per country configuration
+- Fallback payment methods
+- Minimum/maximum amount limits
+- Currency conversion for cross-border
+- Payment method analytics
+```
+
+### **3. Payment Tracking & Reconciliation**
+- Real-time payment dashboard
+- Payment status (Pending, Successful, Failed, Refunded)
+- Automatic matching to student accounts
+- Manual reconciliation interface
+- Dispute resolution workflow
+- Refund processing system
+
+### **4. Receipt System**
+```
+Receipt Features:
+- Auto-generated receipt numbers
+- School-branded receipt templates
+- Multiple delivery methods:
+  * SMS receipt (condensed)
+  * Email receipt (detailed with attachments)
+  * WhatsApp receipt (with PDF)
+  * Physical print option
+- Receipt search and reprint
+- Void receipt capability
+- Receipt series management
+```
+
+---
+
+## 📊 DASHBOARD & ANALYTICS
+
+### **1. School Admin Dashboard**
+```
+Real-time Metrics:
+- Today's collections
+- Monthly target vs actual
+- Pending payments
+- Student enrollment stats
+- Class-wise collection summary
+
+Quick Actions:
+- Send bulk reminders
+- Generate reports
+- Record manual payment
+- Send announcement
+- View recent transactions
+```
+
+### **2. Parent Dashboard**
+- Children list with fee status
+- Upcoming payment due dates
+- Payment history with receipts
+- Announcements from school
+- Quick pay buttons for due amounts
+
+### **3. Analytics & Reports**
+```
+Financial Reports:
+1. Daily Collection Report
+2. Monthly Collection Summary
+3. Fee Defaulters Report
+4. Payment Method Analysis
+5. Class-wise Collection Report
+6. Arrears Ageing Analysis
+7. Discounts & Waivers Report
+
+Operational Reports:
+1. Student Enrollment Report
+2. Class Capacity Report
+3. Parent Communication Report
+4. Payment Compliance Rate
+5. Student Attendance Correlation
+
+Export Formats:
+- PDF (print-ready)
+- Excel (with formulas)
+- CSV (for further analysis)
+- Email scheduled reports
+```
+
+---
+
+## 📱 NOTIFICATION SYSTEM
+
+### **1. Automated Notifications**
+```
+Payment Notifications:
+- Payment confirmation to parent
+- Payment received alert to school
+- Due date reminders (3 days, 1 day, day of)
+- Late payment reminders
+- Receipt delivery confirmations
+
+School Announcements:
+- Event announcements
+- Holiday notices
+- Emergency alerts
+- Academic updates
+- Fee structure changes
+
+System Notifications:
+- New student enrollment
+- Low balance alerts for schools
+- System maintenance notices
+- Security alerts
+```
+
+### **2. Communication Channels**
+- SMS (via Africa's Talking, Twilio)
+- Email (SendGrid, AWS SES)
+- WhatsApp Business API
+- In-app notifications
+- Push notifications (for mobile app)
+- Voice calls (for urgent matters)
+
+### **3. Notification Scheduling**
+- Schedule bulk messages
+- Timezone-aware delivery
+- Rate limiting to prevent spam
+- Delivery reports and analytics
+- Opt-out management
+
+---
+
+## 🌍 MULTI-COUNTRY SUPPORT
+
+### **1. Country-Specific Features**
+```
+Kenya:
+- M-Pesa integration
+- KRA PIN tracking
+- NHIF/NSSF student tracking
+- Kenyan curriculum support
+
+Uganda:
+- MTN Mobile Money
+- Airtel Money Uganda
+- URA tax requirements
+- Ugandan curriculum
+
+Tanzania:
+- M-Pesa (Vodacom)
+- Tigo Pesa
+- TRA compliance
+- Tanzanian curriculum
+
+Rwanda:
+- MTN Mobile Money Rwanda
+- RRA tax compliance
+- Rwandan education system
+
+Ethiopia:
+- Telebirr
+- HelloCash
+- Ethiopian birr handling
+```
+
+### **2. Localization**
+- Multi-language interface (English, Swahili, French, Portuguese)
+- Local currency formatting
+- Date formats (DD/MM/YYYY vs MM/DD/YYYY)
+- Timezone per school
+- Local holiday calendars
+- Country-specific validation rules
+
+---
+
+## 🔐 SECURITY & COMPLIANCE
+
+### **1. Data Security**
+- End-to-end encryption for sensitive data
+- SSL/TLS for all communications
+- Regular security audits
+- Penetration testing
+- GDPR compliance for user data
+- Data backup and disaster recovery
+
+### **2. Payment Security**
+- PCI DSS compliance for card payments
+- Tokenization (never store card details)
+- 3D Secure for card transactions
+- Fraud detection algorithms
+- Transaction monitoring
+- Audit trail for all financial operations
+
+### **3. Access Control**
+- Role-based access control (RBAC)
+- Two-factor authentication (2FA)
+- Session management
+- IP whitelisting for admin access
+- Login attempt limiting
+- Password policy enforcement
+
+---
+
+## 📱 MOBILE EXPERIENCE
+
+### **1. Responsive Web Design**
+- Mobile-first approach
+- Touch-friendly interfaces
+- Offline capability for basic functions
+- Progressive Web App (PWA) features
+- Mobile-optimized payment flow
+
+### **2. Mobile App Roadmap** (Future Phase)
+```
+Phase 1: Parent App
+- Fee viewing and payment
+- Receipt management
+- School communication
+- Child attendance viewing
+
+Phase 2: School Admin App
+- Dashboard overview
+- Quick payment recording
+- Announcement sending
+- Basic reports
+
+Phase 3: Teacher App
+- Attendance marking
+- Grade entry
+- Student progress tracking
+- Parent communication
+```
+
+---
+
+## 🔌 INTEGRATIONS & API
+
+### **1. Third-Party Integrations**
+```
+Accounting Systems:
+- QuickBooks
+- Xero
+- Sage
+- Pastel
+
+School Management Systems:
+- eLimu
+- ShuleSoft
+- Other local SMS
+
+Government Systems:
+- KNEC (Kenya)
+- UNEB (Uganda)
+- NECTA (Tanzania)
+- NESA (Rwanda)
+
+Payment Processors:
+- Additional local payment methods
+- Bank APIs
+- Mobile money aggregators
+```
+
+### **2. Public API**
+- RESTful API with versioning
+- OAuth2 authentication
+- Rate limiting per API key
+- Webhook support for real-time updates
+- Comprehensive API documentation
+- Developer portal for partners
+
+---
+
+## 🚀 DEPLOYMENT & SCALABILITY
+
+### **1. Infrastructure Requirements**
+```
+Production Environment:
+- AWS/Azure/GCP cloud hosting
+- Load balancers
+- Auto-scaling groups
+- CDN for static assets
+- Database replication
+- Redis cluster
+- Backup systems
+
+Development Environment:
+- Docker containers
+- Local development setup
+- Staging environment
+- CI/CD pipeline
+```
+
+### **2. Performance Targets**
+- Page load time: < 2 seconds
+- API response time: < 200ms
+- 99.9% uptime SLA
+- Support 10,000+ concurrent users
+- Handle 100+ transactions per minute
+
+---
+
+## 📋 IMPLEMENTATION ROADMAP
+
+### **Phase 1: MVP (Months 1-2)**
+```
+Core Features:
+✓ User authentication system
+✓ School registration with Kenyan counties
+✓ Basic student management (individual entry)
+✓ M-Pesa payment integration
+✓ Simple receipt generation
+✓ Basic dashboard
+
+Launch: 10 pilot schools in Kenya
+```
+
+### **Phase 2: Enhanced Features (Months 3-4)**
+```
+Added Features:
+✓ Mass student upload system
+✓ Advanced fee management
+✓ Multiple payment methods
+✓ Comprehensive reporting
+✓ Parent portal
+✓ Multi-language support (English, Swahili)
+
+Expansion: 100+ schools in Kenya
+```
+
+### **Phase 3: Multi-Country (Months 5-6)**
+```
+Added Features:
+✓ Uganda, Tanzania, Rwanda support
+✓ Country-specific payment methods
+✓ Local curriculum support
+✓ Advanced analytics
+✓ API for third-party integration
+✓ Mobile-responsive improvements
+
+Expansion: East Africa region
+```
+
+### **Phase 4: Maturity (Months 7-12)**
+```
+Added Features:
+✓ Mobile apps (iOS/Android)
+✓ AI-powered insights
+✓ Government integrations
+✓ White-label solutions
+✓ Marketplace for educational services
+✓ Blockchain for receipt verification
+
+Expansion: Pan-African presence
+```
+
+---
+
+## 🧪 TESTING REQUIREMENTS
+
+### **1. Automated Testing**
+- Unit tests (90%+ coverage)
+- Integration tests
+- API tests
+- Payment flow tests
+- Security tests
+- Performance tests
+
+### **2. User Acceptance Testing**
+- Pilot school testing
+- Parent user testing
+- Load testing
+- Security penetration testing
+- Compliance testing
+
+### **3. Quality Assurance**
+- Cross-browser testing
+- Mobile device testing
+- Accessibility testing (WCAG 2.1)
+- Usability testing
+- Localization testing
+
+---
+
+## 📞 SUPPORT & MAINTENANCE
+
+### **1. Support Levels**
+```
+Level 1: User Support
+- Email: support@edupayafrica.com
+- Phone: +254 700 000 000
+- WhatsApp: +254 700 000 000
+- Help center with articles/videos
+
+Level 2: Technical Support
+- Technical issue resolution
+- Configuration assistance
+- Integration support
+- Bug reporting and tracking
+
+Level 3: Account Management
+- Dedicated account managers for large schools
+- Strategic guidance
+- Custom feature requests
+- Training and onboarding
+```
+
+### **2. Maintenance Schedule**
+```
+Daily:
+- Database backups
+- Error monitoring
+- Performance monitoring
+- Security monitoring
+
+Weekly:
+- Software updates
+- Report generation
+- Usage analytics review
+
+Monthly:
+- System optimization
+- Feature updates
+- User feedback analysis
+- Security patches
+
+Quarterly:
+- Major updates
+- New feature releases
+- Performance review
+- Strategic planning
+```
+
+---
+
+## 📊 SUCCESS METRICS
+
+### **Key Performance Indicators**
+```
+Business Metrics:
+- Number of schools registered
+- Number of students onboarded
+- Total transaction volume
+- Platform revenue
+- User satisfaction scores
+
+Technical Metrics:
+- System uptime percentage
+- Average response time
+- Error rate
+- Page load speed
+- Mobile usage percentage
+
+User Metrics:
+- Active schools per month
+- Active parents per month
+- Payment success rate
+- Feature adoption rates
+- Support ticket resolution time
+```
+
+---
+
+## 🔄 CONTINUOUS IMPROVEMENT
+
+### **Feedback Mechanisms**
+- In-app feedback forms
+- User surveys
+- School administrator forums
+- Parent user groups
+- Regular check-ins with pilot schools
+
+### **Feature Voting**
+- Public roadmap
+- Feature request portal
+- Voting system for requested features
+- Transparency in development priorities
+
+### **Community Building**
+- School administrator community
+- Best practices sharing
+- Training webinars
+- Annual EduPay Africa conference
+
+---
+
+## 🎯 CONCLUSION
+
+EduPay Africa aims to revolutionize school fee management across Africa by providing a comprehensive, user-friendly, and secure platform. The system is designed with scalability in mind, starting in Kenya and expanding continent-wide while maintaining compliance with local regulations and supporting local payment methods.
+
+The mass student upload feature is a critical component for school adoption, allowing schools to quickly onboard their existing student populations without manual data entry. This, combined with robust payment processing and real-time analytics, positions EduPay Africa as the leading school payment platform in Africa.
+
+---
+
+## 📝 VERSION HISTORY
+
+| Version | Date | Changes | Author |
+|---------|------|---------|--------|
+| 1.0 | 2024-12-15 | Initial comprehensive specification | AI Assistant |
+| 1.1 | [Future] | Updates based on development feedback | TBD |
+
+---
+
+**END OF DOCUMENT**
+
+This specification serves as the complete blueprint for EduPay Africa development. All features, technical requirements, and implementation details are included for the development team to execute against.

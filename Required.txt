@@ -1,0 +1,1642 @@
+# 🎓 EduPay Africa - Modular Requirements Specification
+**Version:** 2.0 | **Organization:** Module-Based | **Date:** January 04, 202
+
+---
+
+## 📁 MODULE 1: HOMEPAGE & MARKETING WEBSITE
+
+### **1.1 Landing Page Structure**
+```
+Header Section:
+- Kenya flag color bar (Black-Red-Green)
+- Logo with "EduPay Africa" text
+- Navigation menu (Home, Features, How It Works, For Schools, Testimonials)
+- Language selector (EN, SW, FR)
+- CTA buttons: "Register School", "Login"
+
+Hero Section:
+- Dynamic headline: "School Payments Made [Simple|Secure|Fast|Across Africa]"
+- Sub-headline explaining value proposition
+- Two CTA buttons: "Register Your School", "Watch Demo"
+- Background with African education imagery
+
+Features Carousel:
+- Auto-rotating 3-slide carousel:
+  1. "For Parents: Pay in 3 Clicks"
+  2. "For Schools: Real-time Dashboard"
+  3. "Across Africa: One Platform"
+- Each slide with relevant image and concise text
+
+Stats Counter:
+- Animated counters for:
+  * Schools Registered: 0 → 100+
+  * Students Served: 0 → 50,000+
+  * Payments Processed: 0 → 100,000+
+  * Million KSH Transacted: 0 → 250+
+```
+
+### **1.2 Features Showcase Section**
+```
+Feature Card 1: 3-Click Payments
+- Icon: Lightning bolt
+- Title: 3-Click Payments
+- Description: Parents pay school fees in just three clicks
+- Bullet points:
+  ✓ Select school
+  ✓ Choose student  
+  ✓ Pay with MPesa/card
+
+Feature Card 2: Live School Dashboard
+- Icon: Bar chart
+- Title: Live School Dashboard
+- Description: Schools see payments in real-time
+- Bullet points:
+  ✓ Real-time updates
+  ✓ Automatic reconciliation
+  ✓ Export to Excel/PDF
+
+Feature Card 3: Digital Receipts
+- Icon: Receipt
+- Title: Digital Receipts
+- Description: Instant receipts via SMS, Email, WhatsApp
+- Bullet points:
+  ✓ SMS/Email/WhatsApp delivery
+  ✓ School-branded design
+  ✓ Downloadable PDF
+```
+
+### **1.3 How It Works Section**
+```
+Step-by-Step Process Visualization:
+Step 1: School Registration
+  - Schools register with payment details and logo
+  - Verification process
+
+Step 2: Student Upload
+  - Upload student list via CSV or manual entry
+  - Bulk import capability
+
+Step 3: Parent Payment
+  - Parents search school, select child, pay
+  - Multiple payment methods
+
+Step 4: Automatic Processing
+  - System sends receipts
+  - Updates dashboard
+  - Reconciles payments
+
+Video Demo Section:
+- Play button overlay on screenshot
+- Modal popup with embedded video
+- "Watch How It Works" call to action
+```
+
+### **1.4 Testimonials & Social Proof**
+```
+Testimonial Slider:
+- 4-5 testimonials from:
+  * School administrators
+  * Parents
+  * Education officials
+
+Partner Logos:
+- Kenyan Ministry of Education
+- Local education boards
+- Payment partners (Safaricom, banks)
+
+Press Mentions:
+- Local newspaper logos
+- Education blog features
+- Awards or recognitions
+```
+
+### **1.5 Call to Action & Footer**
+```
+Final CTA Section:
+- Gradient background (Kenya colors)
+- Headline: "Ready to Simplify School Payments?"
+- Sub-headline: Join schools across Kenya
+- Two buttons: "Register Your School Free", "Schedule a Demo"
+- Small text: "No credit card required • Free 30-day trial"
+
+Footer:
+- Logo and tagline
+- Four columns:
+  1. For Schools (links)
+  2. For Parents (links)  
+  3. Contact Information
+  4. Social media icons
+- Copyright and legal links
+```
+
+### **1.6 Design Specifications**
+```
+Color Scheme:
+- Primary: #0047AB (Deep Blue)
+- Secondary: #006600 (Kenya Green)  
+- Accent: #FFD700 (African Gold)
+- Neutral: #F8F9FA (Light), #212529 (Dark)
+
+Typography:
+- Headings: 'Poppins', sans-serif (800 weight)
+- Body: 'Inter', sans-serif (400 weight)
+- Font sizes: Mobile-first responsive
+
+Images:
+- Authentic African school scenes
+- Diverse students and parents
+- Modern school buildings
+- Payment process visuals
+
+Responsive Requirements:
+- Mobile-first approach
+- Bootstrap 5 grid system
+- Touch-friendly buttons
+- Optimized images for mobile
+```
+
+---
+
+## 📁 MODULE 2: USER AUTHENTICATION & ONBOARDING
+
+### **2.1 Registration System**
+```
+School Registration Flow (Multi-step):
+
+Step 1: Account Creation
+- Email address
+- Password (with strength meter)
+- Phone number (SMS verification)
+- Account type selection (School Admin)
+
+Step 2: School Basic Information
+- School name
+- Registration number (govt issued)
+- Institution type dropdown (Primary, Secondary, University, etc.)
+- Ownership type (Public, Private, International)
+
+Step 3: Location Details (Cascading Selects)
+- Country dropdown → loads regions
+- Region dropdown → loads counties
+- County dropdown → loads constituencies
+- Physical address (Google Places autocomplete)
+- Town/City
+- Village/Estate
+
+Step 4: Contact Information
+- Official email (different from account)
+- Phone numbers (multiple)
+- Website URL
+- Social media links (optional)
+
+Step 5: School Branding
+- Logo upload (drag & drop, 300x300px max)
+- School colors selection (primary, secondary)
+- Banner image (optional, for receipts)
+
+Step 6: Payment Configuration
+- M-Pesa Paybill number (Kenya only)
+- Bank account details (account name, number, bank)
+- Payment terms (due dates, late fees)
+- Payment methods enabled
+
+Step 7: Verification
+- Upload registration certificate
+- Upload KRA PIN certificate (Kenya)
+- Admin verification required
+- "Verification Pending" status display
+
+Progress Tracker:
+- Visual progress bar
+- Step numbers with titles
+- Save and continue later
+- Back button navigation
+```
+
+### **2.2 Login & Security**
+```
+Login Options:
+1. Email/Password login
+2. Phone number + OTP login
+3. Social login (Google, Facebook) - optional
+
+Security Features:
+- Two-factor authentication (SMS/Email/App)
+- Password reset via SMS/Email
+- Failed login attempt limiting
+- Session management
+- Device recognition
+- IP whitelisting for admin
+
+User Profile Management:
+- Profile photo upload
+- Personal information
+- Notification preferences
+- Security settings
+- Connected devices
+```
+
+### **2.3 User Roles & Permissions**
+```
+Role Hierarchy:
+1. Super Admin (Platform)
+   - Full system access
+   - School verification
+   - Platform configuration
+   - User management
+
+2. School Owner/Principal
+   - Full school access
+   - Financial reports
+   - Staff management
+   - School settings
+
+3. School Bursar/Accountant
+   - Fee management
+   - Payment processing
+   - Receipt generation
+   - Financial reports
+
+4. Class Teacher
+   - View assigned students
+   - Mark attendance
+   - View payment status
+   - Send announcements
+
+5. Parent/Guardian
+   - View children only
+   - Make payments
+   - View receipts
+   - Update contact info
+
+Permission Matrix:
+- CRUD operations per module
+- Data visibility filters
+- Action restrictions
+- Time-based permissions
+```
+
+---
+
+## 📁 MODULE 3: SCHOOL ADMIN DASHBOARD
+
+### **3.1 Dashboard Overview**
+```
+Main Dashboard Layout:
+┌─────────────────────────────────────┐
+│  Header: School Name, Quick Actions │
+├─────────────────────────────────────┤
+│  Left: Navigation Menu              │
+│                                     │
+│  Main:                              │
+│  ┌─────────┐ ┌─────────┐           │
+│  │ Today's │ │ Monthly │           │
+│  │ Stats   │ │ Target  │           │
+│  └─────────┘ └─────────┘           │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ Recent Transactions         │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────┐ ┌─────────┐           │
+│  │ Quick   │ │ Student │           │
+│  │ Actions │ │ Stats   │           │
+│  └─────────┘ └─────────┘           │
+└─────────────────────────────────────┘
+
+Real-time Stats Widgets:
+1. Today's Collection
+   - Total amount collected today
+   - Comparison to yesterday
+   - Number of transactions
+
+2. Monthly Target vs Actual
+   - Progress bar showing %
+   - Amount collected vs target
+   - Days remaining in month
+
+3. Student Payment Status
+   - Paid: 65%
+   - Partial: 20%
+   - Unpaid: 15%
+   - Total students count
+
+4. Recent Transactions
+   - Last 10 payments
+   - Student name, amount, time
+   - Payment method icons
+   - Quick receipt view
+```
+
+### **3.2 Navigation Menu Structure**
+```
+Main Navigation Items:
+🏠 Dashboard
+    • Overview
+    • Analytics
+    • Reports
+
+👥 Students
+    • All Students
+    • Add Student
+    • Bulk Upload
+    • Classes & Streams
+    • Promotion
+
+💰 Fees & Payments
+    • Fee Structure
+    • Collect Payment
+    • Payment History
+    • Receipts
+    • Arrears
+
+📊 Reports
+    • Financial Reports
+    • Student Reports
+    • Collection Reports
+    • Export Data
+
+📢 Communication
+    • Send Announcements
+    • Notifications
+    • SMS/Email Logs
+
+⚙️ Settings
+    • School Profile
+    • Payment Methods
+    • Users & Permissions
+    • System Settings
+
+Quick Actions Bar:
+- Record Cash Payment
+- Send Bulk Reminder
+- Generate Report
+- Add New Student
+```
+
+### **3.3 Dashboard Analytics**
+```
+Performance Metrics:
+1. Collection Performance
+   - Daily trend chart (7 days)
+   - Monthly comparison chart
+   - Payment method breakdown
+   - Class-wise collection
+
+2. Student Statistics
+   - Enrollment trends
+   - Class distribution pie chart
+   - Gender ratio
+   - New vs returning students
+
+3. Payment Compliance
+   - On-time payment rate
+   - Average days to pay
+   - Arrears analysis
+   - Discount utilization
+
+Interactive Charts:
+- Chart.js integration
+- Date range filters (Today, Week, Month, Custom)
+- Export chart as PNG/PDF
+- Drill-down capability
+```
+
+---
+
+## 📁 MODULE 4: STUDENT MANAGEMENT SYSTEM
+
+### **4.1 Individual Student Registration**
+```
+Student Form Fields:
+
+Personal Information:
+- Admission Number (auto-generated/manual)
+- First Name *
+- Middle Name
+- Last Name *
+- Date of Birth * (calendar picker)
+- Gender * (Male/Female/Other)
+- National ID/Birth Certificate No.
+- Photo Upload (drag & drop, auto-crop)
+
+Academic Information:
+- Class/Form * (dropdown from school setup)
+- Stream/Section (if applicable)
+- Admission Date * (defaults to today)
+- Previous School (optional)
+- Special Needs (text area)
+
+Parent/Guardian Information:
+Primary Parent:
+  - Full Name *
+  - Relationship * (Mother/Father/Guardian)
+  - Phone Number * (format: +2547XXXXXXXX)
+  - Email Address
+  - Occupation
+
+Secondary Parent (optional):
+  - Same fields as primary
+
+Emergency Contact:
+  - Name *
+  - Phone *
+  - Relationship
+
+Medical Information:
+- Allergies (text)
+- Chronic Conditions (text)
+- Medications (text)
+- Doctor Contact (name, phone)
+- Insurance Details
+
+Address Information:
+- Physical Address
+- Town/City
+- GPS Coordinates (optional, from map)
+
+Form Features:
+- Required field validation
+- Phone number format validation
+- Date validation (no future birth dates)
+- Photo preview before upload
+- Save & Add Another option
+```
+
+### **4.2 MASS STUDENT UPLOAD SYSTEM**
+
+#### **A. Upload Interface**
+```
+Upload Page Layout:
+┌─────────────────────────────────────────────┐
+│ 1. Download Template                        │
+│    • Excel template with sample data        │
+│    • CSV template option                    │
+│    • Template guide PDF                     │
+├─────────────────────────────────────────────┤
+│ 2. Upload File                             │
+│    • Drag & drop area                       │
+│    • Or click to browse                    │
+│    • Supported: .csv, .xlsx, .xls          │
+│    • Max size: 10MB, Max records: 5,000    │
+├─────────────────────────────────────────────┤
+│ 3. Validation & Preview                    │
+│    • Real-time validation results           │
+│    • Error count with details               │
+│    • First 10 rows preview                  │
+│    • Column mapping confirmation            │
+├─────────────────────────────────────────────┤
+│ 4. Processing Options                      │
+│    • On duplicate: Skip/Update/Create New  │
+│    • Default values for missing fields      │
+│    • Send welcome messages to parents       │
+│    • Generate student ID cards              │
+├─────────────────────────────────────────────┤
+│ 5. Process & Review                        │
+│    • Progress bar with real-time updates    │
+│    • Success/Failure summary               │
+│    • Download detailed report              │
+│    • View imported students                │
+└─────────────────────────────────────────────┘
+```
+
+#### **B. Template Structure**
+```
+Excel/CSV Columns (Required *):
+
+1. admission_number * (unique)
+2. first_name *
+3. middle_name
+4. last_name *
+5. date_of_birth * (YYYY-MM-DD)
+6. gender * (M/F/O)
+7. national_id
+8. class_name * (must exist in school)
+9. stream_name
+10. enrollment_date * (YYYY-MM-DD)
+11. parent1_name *
+12. parent1_phone * (format: +2547XXXXXXXX)
+13. parent1_email
+14. parent1_relationship * (Mother/Father/Guardian)
+15. parent2_name
+16. parent2_phone
+17. parent2_email
+18. parent2_relationship
+19. emergency_contact_name
+20. emergency_contact_phone
+21. physical_address
+22. medical_notes
+23. special_needs
+24. photo_filename (optional, matches ZIP)
+
+Template Features:
+- Dropdown validation for class_name
+- Data validation for dates
+- Phone number format validation
+- Sample row with example data
+- Instructions sheet
+- Required fields highlighted
+```
+
+#### **C. Validation Rules**
+```
+Data Validation Checks:
+1. Format Validation:
+   - Dates in correct format
+   - Phone numbers valid for country
+   - Email format if provided
+   - Gender codes (M/F/O only)
+
+2. Business Logic:
+   - Age appropriate for class
+   - No future birth dates
+   - Enrollment date not before birth
+   - Class exists in school system
+   - Stream exists for class (if provided)
+
+3. Uniqueness Checks:
+   - Admission number unique
+   - Phone numbers not duplicate (within reason)
+   - Email unique (if provided)
+
+4. Completeness:
+   - Required fields not empty
+   - Parent contact information complete
+   - At least one parent phone
+
+Error Reporting:
+- Line number of error
+- Column name with issue
+- Error description
+- Suggested fix
+- Export errors to CSV for correction
+```
+
+#### **D. Processing Engine**
+```
+Upload Processing Steps:
+1. File Parsing:
+   - Detect file type
+   - Parse with appropriate library
+   - Handle encoding issues
+   - Convert dates to standard format
+
+2. Validation Phase:
+   - Row-by-row validation
+   - Collect all errors
+   - Group by error type
+   - Generate validation report
+
+3. Data Transformation:
+   - Map CSV columns to model fields
+   - Convert string dates to date objects
+   - Format phone numbers
+   - Set default values
+
+4. Database Operations:
+   - Transaction-based inserts
+   - Batch processing for performance
+   - Handle duplicates per option
+   - Create parent accounts
+
+5. Post-processing:
+   - Generate student ID numbers
+   - Create parent portal accounts
+   - Send welcome messages
+   - Update class statistics
+
+Performance Targets:
+- 1,000 records in under 30 seconds
+- Progress updates every 100 records
+- Background processing for large files
+- Email notification when complete
+```
+
+#### **E. Photo Upload Integration**
+```
+Bulk Photo Upload:
+1. ZIP File Structure:
+   photos.zip
+   ├── 2024-001.jpg
+   ├── 2024-002.jpg
+   ├── 2024-003.png
+   └── photo_mapping.csv (optional)
+
+2. Photo Requirements:
+   - Format: JPG, PNG, JPEG
+   - Size: 500KB max per photo
+   - Dimensions: Min 300x300, Max 2000x2000
+   - Naming: admission_number.ext
+
+3. Processing:
+   - Extract ZIP file
+   - Resize to 300x300 pixels
+   - Convert to JPG format
+   - Optimize for web
+   - Match to students by filename
+   - Fallback: manual matching interface
+
+4. Error Handling:
+   - Unmatched photos list
+   - Invalid format errors
+   - Size limit warnings
+   - Duplicate photo detection
+```
+
+#### **F. Sibling Detection & Family Grouping**
+```
+Automatic Family Detection:
+1. Detection Criteria:
+   - Same parent phone numbers
+   - Same last name + address
+   - Manual family ID in upload
+
+2. Family Group Creation:
+   - Create family record
+   - Link students to family
+   - Set primary parent
+   - Apply family discounts automatically
+
+3. Family Portal:
+   - Single login for all children
+   - Combined fee view
+   - Bulk payment for multiple children
+   - Family announcements
+
+4. Sibling Discount Automation:
+   - Configurable discount rules
+   - Automatic application on upload
+   - Discount tracking per family
+   - Reports on sibling discounts
+```
+
+#### **G. Batch Management & History**
+```
+Upload History Interface:
+┌─────────────────────────────────────────────┐
+│ Filter: [Date Range] [Status] [User]       │
+├─────────────────────────────────────────────┤
+│ Upload History Table:                       │
+│ ┌─┬──────────┬──────┬──────┬────────────┐  │
+│ │#│ Date     │File  │Recs  │Status      │  │
+│ ├─┼──────────┼──────┼──────┼────────────┤  │
+│ │1│15/12/24  │students.csv│250  │✅ Success│  │
+│ │2│14/12/24  │class10.xlsx│45   │⚠️ Partial │  │
+│ │3│13/12/24  │bulk.csv    │1000 │❌ Failed  │  │
+│ └─┴──────────┴──────┴──────┴────────────┘  │
+├─────────────────────────────────────────────┤
+│ Selected Batch Details:                     │
+│ • Uploaded by: John (Bursar)                │
+│ • Time: 10:30 AM, 15/12/2024               │
+│ • Records: 250 total, 245 success, 5 errors│
+│ • Actions: [View Report] [Download] [Revert]│
+└─────────────────────────────────────────────┘
+
+Batch Actions:
+1. View Detailed Report:
+   - Success list with admission numbers
+   - Error list with details
+   - Warnings and suggestions
+
+2. Download Original File:
+   - Original upload file
+   - Cleaned/processed version
+   - Error report CSV
+
+3. Revert Batch:
+   - Remove imported students
+   - Delete created parent accounts
+   - Restore previous state
+   - Confirmation required
+
+4. Retry Failed Records:
+   - Export only failed records
+   - Correct and re-upload
+   - Merge with existing data
+```
+
+#### **H. Advanced Features**
+```
+1. Template Management:
+   - Save school-specific templates
+   - Pre-filled values for certain fields
+   - Custom validation rules
+   - Version history of templates
+
+2. Bulk Updates via Upload:
+   - Update existing student information
+   - Change classes (promotions)
+   - Update contact details
+   - Add/remove fee structures
+
+3. Data Cleaning Tools:
+   - Find and merge duplicates
+   - Standardize phone formats
+   - Validate email addresses
+   - Geocode addresses
+
+4. Integration Features:
+   - API for third-party system integration
+   - Webhook for completion notification
+   - Sync with government student databases
+   - Export to other school management systems
+```
+
+### **4.3 Student Search & Management**
+```
+Student List Interface:
+┌─────────────────────────────────────────────────┐
+│ Search: [              ] [Advanced Filters ▼]   │
+│ Filters: Class:[All] Payment:[All] Status:[All] │
+├─────────────────────────────────────────────────┤
+│ Actions: [Bulk SMS] [Export] [Print ID Cards]   │
+├─────────────────────────────────────────────────┤
+│ Students Table:                                  │
+│ ┌─┬─┬──────────┬─────┬──────┬────────┬──────┐   │
+│ │☐│#│Name      │Class│Parent│Balance │Status│   │
+│ ├─┼─┼──────────┼─────┼──────┼────────┼──────┤   │
+│ │☐│1│John Doe  │Form1│+2547...│-2,500 │⚠️     │   │
+│ │☐│2│Jane Smith│Form2│+2547...│0      │✅     │   │
+│ │☐│3│Mike Brown│Form3│+2547...│15,000 │❌     │   │
+│ └─┴─┴──────────┴─────┴──────┴────────┴──────┘   │
+└─────────────────────────────────────────────────┘
+
+Advanced Search Filters:
+1. Academic Filters:
+   - Class/Form
+   - Stream/Section
+   - Year of admission
+   - Promotion status
+
+2. Financial Filters:
+   - Payment status (Paid, Partial, Unpaid)
+   - Balance range (e.g., > 5000)
+   - Arrears duration (30, 60, 90+ days)
+   - Discount status
+
+3. Personal Filters:
+   - Gender
+   - Age range
+   - Special needs
+   - Medical conditions
+
+4. Parent Filters:
+   - Parent phone number
+   - Email domain
+   - Location area
+
+Bulk Actions:
+1. Communication:
+   - Send SMS to selected
+   - Send email announcement
+   - WhatsApp broadcast
+
+2. Financial:
+   - Apply discount to selected
+   - Generate fee statements
+   - Send payment reminders
+
+3. Academic:
+   - Promote to next class
+   - Change stream
+   - Generate reports
+
+4. Administrative:
+   - Print ID cards
+   - Export data
+   - Generate class lists
+```
+
+### **4.4 Student Profile View**
+```
+Profile Page Tabs:
+
+Tab 1: Overview
+- Student photo and basic info
+- Quick stats: Attendance, Performance, Balance
+- Recent activity timeline
+
+Tab 2: Academic
+- Current class and stream
+- Academic history (previous classes)
+- Subjects and performance
+- Teacher comments
+
+Tab 3: Financial
+- Current balance
+- Fee structure details
+- Payment history with receipts
+- Installment plan (if any)
+- Discounts applied
+
+Tab 4: Parents/Guardians
+- Parent contact information
+- Communication history
+- Authorized pick-up persons
+- Emergency contacts
+
+Tab 5: Medical
+- Medical information
+- Allergies and conditions
+- Doctor contacts
+- Insurance details
+
+Tab 6: Documents
+- Uploaded documents
+- Birth certificate
+- Transfer letters
+- Other certificates
+
+Tab 7: Activity Log
+- All system interactions
+- Payment history
+- Communication history
+- Profile changes
+```
+
+### **4.5 Class & Stream Management**
+```
+Class Structure Setup:
+1. Academic Years:
+   - Year name (e.g., 2024/2025)
+   - Start and end dates
+   - Terms within year (Term 1, 2, 3)
+
+2. Classes/Forms:
+   - Class name (Form 1, Grade 5, etc.)
+   - Capacity limit
+   - Default fee structure
+   - Assigned teachers
+
+3. Streams/Sections:
+   - Stream name (North, South, Red, Blue)
+   - Room number
+   - Class teacher
+   - Specialization (Science, Arts, etc.)
+
+4. Subject Management:
+   - Subject list per class
+   - Teachers per subject
+   - Timetable integration (future)
+
+Promotion System:
+1. End-of-Year Promotion:
+   - Bulk promotion wizard
+   - Class capacity checking
+   - Stream balancing
+   - Promotion rules configuration
+
+2. Individual Transfers:
+   - Change class mid-year
+   - Change stream
+   - Record transfer reason
+   - Update fee structure
+
+Class Reports:
+- Class list with photos
+- Student statistics
+- Payment compliance per class
+- Attendance reports
+```
+
+---
+
+## 📁 MODULE 5: FEE MANAGEMENT SYSTEM
+
+### **5.1 Fee Structure Configuration**
+```
+Fee Components Setup:
+
+1. Fee Categories:
+   - Tuition Fees (compulsory)
+   - Activity Fees
+   - Exam Fees
+   - Laboratory Fees
+   - Library Fees
+   - Sports Fees
+   - Transport Fees (optional)
+   - Boarding Fees (optional)
+   - Development Levy
+   - Caution Money (refundable)
+
+2. Fee Setup Interface:
+   ┌─────────────────────────────────────────┐
+   │ Fee Structure: Form 1 - Term 1 2024    │
+   ├─────────────────────────────────────────┤
+   │ Component        Amount   Type   Compulsory │
+   ├─────────────────────────────────────────┤
+   │ Tuition          25,000   Term   ✓      │
+   │ Activity          5,000   Term   ✓      │
+   │ Exam              3,000   Term   ✓      │
+   │ Laboratory        2,000   Term   ✓      │
+   │ Sports            1,500   Term   ✗      │
+   │ Transport         8,000   Term   ✗      │
+   │ Development Levy  1,000   Year   ✓      │
+   └─────────────────────────────────────────┘
+   │ Total: 45,500                          │
+   └─────────────────────────────────────────┘
+
+3. Advanced Fee Options:
+   - Per-class fee structures
+   - Per-term or per-year configuration
+   - Installment plans (2, 3, 4 installments)
+   - Early payment discounts (configurable %)
+   - Late payment penalties (per day/week/month)
+   - Sibling discounts (configurable %)
+   - Scholarship/waiver management
+   - Fee component visibility control
+```
+
+### **5.2 Fee Assignment & Collection**
+```
+Fee Assignment Methods:
+
+1. Class-Based Assignment:
+   - Assign fee structure to entire class
+   - Override for individual students
+   - Bulk update for multiple classes
+
+2. Individual Student Assignment:
+   - Custom fee structure per student
+   - Partial fee waivers
+   - Special discounts
+   - Installment plans
+
+3. Fee Collection Interface:
+   ┌─────────────────────────────────────────┐
+   │ Collect Payment                         │
+   ├─────────────────────────────────────────┤
+   │ Student: John Doe (Form 1)             │
+   │ Balance: KES 25,000                    │
+   ├─────────────────────────────────────────┤
+   │ Payment Details:                        │
+   │ Amount:    [25,000           ]         │
+   │ Method:    [M-Pesa   ▼]                │
+   │ Reference: [             ] (optional)  │
+   ├─────────────────────────────────────────┤
+   │ Fee Breakdown:                          │
+   │ • Tuition: 25,000                      │
+   │ • Activity: 5,000                      │
+   │ • Exam: 3,000                          │
+   │ • Lab: 2,000                           │
+   │ Total: 35,000                          │
+   ├─────────────────────────────────────────┤
+   │ Discounts Applied:                      │
+   │ • Sibling: -3,500 (10%)                │
+   │ • Early Payment: -2,500 (7%)           │
+   │ Final Amount: 25,000                   │
+   ├─────────────────────────────────────────┤
+   │ Buttons: [Record Cash] [MPesa] [Card]  │
+   └─────────────────────────────────────────┘
+```
+
+### **5.3 Arrears Management**
+```
+Arrears Dashboard:
+1. Aging Analysis:
+   - Current: KES 150,000 (30 students)
+   - 30-60 days: KES 75,000 (15 students)
+   - 60-90 days: KES 50,000 (10 students)
+   - 90+ days: KES 25,000 (5 students)
+
+2. Arrears List:
+   ┌─────────────────────────────────────────────┐
+   │ Student        Class  Balance  Days Due    │
+   ├─────────────────────────────────────────────┤
+   │ John Doe      Form 1  25,000   45          │
+   │ Jane Smith    Form 2  15,000   32          │
+   │ Mike Brown    Form 3  10,000   67          │
+   └─────────────────────────────────────────────┘
+
+3. Automated Reminders:
+   - Configurable reminder schedule
+   - SMS templates for arrears
+   - Email reminders with statements
+   - WhatsApp reminders
+   - Escalation rules (to principal, etc.)
+
+4. Payment Plans:
+   - Create installment plans for large arrears
+   - Automated payment schedule
+   - Reminders for installment due dates
+   - Track installment compliance
+```
+
+---
+
+## 📁 MODULE 6: PAYMENT PROCESSING
+
+### **6.1 M-Pesa Integration**
+```
+M-Pesa STK Push Flow:
+
+1. Initiate Payment:
+   - Parent selects amount
+   - System sends STK Push to parent's phone
+   - Parent enters PIN on phone
+
+2. Payment Confirmation:
+   - Safaricom callback to system
+   - Transaction status verification
+   - Update student balance
+   - Generate receipt
+
+3. Error Handling:
+   - Failed transaction retry
+   - Timeout handling
+   - Insufficient funds handling
+   - Network issues recovery
+
+4. Multiple Paybill Support:
+   - Primary and backup paybills
+   - Transaction routing logic
+   - Settlement reporting per paybill
+```
+
+### **6.2 Multiple Payment Methods**
+```
+Supported Payment Gateway Matrix:
+
+│ Country  │ M-Pesa │ Airtel │ Cards  │ Banks │ Other          │
+├──────────┼────────┼────────┼────────┼───────┼────────────────┤
+│ Kenya    │ ✓      │ ✓      │ ✓      │ ✓     │ Equitel        │
+│ Uganda   │ -      │ ✓      │ ✓      │ ✓     │ MTN Mobile Money│
+│ Tanzania │ ✓      │ ✓      │ ✓      │ ✓     │ Tigo Pesa      │
+│ Rwanda   │ -      │ ✓      │ ✓      │ ✓     │ MTN Mobile Money│
+│ Ethiopia │ -      │ -      │ ✓      │ ✓     │ Telebirr       │
+
+Payment Method Features:
+1. Card Payments:
+   - Stripe integration
+   - 3D Secure authentication
+   - Card tokenization
+   - Recurring payments
+
+2. Bank Transfers:
+   - Bank list per country
+   - Reference number generation
+   - Auto-matching of transfers
+   - Manual confirmation option
+
+3. Cash Payments:
+   - Record at school office
+   - Receipt generation
+   - Cashier accountability
+   - Daily cash-up reports
+```
+
+### **6.3 Receipt System**
+```
+Receipt Generation Features:
+
+1. Receipt Templates:
+   - School-branded design
+   - Logo placement
+   - School details
+   - Custom fields
+
+2. Receipt Content:
+   - Unique receipt number
+   - Student details
+   - Payment breakdown
+   - Date and time
+   - Payment method
+   - Received by (if cash)
+   - School stamp/watermark
+
+3. Delivery Methods:
+   - SMS (condensed version)
+   - Email (PDF attachment)
+   - WhatsApp (PDF/document)
+   - In-app download
+   - Physical print option
+
+4. Receipt Management:
+   - Search by receipt number
+   - Search by student
+   - Date range search
+   - Void receipt capability
+   - Reprint option
+```
+
+---
+
+## 📁 MODULE 7: REPORTS & ANALYTICS
+
+### **7.1 Financial Reports**
+```
+Report Categories:
+
+1. Collection Reports:
+   - Daily Collection Report
+   - Weekly Collection Summary
+   - Monthly Collection Report
+   - Year-to-Date Collection
+
+2. Student Financial Reports:
+   - Student Ledger Report
+   - Fee Defaulters List
+   - Payment Compliance Report
+   - Discounts & Waivers Report
+
+3. Transaction Reports:
+   - Payment Method Analysis
+   - Transaction Audit Trail
+   - Failed Transactions Report
+   - Refund Report
+
+4. Tax & Compliance:
+   - VAT Report (where applicable)
+   - Withholding Tax Report
+   - Annual Financial Summary
+```
+
+### **7.2 Operational Reports**
+```
+1. Student Reports:
+   - Enrollment Statistics
+   - Class Capacity Report
+   - Student Demographic Report
+   - Attendance Correlation Report
+
+2. Communication Reports:
+   - SMS/Email Delivery Report
+   - Notification Effectiveness
+   - Parent Engagement Metrics
+
+3. System Usage Reports:
+   - User Activity Report
+   - Feature Usage Analysis
+   - Performance Metrics
+   - Error Log Report
+```
+
+### **7.3 Report Customization**
+```
+Report Builder Features:
+1. Filter Options:
+   - Date ranges
+   - Classes/streams
+   - Payment status
+   - Student categories
+
+2. Output Formats:
+   - PDF (print-ready)
+   - Excel (with formulas)
+   - CSV (raw data)
+   - HTML (web view)
+
+3. Scheduling:
+   - Automated report generation
+   - Email delivery scheduling
+   - Report archive system
+   - Access permissions per report
+```
+
+---
+
+## 📁 MODULE 8: COMMUNICATION SYSTEM
+
+### **8.1 Notification Types**
+```
+1. Payment Notifications:
+   - Payment confirmation
+   - Payment received (school)
+   - Due date reminders
+   - Late payment alerts
+   - Receipt delivery
+
+2. School Announcements:
+   - Event announcements
+   - Holiday notices
+   - Emergency alerts
+   - Academic updates
+   - Fee structure changes
+
+3. System Notifications:
+   - New student enrollment
+   - Low balance alerts
+   - System maintenance
+   - Security alerts
+   - Report ready notifications
+```
+
+### **8.2 Communication Channels**
+```
+Channel Matrix:
+│ Channel   │ Cost   │ Speed  │ Reach  │ Best For                │
+├───────────┼────────┼────────┼────────┼─────────────────────────┤
+│ SMS       │ Medium │ Fast   │ High   │ Urgent, all parents     │
+│ Email     │ Low    │ Fast   │ Medium │ Detailed, attachments   │
+│ WhatsApp  │ Low    │ Fast   │ High   │ Groups, media, receipts │
+│ In-app    │ Free   │ Instant│ Medium │ System updates          │
+│ Push      │ Free   │ Instant│ Low    │ Mobile app users        │
+
+Message Templates:
+- Pre-built templates for common messages
+- Variable substitution ({{student_name}}, {{amount}})
+- School branding in messages
+- Multi-language templates
+```
+
+### **8.3 Scheduling & Management**
+```
+Message Scheduler:
+1. One-time Messages:
+   - Send immediately
+   - Schedule for later
+   - Draft and review
+
+2. Recurring Messages:
+   - Daily fee reminders
+   - Weekly updates
+   - Monthly statements
+   - Custom schedules
+
+3. Audience Targeting:
+   - Entire school
+   - Specific classes
+   - Specific students
+   - Parents with arrears
+   - New parents
+
+4. Analytics:
+   - Delivery reports
+   - Open/read rates
+   - Response tracking
+   - Cost analysis
+```
+
+---
+
+## 📁 MODULE 9: PARENT PORTAL
+
+### **9.1 Parent Dashboard**
+```
+Parent Portal Features:
+
+1. Multi-child View:
+   - All children in one dashboard
+   - Individual child toggle
+   - Combined balance view
+
+2. Payment Interface:
+   - One-click payment for due amounts
+   - Partial payment option
+   - Payment history
+   - Receipt archive
+
+3. Communication:
+   - School announcements
+   - Child-specific messages
+   - Teacher communication
+   - Event calendar
+
+4. Student Information:
+   - Academic progress
+   - Attendance records
+   - Fee statements
+   - Upcoming deadlines
+```
+
+### **9.2 Payment Flow**
+```
+Parent Payment Process:
+1. Select Child:
+   - List of children with balances
+   - Due amounts highlighted
+   - Payment history per child
+
+2. Payment Method:
+   - Saved payment methods
+   - New payment method entry
+   - Preferred method selection
+
+3. Confirmation:
+   - Amount confirmation
+   - Payment method confirmation
+   - Receipt delivery preference
+   - Terms acceptance
+
+4. Completion:
+   - Payment processing status
+   - Success confirmation
+   - Receipt delivery
+   - Balance update
+```
+
+---
+
+## 📁 MODULE 10: SYSTEM ADMINISTRATION
+
+### **10.1 Platform Administration**
+```
+Super Admin Features:
+1. School Management:
+   - School verification
+   - School activation/deactivation
+   - School analytics
+   - Support ticket management
+
+2. Platform Configuration:
+   - Country configurations
+   - Payment gateway settings
+   - SMS/email provider settings
+   - System-wide fee templates
+
+3. User Management:
+   - User role management
+   - Permission configurations
+   - Activity monitoring
+   - Security settings
+
+4. System Monitoring:
+   - Performance dashboard
+   - Error logging
+   - Usage analytics
+   - Backup management
+```
+
+### **10.2 Settings & Configuration**
+```
+School-Level Settings:
+1. Academic Settings:
+   - Academic year configuration
+   - Term structure
+   - Class/stream setup
+   - Holiday calendar
+
+2. Financial Settings:
+   - Currency settings
+   - Tax configuration
+   - Payment terms
+   - Discount policies
+
+3. Communication Settings:
+   - Notification preferences
+   - Message templates
+   - Sender IDs/email addresses
+   - Opt-out management
+
+4. Integration Settings:
+   - API keys management
+   - Webhook configurations
+   - Third-party integrations
+   - Data export settings
+```
+
+---
+
+## 📁 MODULE 11: MOBILE RESPONSIVENESS
+
+### **11.1 Responsive Design Requirements**
+```
+Breakpoints:
+1. Mobile (≤ 768px):
+   - Single column layout
+   - Touch-friendly buttons (min 44px)
+   - Simplified navigation
+   - Optimized images
+
+2. Tablet (769px - 1024px):
+   - Two-column layout where appropriate
+   - Adjusted font sizes
+   - Touch-optimized interfaces
+
+3. Desktop (> 1024px):
+   - Full multi-column layouts
+   - Hover states
+   - Advanced interactions
+
+Mobile-Specific Features:
+- Touch-friendly form inputs
+- Mobile-optimized payment flow
+- Offline capability for basic functions
+- PWA installation prompt
+- Mobile camera integration for document upload
+```
+
+### **11.2 Progressive Web App (PWA)**
+```
+PWA Features:
+1. Installable:
+   - Add to home screen
+   - App-like experience
+   - Splash screen
+
+2. Offline Capability:
+   - Cache essential pages
+   - Offline form submission
+   - Sync when online
+
+3. Push Notifications:
+   - Fee reminders
+   - Payment confirmations
+   - School announcements
+
+4. Performance:
+   - Fast loading
+   - Smooth animations
+   - Efficient caching
+```
+
+---
+
+## 📁 MODULE 12: SECURITY & COMPLIANCE
+
+### **12.1 Security Measures**
+```
+1. Data Security:
+   - End-to-end encryption
+   - SSL/TLS for all communications
+   - Regular security audits
+   - Penetration testing
+
+2. Payment Security:
+   - PCI DSS compliance for cards
+   - Tokenization (no card storage)
+   - 3D Secure authentication
+   - Fraud detection
+
+3. Access Security:
+   - Two-factor authentication
+   - Role-based access control
+   - Session management
+   - IP whitelisting
+
+4. Compliance:
+   - GDPR for user data
+   - Local data protection laws
+   - Financial regulations
+   - Audit trail requirements
+```
+
+### **12.2 Backup & Recovery**
+```
+Backup Strategy:
+1. Data Backup:
+   - Real-time database replication
+   - Hourly incremental backups
+   - Daily full backups
+   - Off-site storage
+
+2. Recovery Procedures:
+   - Point-in-time recovery
+   - Disaster recovery plan
+   - Business continuity planning
+   - Regular recovery testing
+
+3. Monitoring:
+   - 24/7 system monitoring
+   - Alert system for issues
+   - Performance monitoring
+   - Security monitoring
+```
+
+---
+
+## 🚀 IMPLEMENTATION PRIORITY
+
+### **Phase 1: Core MVP (Weeks 1-4)**
+```
+✓ MODULE 1: Homepage & Marketing Website
+✓ MODULE 2.1: School Registration (basic)
+✓ MODULE 3.1: Dashboard Overview
+✓ MODULE 4.1: Individual Student Registration
+✓ MODULE 6.1: M-Pesa Integration (Kenya)
+✓ MODULE 11.1: Mobile Responsiveness
+```
+
+### **Phase 2: Enhanced Features (Weeks 5-8)**
+```
+✓ MODULE 4.2: MASS STUDENT UPLOAD SYSTEM
+✓ MODULE 5.1: Fee Management System
+✓ MODULE 7.1: Basic Reports
+✓ MODULE 8.1: Notification System
+✓ MODULE 9.1: Parent Portal
+✓ MODULE 10.1: System Administration
+```
+
+### **Phase 3: Advanced Features (Weeks 9-12)**
+```
+✓ MODULE 6.2: Multiple Payment Methods
+✓ MODULE 7.2: Advanced Analytics
+✓ MODULE 8.2: Multi-channel Communication
+✓ MODULE 11.2: PWA Features
+✓ MODULE 12.1: Enhanced Security
+✓ Multi-country expansion foundations
+```
+
+### **Phase 4: Maturity Features (Weeks 13-16)**
+```
+✓ MODULE 2.2: Advanced Authentication
+✓ MODULE 3.2: Advanced Dashboard
+✓ MODULE 7.3: Custom Report Builder
+✓ MODULE 10.2: Advanced Configuration
+✓ MODULE 12.2: Backup & Recovery
+✓ API for third-party integration
+```
+
+---
+
+## 📋 SUCCESS CRITERIA
+
+### **Technical Success Criteria**
+```
+1. Performance:
+   - Page load < 2 seconds
+   - API response < 200ms
+   - 99.9% uptime
+   - Support 10,000+ concurrent users
+
+2. Usability:
+   - Mobile-responsive design
+   - Intuitive navigation
+   - Clear error messages
+   - Help documentation
+
+3. Security:
+   - No critical security vulnerabilities
+   - Regular security audits passed
+   - Compliance with regulations
+   - Secure payment processing
+```
+
+### **Business Success Criteria**
+```
+1. User Adoption:
+   - 100 schools in first 6 months
+   - 50,000 students onboarded
+   - 80% payment compliance rate
+   - 90% user satisfaction
+
+2. Financial:
+   - Process 100,000+ payments
+   - Handle 250M+ KSH transactions
+   - 95% payment success rate
+   - < 1% failed transactions
+
+3. Expansion:
+   - Support 3+ countries in first year
+   - 5+ payment methods per country
+   - Local language support
+   - Country-specific compliance
+```
+
+---
+
+## 🔄 MAINTENANCE & SUPPORT
+
+### **Support Levels**
+```
+Level 1: User Support (24/7)
+- Email: support@edupayafrica.com
+- Phone: +254 700 000 000
+- WhatsApp: +254 700 000 000
+- Help Center: Articles, videos, FAQs
+
+Level 2: Technical Support (Business Hours)
+- Bug fixes
+- Configuration assistance
+- Integration support
+- Data recovery
+
+Level 3: Account Management (Premium)
+- Dedicated account manager
+- Strategic guidance
+- Custom development
+- Training and onboarding
+```
+
+### **Maintenance Schedule**
+```
+Daily:
+- Database backups
+- Error monitoring
+- Performance checks
+- Security scans
+
+Weekly:
+- Software updates
+- Report generation
+- Usage analytics
+- Backup verification
+
+Monthly:
+- System optimization
+- Feature updates
+- User feedback review
+- Security patches
+
+Quarterly:
+- Major releases
+- Performance review
+- Security audit
+- Strategic planning
+```
+
+---
+
+**END OF MODULAR REQUIREMENTS SPECIFICATION**
+
+This modular approach allows for phased development, easier project management, and clear milestone tracking. Each module can be developed, tested, and deployed independently while maintaining system integration.

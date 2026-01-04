@@ -1,0 +1,1190 @@
+# 🏗️ EduPay Africa - Complete Django Project Structure
+**Version:** 1.0 | **Type:** Production-Ready Structure | **Date:** December 15, 2024
+
+---
+
+## 📁 ROOT DIRECTORY STRUCTURE
+
+```
+edupay_africa/                    # Project Root
+├── .env                         # Environment variables (NOT in git)
+├── .env.example                 # Environment template
+├── .gitignore                   # Git ignore rules
+├── .dockerignore                # Docker ignore rules
+├── README.md                    # Project documentation
+├── LICENSE                      # MIT License
+├── requirements.txt             # Python dependencies
+├── requirements-dev.txt         # Development dependencies
+├── package.json                 # Frontend dependencies
+├── webpack.config.js            # Frontend bundling
+├── docker-compose.yml           # Docker Compose setup
+├── Dockerfile                   # Docker production image
+├── Dockerfile.dev               # Docker development image
+├── manage.py                    # Django management script
+├── Procfile                     # For deployment (Heroku, etc.)
+├── runtime.txt                  # Python version specification
+├── edupay_africa/              # Django Project Configuration
+│   ├── __init__.py
+│   ├── settings/               # Split settings for different environments
+│   │   ├── __init__.py
+│   │   ├── base.py             # Base settings
+│   │   ├── development.py      # Development settings
+│   │   ├── production.py       # Production settings
+│   │   └── testing.py          # Testing settings
+│   ├── asgi.py                 # ASGI config
+│   ├── urls.py                 # Main URL configuration
+│   ├── wsgi.py                 # WSGI config
+│   └── celery.py               # Celery configuration
+├── apps/                        # Django Apps (reusable)
+│   ├── accounts/               # User authentication & profiles
+│   ├── schools/                # School management
+│   ├── locations/              # GeoNames location data
+│   ├── payments/               # Payment processing
+│   ├── notifications/          # SMS/Email/WhatsApp
+│   ├── reports/                # Reporting system
+│   ├── api/                    # REST API
+│   └── common/                 # Shared utilities
+├── templates/                   # HTML Templates
+├── static/                      # Static files (collected here)
+├── staticfiles/                 # Collected static files (production)
+├── media/                       # User uploaded media
+├── tests/                       # Global test suite
+├── docs/                        # Documentation
+├── scripts/                     # Utility scripts
+├── deployments/                 # Deployment configurations
+└── logs/                        # Application logs
+```
+
+---
+
+## 📁 DETAILED APP STRUCTURES
+
+### **1. ACCOUNTS APP** (`apps/accounts/`)
+```
+accounts/
+├── __init__.py
+├── admin.py                    # Custom admin for users
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── user.py                # CustomUser model
+│   ├── profile.py             # UserProfile model
+│   ├── roles.py               # Role and Permission models
+│   └── audit.py               # Audit trail for user actions
+├── managers/
+│   ├── __init__.py
+│   └── user_manager.py        # Custom user manager
+├── forms/
+│   ├── __init__.py
+│   ├── registration.py        # School registration forms
+│   ├── login.py              # Login forms
+│   ├── profile.py            # Profile update forms
+│   └── password.py           # Password change/reset forms
+├── views/
+│   ├── __init__.py
+│   ├── auth.py               # Authentication views
+│   ├── registration.py       # School registration views
+│   ├── profile.py           # Profile management views
+│   └── admin.py             # Admin-only views
+├── serializers/              # For API
+│   ├── __init__.py
+│   ├── user.py
+│   └── profile.py
+├── permissions/              # Custom permissions
+│   ├── __init__.py
+│   ├── base.py
+│   └── roles.py
+├── signals/                  # Django signals
+│   ├── __init__.py
+│   └── user_signals.py
+├── tasks/                    # Celery tasks
+│   ├── __init__.py
+│   └── user_tasks.py
+├── utils/
+│   ├── __init__.py
+│   ├── validators.py        # Custom validators
+│   ├── helpers.py           # Helper functions
+│   └── security.py          # Security utilities
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_views.py
+│   ├── test_forms.py
+│   └── factories.py         # Test data factories
+├── templates/accounts/
+│   ├── registration/
+│   │   ├── school/
+│   │   │   ├── step1_basic.html
+│   │   │   ├── step2_location.html
+│   │   │   ├── step3_contact.html
+│   │   │   ├── step4_branding.html
+│   │   │   ├── step5_payment.html
+│   │   │   └── step6_verification.html
+│   │   └── success.html
+│   ├── auth/
+│   │   ├── login.html
+│   │   ├── logout.html
+│   │   ├── password_reset.html
+│   │   └── password_reset_done.html
+│   ├── profile/
+│   │   ├── view.html
+│   │   ├── edit.html
+│   │   └── security.html
+│   └── admin/
+│       └── user_list.html
+├── static/accounts/
+│   ├── css/
+│   │   └── registration.css
+│   └── js/
+│       ├── registration.js
+│       └── password_strength.js
+└── urls.py
+```
+
+### **2. SCHOOLS APP** (`apps/schools/`)
+```
+schools/
+├── __init__.py
+├── admin.py                    # School admin configuration
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── school.py              # School model
+│   ├── student.py             # Student model
+│   ├── class.py               # Class/Stream model
+│   ├── academic.py            # Academic year, terms
+│   └── documents.py           # Student documents
+├── managers/
+│   ├── __init__.py
+│   └── student_manager.py     # Custom student queries
+├── forms/
+│   ├── __init__.py
+│   ├── school_forms.py        # School management forms
+│   ├── student_forms.py       # Individual student forms
+│   ├── bulk_upload.py         # Mass upload forms
+│   ├── class_forms.py         # Class management forms
+│   └── search_forms.py        # Search and filter forms
+├── views/
+│   ├── __init__.py
+│   ├── dashboard.py           # School dashboard views
+│   ├── students/
+│   │   ├── __init__.py
+│   │   ├── crud.py           # Student CRUD operations
+│   │   ├── bulk_upload.py    # Mass upload views
+│   │   ├── search.py         # Student search
+│   │   └── promotion.py      # Class promotion
+│   ├── classes/
+│   │   ├── __init__.py
+│   │   ├── management.py     # Class management
+│   │   └── reports.py        # Class reports
+│   └── admin/
+│       ├── __init__.py
+│       └── school_admin.py   # School admin views
+├── serializers/
+│   ├── __init__.py
+│   ├── school.py
+│   ├── student.py
+│   └── class.py
+├── services/                  # Business logic services
+│   ├── __init__.py
+│   ├── student_service.py    # Student operations
+│   ├── bulk_upload_service.py # Mass upload processing
+│   ├── promotion_service.py  # Promotion logic
+│   └── report_service.py     # Report generation
+├── utils/
+│   ├── __init__.py
+│   ├── file_handlers.py      # CSV/Excel processing
+│   ├── validators.py         # Student data validation
+│   ├── import_export.py      # Import/export utilities
+│   └── photo_processing.py   # Student photo processing
+├── tasks/
+│   ├── __init__.py
+│   ├── student_tasks.py      # Async student tasks
+│   └── bulk_processing.py    # Bulk upload processing
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_views.py
+│   ├── test_services.py
+│   ├── test_bulk_upload.py   # Mass upload tests
+│   └── factories.py
+├── templates/schools/
+│   ├── dashboard/
+│   │   ├── overview.html
+│   │   ├── analytics.html
+│   │   └── widgets/          # Dashboard widgets
+│   │       ├── stats.html
+│   │       ├── recent_payments.html
+│   │       └── student_status.html
+│   ├── students/
+│   │   ├── list.html
+│   │   ├── detail.html
+│   │   ├── create.html
+│   │   ├── edit.html
+│   │   ├── bulk_upload/
+│   │   │   ├── upload.html
+│   │   │   ├── validation.html
+│   │   │   ├── processing.html
+│   │   │   └── result.html
+│   │   └── search.html
+│   ├── classes/
+│   │   ├── list.html
+│   │   ├── manage.html
+│   │   └── promotion.html
+│   └── admin/
+│       └── school_settings.html
+├── static/schools/
+│   ├── css/
+│   │   ├── dashboard.css
+│   │   └── student_management.css
+│   └── js/
+│       ├── dashboard.js
+│       ├── student_search.js
+│       ├── bulk_upload.js    # Mass upload JavaScript
+│       ├── class_management.js
+│       └── charts.js         # Dashboard charts
+└── urls.py
+```
+
+### **3. LOCATIONS APP** (`apps/locations/`)
+```
+locations/
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── country.py
+│   ├── region.py
+│   ├── county.py
+│   ├── constituency.py
+│   ├── ward.py
+│   └── location.py
+├── managers/
+│   ├── __init__.py
+│   └── location_manager.py
+├── forms/
+│   ├── __init__.py
+│   └── location_forms.py
+├── views/
+│   ├── __init__.py
+│   └── location_views.py     # AJAX views for cascading dropdowns
+├── serializers/
+│   ├── __init__.py
+│   └── location.py
+├── services/
+│   ├── __init__.py
+│   └── geonames_service.py   # GeoNames API integration
+├── management/
+│   ├── __init__.py
+│   └── commands/
+│       ├── __init__.py
+│       ├── load_geonames_data.py
+│       ├── populate_kenya.py
+│       └── update_locations.py
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   └── test_models.py
+├── fixtures/                 # Initial location data
+│   ├── countries.json
+│   ├── kenya_regions.json
+│   └── kenya_counties.json
+├── templates/locations/
+│   └── admin/               # Custom admin templates
+└── urls.py
+```
+
+### **4. PAYMENTS APP** (`apps/payments/`)
+```
+payments/
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── transaction.py       # Payment transactions
+│   ├── invoice.py           # Invoices
+│   ├── receipt.py           # Receipts
+│   ├── fee_structure.py     # Fee structures
+│   ├── discount.py          # Discounts and waivers
+│   └── payment_method.py    # Payment methods
+├── managers/
+│   ├── __init__.py
+│   └── transaction_manager.py
+├── forms/
+│   ├── __init__.py
+│   ├── payment_forms.py
+│   ├── fee_forms.py
+│   └── receipt_forms.py
+├── views/
+│   ├── __init__.py
+│   ├── payment_views.py     # Payment processing
+│   ├── fee_views.py         # Fee management
+│   ├── receipt_views.py     # Receipt generation
+│   └── admin_views.py       # Payment admin
+├── serializers/
+│   ├── __init__.py
+│   ├── transaction.py
+│   └── fee.py
+├── services/
+│   ├── __init__.py
+│   ├── mpesa/               # M-Pesa integration
+│   │   ├── __init__.py
+│   │   ├── client.py
+│   │   ├── stk_push.py
+│   │   └── callbacks.py
+│   ├── stripe/              # Stripe integration
+│   │   ├── __init__.py
+│   │   └── processor.py
+│   ├── bank/                # Bank transfers
+│   │   ├── __init__.py
+│   │   └── processor.py
+│   └── receipt_generator.py # Receipt generation
+├── webhooks/
+│   ├── __init__.py
+│   ├── mpesa.py
+│   └── stripe.py
+├── tasks/
+│   ├── __init__.py
+│   ├── payment_tasks.py
+│   └── reconciliation.py
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_mpesa.py
+│   └── factories.py
+├── templates/payments/
+│   ├── payment/
+│   │   ├── process.html
+│   │   ├── success.html
+│   │   └── failure.html
+│   ├── fees/
+│   │   ├── structure.html
+│   │   ├── assign.html
+│   │   └── arrears.html
+│   ├── receipts/
+│   │   ├── generate.html
+│   │   ├── view.html
+│   │   └── templates/       # Receipt templates
+│   │       ├── default.html
+│   │       ├── school1.html
+│   │       └── school2.html
+│   └── admin/
+│       └── reconciliation.html
+├── static/payments/
+│   ├── css/
+│   │   └── payment.css
+│   └── js/
+│       ├── payment.js
+│       └── mpesa.js
+└── urls.py
+```
+
+### **5. NOTIFICATIONS APP** (`apps/notifications/`)
+```
+notifications/
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── notification.py      # Notification model
+│   ├── template.py          # Message templates
+│   ├── channel.py           # Communication channels
+│   └── log.py               # Delivery logs
+├── managers/
+│   ├── __init__.py
+│   └── notification_manager.py
+├── forms/
+│   ├── __init__.py
+│   ├── notification_forms.py
+│   └── template_forms.py
+├── views/
+│   ├── __init__.py
+│   └── notification_views.py
+├── serializers/
+│   ├── __init__.py
+│   └── notification.py
+├── services/
+│   ├── __init__.py
+│   ├── sms/
+│   │   ├── __init__.py
+│   │   ├── africastalking.py
+│   │   └── twilio.py
+│   ├── email/
+│   │   ├── __init__.py
+│   │   └── sendgrid.py
+│   ├── whatsapp/
+│   │   ├── __init__.py
+│   │   └── twilio_whatsapp.py
+│   └── notification_service.py
+├── tasks/
+│   ├── __init__.py
+│   ├── send_notifications.py
+│   └── scheduled_messages.py
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   └── test_models.py
+├── templates/notifications/
+│   ├── create.html
+│   ├── templates/
+│   │   ├── list.html
+│   │   ├── edit.html
+│   │   └── preview.html
+│   └── logs/
+│       └── view.html
+└── urls.py
+```
+
+### **6. REPORTS APP** (`apps/reports/`)
+```
+reports/
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models/
+│   ├── __init__.py
+│   ├── report.py           # Report definitions
+│   ├── schedule.py         # Report schedules
+│   └── export.py           # Export formats
+├── forms/
+│   ├── __init__.py
+│   ├── report_forms.py
+│   └── filter_forms.py
+├── views/
+│   ├── __init__.py
+│   ├── report_views.py
+│   ├── export_views.py
+│   └── schedule_views.py
+├── generators/             # Report generators
+│   ├── __init__.py
+│   ├── financial/
+│   │   ├── __init__.py
+│   │   ├── collection.py
+│   │   ├── arrears.py
+│   │   └── transaction.py
+│   ├── student/
+│   │   ├── __init__.py
+│   │   ├── enrollment.py
+│   │   ├── attendance.py
+│   │   └── performance.py
+│   └── operational/
+│       ├── __init__.py
+│       ├── communication.py
+│       └── system_usage.py
+├── exporters/              # Export formats
+│   ├── __init__.py
+│   ├── pdf_exporter.py
+│   ├── excel_exporter.py
+│   ├── csv_exporter.py
+│   └── html_exporter.py
+├── tasks/
+│   ├── __init__.py
+│   └── generate_reports.py
+├── migrations/
+│   └── __init__.py
+├── tests/
+│   ├── __init__.py
+│   └── test_generators.py
+├── templates/reports/
+│   ├── list.html
+│   ├── generate.html
+│   ├── view.html
+│   └── schedule.html
+└── urls.py
+```
+
+### **7. API APP** (`apps/api/`)
+```
+api/
+├── __init__.py
+├── apps.py
+├── urls.py
+├── permissions.py           # API permissions
+├── authentication.py        # API authentication
+├── throttling.py            # Rate limiting
+├── versioning.py            # API versioning
+├── v1/                      # Version 1
+│   ├── __init__.py
+│   ├── urls.py
+│   ├── serializers/
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── schools.py
+│   │   ├── students.py
+│   │   ├── payments.py
+│   │   └── reports.py
+│   ├── views/
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── schools.py
+│   │   ├── students.py
+│   │   ├── payments.py
+│   │   └── reports.py
+│   └── docs/                # API documentation
+│       ├── __init__.py
+│       └── schema.py
+├── v2/                      # Future version
+│   └── __init__.py
+└── webhooks/               # Webhook endpoints
+    ├── __init__.py
+    ├── mpesa.py
+    └── stripe.py
+```
+
+### **8. COMMON APP** (`apps/common/`)
+```
+common/
+├── __init__.py
+├── apps.py
+├── models.py               # Common models (TimeStampedModel, etc.)
+├── utils/
+│   ├── __init__.py
+│   ├── validators.py       # Common validators
+│   ├── helpers.py          # Helper functions
+│   ├── decorators.py       # Custom decorators
+│   ├── context_processors.py
+│   ├── middleware.py       # Custom middleware
+│   └── exceptions.py       # Custom exceptions
+├── management/
+│   └── commands/
+│       ├── __init__.py
+│       ├── setup_dev.py    # Development setup
+│       └── backup_db.py    # Database backup
+├── templates/common/
+│   ├── base.html           # Base template
+│   ├── header.html         # Header partial
+│   ├── footer.html         # Footer partial
+│   ├── navigation.html     # Navigation partial
+│   ├── messages.html       # Django messages
+│   └── errors/             # Error pages
+│       ├── 400.html
+│       ├── 403.html
+│       ├── 404.html
+│       └── 500.html
+└── static/common/
+    ├── css/
+    │   ├── base.css        # Base styles
+    │   ├── utilities.css   # Utility classes
+    │   └── components.css  # Reusable components
+    └── js/
+        ├── base.js         # Base JavaScript
+        ├── utilities.js    # Utility functions
+        └── components.js   # Reusable components
+```
+
+---
+
+## 📁 TEMPLATES STRUCTURE (`templates/`)
+
+```
+templates/
+├── base.html                # Main base template
+├── home/                    # Marketing website
+│   ├── index.html          # Landing page
+│   ├── features.html       # Features page
+│   ├── how-it-works.html   # How it works
+│   ├── pricing.html        # Pricing page
+│   ├── testimonials.html   # Testimonials
+│   └── contact.html        # Contact page
+├── accounts/                # From accounts app
+├── schools/                 # From schools app
+├── payments/                # From payments app
+├── notifications/           # From notifications app
+├── reports/                 # From reports app
+├── common/                  # From common app
+└── admin/                   # Custom admin templates
+    ├── base_site.html
+    └── schools/            # School-specific admin
+        ├── change_form.html
+        └── change_list.html
+```
+
+---
+
+## 📁 STATIC FILES STRUCTURE (`static/`)
+
+```
+static/
+├── css/                     # Compiled CSS files
+│   ├── base.css            # Base styles
+│   ├── home.css            # Homepage styles
+│   ├── dashboard.css       # Dashboard styles
+│   ├── forms.css           # Form styles
+│   ├── tables.css          # Table styles
+│   ├── charts.css          # Chart styles
+│   └── print.css           # Print styles
+├── js/                     # Compiled JavaScript
+│   ├── base.js             # Base JavaScript
+│   ├── home.js             # Homepage JavaScript
+│   ├── dashboard.js        # Dashboard JavaScript
+│   ├── forms.js            # Form validation and handling
+│   ├── charts.js           # Chart initialization
+│   └── utils.js            # Utility functions
+├── scss/                   # Source SCSS files (if using SASS)
+│   ├── _variables.scss
+│   ├── _mixins.scss
+│   ├── _base.scss
+│   ├── _components.scss
+│   ├── _layouts.scss
+│   └── main.scss           # Main SCSS file
+├── images/                 # Images
+│   ├── logos/
+│   │   ├── favicon.ico
+│   │   ├── logo.png
+│   │   └── logo-white.png
+│   ├── icons/              # Custom icons
+│   ├── home/               # Homepage images
+│   ├── dashboard/          # Dashboard images
+│   └── placeholders/       # Placeholder images
+├── fonts/                  # Custom fonts
+│   ├── poppins/
+│   └── inter/
+├── vendors/                # Third-party libraries
+│   ├── bootstrap/
+│   ├── jquery/
+│   ├── select2/
+│   ├── chartjs/
+│   ├── datatables/
+│   └── fontawesome/
+└── uploads/                # User uploaded files (development only)
+    ├── school_logos/
+    ├── student_photos/
+    └── documents/
+```
+
+---
+
+## 📁 MEDIA FILES STRUCTURE (`media/`)
+
+```
+media/                      # User uploaded media (production)
+├── schools/
+│   ├── {school_id}/
+│   │   ├── logo/
+│   │   │   ├── original/
+│   │   │   ├── thumb/      # Thumbnails
+│   │   │   └── optimized/  # Web-optimized
+│   │   ├── banner/
+│   │   └── documents/
+├── students/
+│   ├── {school_id}/
+│   │   ├── {student_id}/
+│   │   │   ├── photos/
+│   │   │   │   ├── original/
+│   │   │   │   ├── thumb/
+│   │   │   │   └── id_card/ # ID card photos
+│   │   │   └── documents/
+├── receipts/
+│   ├── {school_id}/
+│   │   ├── {year}/
+│   │   │   ├── {month}/
+│   │   │   │   └── {receipt_number}.pdf
+├── reports/
+│   ├── {school_id}/
+│   │   ├── financial/
+│   │   ├── student/
+│   │   └── operational/
+└── temp/                   # Temporary uploads
+    ├── bulk_uploads/
+    └── processing/
+```
+
+---
+
+## 📁 TESTS STRUCTURE (`tests/`)
+
+```
+tests/
+├── __init__.py
+├── conftest.py             # Pytest configuration
+├── factories/              # Test data factories
+│   ├── __init__.py
+│   ├── user_factories.py
+│   ├── school_factories.py
+│   └── student_factories.py
+├── accounts/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_views.py
+│   ├── test_forms.py
+│   └── test_api.py
+├── schools/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_views.py
+│   ├── test_services.py
+│   ├── test_bulk_upload.py
+│   └── test_api.py
+├── payments/
+│   ├── __init__.py
+│   ├── test_models.py
+│   ├── test_views.py
+│   ├── test_mpesa.py
+│   └── test_api.py
+├── integration/            # Integration tests
+│   ├── __init__.py
+│   ├── test_registration_flow.py
+│   ├── test_payment_flow.py
+│   └── test_bulk_upload_flow.py
+├── e2e/                    # End-to-end tests
+│   ├── __init__.py
+│   ├── test_school_registration.py
+│   └── test_parent_payment.py
+└── performance/            # Performance tests
+    ├── __init__.py
+    ├── test_load.py
+    └── test_concurrency.py
+```
+
+---
+
+## 📁 DOCS STRUCTURE (`docs/`)
+
+```
+docs/
+├── README.md               # Documentation root
+├── api/                    # API documentation
+│   ├── overview.md
+│   ├── authentication.md
+│   ├── endpoints.md
+│   └── examples.md
+├── deployment/             # Deployment guides
+│   ├── local.md
+│   ├── production.md
+│   ├── docker.md
+│   └── troubleshooting.md
+├── development/            # Developer guides
+│   ├── setup.md
+│   ├── coding_standards.md
+│   ├── testing.md
+│   └── contributing.md
+├── user/                   # User documentation
+│   ├── school_admin.md
+│   ├── parent_guide.md
+│   ├── teacher_guide.md
+│   └── faq.md
+├── architecture/           # Architecture docs
+│   ├── system_design.md
+│   ├── database_schema.md
+│   ├── api_design.md
+│   └── security.md
+├── diagrams/               # Architecture diagrams
+│   ├── erd.drawio
+│   ├── system_architecture.drawio
+│   └── api_flow.drawio
+└── CHANGELOG.md            # Version history
+```
+
+---
+
+## 📁 DEPLOYMENTS STRUCTURE (`deployments/`)
+
+```
+deployments/
+├── nginx/                  # Nginx configurations
+│   ├── nginx.conf
+│   ├── ssl/               # SSL certificates
+│   └── sites-available/
+│       └── edupay.conf
+├── gunicorn/               # Gunicorn configurations
+│   ├── gunicorn.conf.py
+│   └── gunicorn.service
+├── supervisor/             # Supervisor configurations
+│   ├── celery.conf
+│   └── celerybeat.conf
+├── docker/                 # Docker configurations
+│   ├── docker-compose.prod.yml
+│   ├── docker-compose.dev.yml
+│   ├── nginx/
+│   ├── postgres/
+│   └── redis/
+├── scripts/                # Deployment scripts
+│   ├── deploy.sh
+│   ├── backup.sh
+│   ├── restore.sh
+│   └── monitor.sh
+├── monitoring/             # Monitoring configurations
+│   ├── prometheus.yml
+│   ├── grafana/
+│   └── alerts/
+└── ci-cd/                  # CI/CD configurations
+    ├── github-actions/
+    │   ├── tests.yml
+    │   ├── deploy.yml
+    │   └── security.yml
+    └── gitlab-ci/
+        └── .gitlab-ci.yml
+```
+
+---
+
+## 📁 SCRIPTS STRUCTURE (`scripts/`)
+
+```
+scripts/
+├── setup/                  # Setup scripts
+│   ├── install_dependencies.sh
+│   ├── setup_venv.sh
+│   ├── setup_database.sh
+│   └── setup_environment.sh
+├── database/               # Database scripts
+│   ├── backup.py
+│   ├── restore.py
+│   ├── migrate.py
+│   └── seed_data.py
+├── deployment/             # Deployment scripts
+│   ├── build.sh
+│   ├── deploy.sh
+│   ├── rollback.sh
+│   └── health_check.sh
+├── maintenance/            # Maintenance scripts
+│   ├── cleanup_old_data.py
+│   ├── generate_reports.py
+│   ├── send_reminders.py
+│   └── update_geonames.py
+├── testing/                # Testing scripts
+│   ├── run_tests.sh
+│   ├── load_test.py
+│   └── security_scan.sh
+└── utils/                  # Utility scripts
+    ├── export_data.py
+    ├── import_data.py
+    ├── generate_fake_data.py
+    └── check_system.py
+```
+
+---
+
+## 📁 CONFIGURATION FILES
+
+### **1. Django Settings** (`edupay_africa/settings/`)
+```python
+# base.py - Base settings
+from pathlib import Path
+import os
+from datetime import timedelta
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Core Django settings
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = False
+ALLOWED_HOSTS = []
+
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    
+    # Third-party apps
+    'rest_framework',
+    'corsheaders',
+    'django_filters',
+    'django_extensions',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'import_export',
+    
+    # Local apps
+    'apps.accounts',
+    'apps.schools',
+    'apps.locations',
+    'apps.payments',
+    'apps.notifications',
+    'apps.reports',
+    'apps.api',
+    'apps.common',
+]
+
+# Middleware, Templates, Databases, etc.
+# ... (full configuration)
+
+# development.py - Development settings
+from .base import *
+
+DEBUG = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Development-specific settings
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# production.py - Production settings
+from .base import *
+
+DEBUG = False
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
+}
+
+# Security settings for production
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+```
+
+### **2. Requirements Files**
+```txt
+# requirements.txt - Production dependencies
+Django==5.0.6
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+django-filter==23.5
+django-extensions==3.2.3
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.1
+django-import-export==4.0.2
+psycopg2-binary==2.9.9
+redis==5.0.1
+celery==5.3.4
+django-celery-results==2.5.1
+Pillow==10.2.0
+python-dotenv==1.0.0
+requests==2.31.0
+reportlab==4.0.9
+openpyxl==3.1.2
+stripe==7.14.0
+twilio==8.13.0
+sendgrid==6.11.0
+africastalking==0.4.6
+
+# requirements-dev.txt - Development dependencies
+-r requirements.txt
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+coverage==7.4.1
+black==23.12.1
+flake8==7.0.0
+isort==5.13.2
+pre-commit==3.6.0
+django-debug-toolbar==4.3.0
+ipython==8.19.0
+```
+
+### **3. Docker Configuration**
+```dockerfile
+# Dockerfile - Production
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project
+COPY . .
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
+# Run as non-root user
+RUN useradd -m -u 1000 django
+USER django
+
+# Run Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "edupay_africa.wsgi:application"]
+```
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: edupay
+      POSTGRES_USER: edupay_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  redis:
+    image: redis:7-alpine
+  
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://edupay_user:${DB_PASSWORD}@db:5432/edupay
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+  
+  celery:
+    build: .
+    command: celery -A edupay_africa worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgres://edupay_user:${DB_PASSWORD}@db:5432/edupay
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+  
+  celery-beat:
+    build: .
+    command: celery -A edupay_africa beat --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgres://edupay_user:${DB_PASSWORD}@db:5432/edupay
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  postgres_data:
+```
+
+---
+
+## 🚀 QUICK START COMMANDS
+
+```bash
+# Clone and setup
+git clone https://github.com/yourusername/edupay-africa.git
+cd edupay-africa
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements-dev.txt
+
+# Setup environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Setup database
+python manage.py migrate
+python manage.py createsuperuser
+
+# Load location data
+python manage.py load_geonames_data --countries KE
+
+# Run development server
+python manage.py runserver
+
+# Run tests
+pytest
+
+# Run with Docker
+docker-compose up --build
+```
+
+---
+
+## 📊 DATABASE SCHEMA OVERVIEW
+
+```
+Key Relationships:
+1. School (1) → Many (Students, Fees, Payments)
+2. Student (1) → Many (Parents, Payments, Documents)
+3. Parent (1) → Many (Students) [via Family grouping]
+4. Payment (1) → 1 (Student, Receipt)
+5. FeeStructure (1) → Many (Students, Classes)
+
+Main Tables:
+- accounts_customuser
+- accounts_userprofile
+- schools_school
+- schools_student
+- schools_class
+- locations_country
+- locations_region
+- locations_county
+- payments_feestructure
+- payments_transaction
+- payments_receipt
+- notifications_notification
+```
+
+---
+
+## 🔧 DEVELOPMENT WORKFLOW
+
+```
+1. Feature Development:
+   git checkout -b feature/student-bulk-upload
+   # Develop feature
+   python manage.py test apps.schools.tests.test_bulk_upload
+   git add .
+   git commit -m "Add mass student upload feature"
+   git push origin feature/student-bulk-upload
+
+2. Code Review & CI:
+   - Create Pull Request
+   - Automated tests run
+   - Code quality checks
+   - Security scans
+   - Manual review
+
+3. Deployment:
+   - Merge to main
+   - Automated deployment to staging
+   - Testing on staging
+   - Deployment to production
+   - Post-deployment verification
+```
+
+---
+
+This comprehensive project structure provides:
+1. **Modular organization** - Each feature in its own app
+2. **Scalability** - Easy to add new features
+3. **Maintainability** - Clear separation of concerns
+4. **Testability** - Organized test structure
+5. **Deployment ready** - Production configurations included
+6. **Team collaboration** - Clear structure for multiple developers
+
+The structure follows Django best practices and is ready for both small-scale deployment and large-scale production use.

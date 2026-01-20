@@ -1,1 +1,1 @@
-EduPay Africa
+EduPay Africa is a continent-wide school payment platform designed specifically for African educational institutions. Starting in Kenya and expanding across Africa, the platform simplifies fee collection, management, and reconciliation for schools while providing parents with a seamless payment experience.

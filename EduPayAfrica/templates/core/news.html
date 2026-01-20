@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block title %}News & Careers - EduPay Africa{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container-lg">
+        <h1>News & Careers</h1>
+        <p>Stay updated with the latest platform developments and join our growing team.</p>
+    </div>
+</div>
+
+<div class="container-lg py-5">
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-5" id="newsCareersTabs" role="tablist" style="border-bottom: 2px solid #e2e8f0;">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button" role="tab">
+                <i class="fas fa-newspaper"></i> Latest News
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="careers-tab" data-bs-toggle="tab" data-bs-target="#careers" type="button" role="tab">
+                <i class="fas fa-briefcase"></i> Careers
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="partnerships-tab" data-bs-toggle="tab" data-bs-target="#partnerships" type="button" role="tab">
+                <i class="fas fa-network-wired"></i> Partnerships
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="newsCareerTabContent">
+        <!-- News Section -->
+        <div class="tab-pane fade show active" id="news" role="tabpanel">
+            <h2 style="color: var(--primary-color); font-weight: 700; margin-bottom: 40px;">Latest Updates</h2>
+
+            <!-- News Card 1 -->
+            <div class="news-card">
+                <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-rocket" style="font-size: 3rem;"></i>
+                    </div>
+                </div>
+                <div class="news-card-body">
+                    <h5>EduPay Africa Launches Phase 1 MVP</h5>
+                    <p class="news-date"><i class="fas fa-calendar"></i> January 20, 2024</p>
+                    <p>
+                        We're excited to announce the launch of EduPay Africa's Phase 1 Minimum Viable Product! This marks a major milestone in our journey to revolutionize education finance management across Africa. The platform features a professional website, demo booking system, and secure authentication infrastructure built for scalability.
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- News Card 2 -->
+            <div class="news-card">
+                <div style="background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-handshake" style="font-size: 3rem;"></i>
+                    </div>
+                </div>
+                <div class="news-card-body">
+                    <h5>Announcing Strategic Partnership with Kenya's Leading Universities</h5>
+                    <p class="news-date"><i class="fas fa-calendar"></i> December 15, 2023</p>
+                    <p>
+                        EduPay Africa is thrilled to announce partnerships with three of Kenya's premier universities. These collaborations demonstrate institutional confidence in our vision and provide valuable feedback for Phase 1 development. We're committed to working closely with our partners to understand their unique finance management challenges.
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- News Card 3 -->
+            <div class="news-card">
+                <div style="background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-lightbulb" style="font-size: 3rem;"></i>
+                    </div>
+                </div>
+                <div class="news-card-body">
+                    <h5>Behind the Scenes: Building EduPay Africa's Technology Stack</h5>
+                    <p class="news-date"><i class="fas fa-calendar"></i> November 28, 2023</p>
+                    <p>
+                        In this blog post, our CTO walks through the technical decisions behind EduPay Africa's architecture. Learn why we chose Django, Firebase, and PostgreSQL, and how these technologies set us up for rapid scaling into payment processing and institutional management features.
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- News Card 4 -->
+            <div class="news-card">
+                <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <div style="text-align: center;">
+                        <i class="fas fa-users" style="font-size: 3rem;"></i>
+                    </div>
+                </div>
+                <div class="news-card-body">
+                    <h5>Meet the Team: Building Africa's Education Finance Future</h5>
+                    <p class="news-date"><i class="fas fa-calendar"></i> November 10, 2023</p>
+                    <p>
+                        Meet the passionate team behind EduPay Africa. Our diverse group of engineers, product designers, and finance experts are united by a mission to transform education finance across Africa. Get to know their stories and what drives their commitment to this mission.
+                    </p>
+                    <p style="margin-bottom: 0;">
+                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">
+                            Read Full Article <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Subscribe Newsletter -->
+            <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 40px; border-radius: 10px; text-align: center; margin-top: 40px;">
+                <h3 style="margin-bottom: 15px; font-weight: 700;">Stay Updated</h3>
+                <p style="margin-bottom: 20px;">Subscribe to our newsletter to get the latest EduPay Africa news and updates delivered to your inbox.</p>
+                <form style="display: flex; gap: 10px; max-width: 500px; margin: 0 auto;">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your email address" 
+                        class="form-control"
+                        style="border-radius: 8px; border: none;"
+                        required
+                    >
+                    <button type="submit" class="btn btn-light" style="background: var(--accent-color); color: white; border: none; font-weight: 600; border-radius: 8px; white-space: nowrap;">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Careers Section -->
+        <div class="tab-pane fade" id="careers" role="tabpanel">
+            <h2 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Join Our Team</h2>
+
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 40px;">
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 20px;">
+                    EduPay Africa is building the future of education finance in Africa. We're looking for talented, passionate individuals who are committed to making a real impact in the education sector. If you're excited about technology, finance, and education, we'd love to hear from you.
+                </p>
+                <p style="color: #666;">
+                    <strong>Why join EduPay Africa?</strong>
+                </p>
+                <ul style="list-style-position: inside; color: #666;">
+                    <li>Work on a mission-driven project with real-world impact</li>
+                    <li>Collaborate with experienced professionals in tech and finance</li>
+                    <li>Competitive compensation and benefits</li>
+                    <li>Flexible work arrangements</li>
+                    <li>Continuous learning and development opportunities</li>
+                    <li>Inclusive, supportive team culture</li>
+                </ul>
+            </div>
+
+            <!-- Open Positions -->
+            <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 20px;">Open Positions</h3>
+
+            <!-- Job Card 1 -->
+            <div class="news-card">
+                <div class="news-card-body">
+                    <h5>Senior Full-Stack Developer</h5>
+                    <p class="news-date"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya | <i class="fas fa-clock"></i> Full-time</p>
+                    <p>
+                        We're looking for an experienced full-stack developer to join our team and help build the next generation of education finance technology. Experience with Django, React/Bootstrap, and PostgreSQL is preferred. You'll work on critical features including payment processing and institutional dashboards.
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Key Requirements:</strong>
+                    </p>
+                    <ul style="list-style-position: inside; color: #666;">
+                        <li>5+ years of full-stack development experience</li>
+                        <li>Strong Python/Django expertise</li>
+                        <li>Experience with REST APIs and microservices</li>
+                        <li>Database design and optimization skills</li>
+                        <li>Passion for clean, maintainable code</li>
+                    </ul>
+                    <a href="/contact/?subject=careers&position=developer" class="btn btn-primary-custom mt-3">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="news-card">
+                <div class="news-card-body">
+                    <h5>Product Manager</h5>
+                    <p class="news-date"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya | <i class="fas fa-clock"></i> Full-time</p>
+                    <p>
+                        Join us as Product Manager to shape the future of EduPay Africa. You'll work closely with institutions, our development team, and stakeholders to define product strategy, prioritize features, and drive the platform's evolution through Phases 2 and beyond.
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Key Requirements:</strong>
+                    </p>
+                    <ul style="list-style-position: inside; color: #666;">
+                        <li>3+ years of product management experience</li>
+                        <li>Experience in fintech or edtech is a plus</li>
+                        <li>Strong stakeholder management skills</li>
+                        <li>Data-driven decision making</li>
+                        <li>Excellent communication and leadership</li>
+                    </ul>
+                    <a href="/contact/?subject=careers&position=product" class="btn btn-primary-custom mt-3">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Card 3 -->
+            <div class="news-card">
+                <div class="news-card-body">
+                    <h5>Frontend Engineer (React/Bootstrap)</h5>
+                    <p class="news-date"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya (Remote Available) | <i class="fas fa-clock"></i> Full-time</p>
+                    <p>
+                        We're expanding our frontend team! We need a talented frontend engineer to build beautiful, responsive user interfaces for EduPay Africa. You'll work closely with our design and backend teams to create intuitive experiences for institutions, parents, and bursars.
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Key Requirements:</strong>
+                    </p>
+                    <ul style="list-style-position: inside; color: #666;">
+                        <li>3+ years of frontend development experience</li>
+                        <li>Expert in modern JavaScript and responsive design</li>
+                        <li>Bootstrap or Tailwind CSS experience required</li>
+                        <li>Experience with state management libraries</li>
+                        <li>Passion for user experience and accessibility</li>
+                    </ul>
+                    <a href="/contact/?subject=careers&position=frontend" class="btn btn-primary-custom mt-3">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Job Card 4 -->
+            <div class="news-card">
+                <div class="news-card-body">
+                    <h5>DevOps Engineer</h5>
+                    <p class="news-date"><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya (Remote Available) | <i class="fas fa-clock"></i> Full-time</p>
+                    <p>
+                        Help us build a reliable, scalable infrastructure for EduPay Africa. As a DevOps engineer, you'll manage our cloud deployments, ensure system reliability, and implement best practices for security and performance as we scale across Africa.
+                    </p>
+                    <p style="margin-bottom: 15px;">
+                        <strong>Key Requirements:</strong>
+                    </p>
+                    <ul style="list-style-position: inside; color: #666;">
+                        <li>3+ years of DevOps/Infrastructure experience</li>
+                        <li>Cloud platform experience (AWS, GCP, or Azure)</li>
+                        <li>Docker and Kubernetes knowledge</li>
+                        <li>CI/CD pipeline setup and management</li>
+                        <li>Security best practices implementation</li>
+                    </ul>
+                    <a href="/contact/?subject=careers&position=devops" class="btn btn-primary-custom mt-3">
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div style="background: var(--light-bg); padding: 40px; border-radius: 10px; text-align: center; margin-top: 40px;">
+                <h4 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">Don't See Your Role?</h4>
+                <p style="margin-bottom: 20px;">We're always interested in hearing from talented individuals passionate about our mission.</p>
+                <a href="/contact/?subject=careers" class="btn btn-primary-custom">
+                    <i class="fas fa-envelope"></i> Send Your CV
+                </a>
+            </div>
+        </div>
+
+        <!-- Partnerships Section -->
+        <div class="tab-pane fade" id="partnerships" role="tabpanel">
+            <h2 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Partnership Opportunities</h2>
+
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 40px;">
+                <p style="font-size: 1.1rem; line-height: 1.8; color: #555; margin-bottom: 20px;">
+                    EduPay Africa believes in the power of partnerships. We're actively seeking collaborations with institutions, technology providers, and organizations that share our mission to revolutionize education finance in Africa.
+                </p>
+            </div>
+
+            <!-- Partnership Types -->
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%;">
+                        <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-university"></i>
+                        </div>
+                        <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">Educational Institutions</h5>
+                        <p>
+                            We partner with schools, colleges, and universities to pilot new features, gather feedback, and shape the platform's development. Partner institutions receive priority support and preferential pricing.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%;">
+                        <div style="font-size: 2.5rem; color: var(--secondary-color); margin-bottom: 15px;">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <h5 style="color: var(--secondary-color); margin-bottom: 15px; font-weight: 700;">Technology Integrations</h5>
+                        <p>
+                            We're open to integrations with payment gateways, banking APIs, and complementary education technology platforms. Let's build a more connected education ecosystem together.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%;">
+                        <div style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h5 style="color: var(--accent-color); margin-bottom: 15px; font-weight: 700;">Business Partners</h5>
+                        <p>
+                            Are you a consulting firm, systems integrator, or education technology provider? Let's explore how we can work together to bring EduPay Africa's benefits to more institutions across Africa.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: 100%;">
+                        <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">Strategic Partnerships</h5>
+                        <p>
+                            If you're a financial institution, EdTech investor, or organization aligned with our mission, we'd love to discuss strategic collaboration opportunities that can accelerate our growth.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-section" style="margin-top: 60px;">
+                <h2>Let's Partner Together</h2>
+                <p>If you're interested in exploring partnership opportunities with EduPay Africa, we'd love to hear from you.</p>
+                <a href="/contact/?subject=partnership" class="btn btn-light btn-lg me-3" style="background: white; color: var(--primary-color); border: none; font-weight: 600;">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="/demo/" class="btn btn-light btn-lg" style="background: var(--accent-color); border: none;">
+                    <i class="fas fa-calendar-alt"></i> Schedule a Call
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

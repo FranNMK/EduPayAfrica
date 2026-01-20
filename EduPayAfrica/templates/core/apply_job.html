@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply for Position - EduPay Africa{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container-lg">
+        <h1>Apply for {{ job_position.title }}</h1>
+        <p>{{ job_position.department }} - {{ job_position.location }}</p>
+    </div>
+</div>
+
+<div class="container-lg py-5">
+    <div class="row">
+        <!-- Job Details -->
+        <div class="col-lg-4 mb-5 mb-lg-0">
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 20px;">
+                <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 20px;">Position Details</h3>
+                
+                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+                    <p style="color: #999; font-size: 0.85rem; margin-bottom: 5px;">EMPLOYMENT TYPE</p>
+                    <p style="font-weight: 600;">{{ job_position.get_employment_type_display }}</p>
+                </div>
+
+                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+                    <p style="color: #999; font-size: 0.85rem; margin-bottom: 5px;">LOCATION</p>
+                    <p style="font-weight: 600;">{{ job_position.location }}</p>
+                </div>
+
+                {% if job_position.salary_range %}
+                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+                    <p style="color: #999; font-size: 0.85rem; margin-bottom: 5px;">SALARY RANGE</p>
+                    <p style="font-weight: 600;">{{ job_position.salary_range }}</p>
+                </div>
+                {% endif %}
+
+                <div style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0; font-weight: 700;">About the Role</h4>
+                </div>
+                <p style="margin-top: 15px; line-height: 1.8; color: #555;">{{ job_position.description }}</p>
+
+                <h5 style="color: var(--primary-color); font-weight: 700; margin-top: 25px; margin-bottom: 15px;">Requirements</h5>
+                <ul style="margin-left: 20px;">
+                    {% for req in job_position.requirements.split %}
+                        {% if req %}
+                        <li style="margin-bottom: 8px; color: #555;">{{ req }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Application Form -->
+        <div class="col-lg-8">
+            <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 10px;">Submit Your Application</h3>
+                <p style="color: #666; margin-bottom: 30px;">Fill out the form below with your information and upload your CV. We'll review your application and get back to you soon.</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Personal Information -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Your Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="full_name">Full Name <span style="color: red;">*</span></label>
+                                    {{ form.full_name }}
+                                    {% if form.full_name.errors %}
+                                        <small style="color: red;">{{ form.full_name.errors }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="email">Email Address <span style="color: red;">*</span></label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <small style="color: red;">{{ form.email.errors }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span style="color: red;">*</span></label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <small style="color: red;">{{ form.phone.errors }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Professional Information -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Professional Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="current_position">Current Position <span style="color: red;">*</span></label>
+                                    {{ form.current_position }}
+                                    {% if form.current_position.errors %}
+                                        <small style="color: red;">{{ form.current_position.errors }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="experience_years">Years of Experience <span style="color: red;">*</span></label>
+                                    {{ form.experience_years }}
+                                    {% if form.experience_years.errors %}
+                                        <small style="color: red;">{{ form.experience_years.errors }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Application Details -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Your Application</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="cover_letter">Cover Letter <span style="color: red;">*</span></label>
+                                {{ form.cover_letter }}
+                                {% if form.cover_letter.errors %}
+                                    <small style="color: red;">{{ form.cover_letter.errors }}</small>
+                                {% endif %}
+                                <small style="color: #999; display: block; margin-top: 8px;">Tell us why you're interested in this position and how your experience makes you a great fit.</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="cv_file">Upload CV <span style="color: red;">*</span></label>
+                                {{ form.cv_file }}
+                                {% if form.cv_file.errors %}
+                                    <small style="color: red;">{{ form.cv_file.errors }}</small>
+                                {% endif %}
+                                <small style="color: #999; display: block; margin-top: 8px;">Accepted formats: PDF, DOC, DOCX (Max 5MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'news' %}" class="btn btn-outline-primary w-100" style="border-color: var(--primary-color); color: var(--primary-color); font-weight: 600;">
+                                <i class="fas fa-arrow-left"></i> Back to Careers
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <button type="submit" class="btn btn-primary-custom w-100">
+                                <i class="fas fa-paper-plane"></i> Submit Application
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

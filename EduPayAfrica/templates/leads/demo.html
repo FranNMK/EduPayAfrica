@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}Book a Demo - EduPay Africa{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container-lg">
+        <h1>Book a Demo</h1>
+        <p>See EduPay Africa in action. Schedule a personalized demonstration for your institution.</p>
+    </div>
+</div>
+
+<div class="container-lg py-5">
+    <div class="row">
+        <!-- Demo Info -->
+        <div class="col-md-5 mb-5 mb-md-0">
+            <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Why Book a Demo?</h3>
+
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--primary-color);">
+                <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">
+                    <i class="fas fa-eye"></i> See the Platform
+                </h5>
+                <p>Get a comprehensive walkthrough of EduPay Africa's features and how they can benefit your institution.</p>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--secondary-color);">
+                <h5 style="color: var(--secondary-color); margin-bottom: 15px; font-weight: 700;">
+                    <i class="fas fa-comments"></i> Ask Questions
+                </h5>
+                <p>Our team will answer your questions and discuss how EduPay Africa addresses your specific fee management challenges.</p>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--accent-color);">
+                <h5 style="color: var(--accent-color); margin-bottom: 15px; font-weight: 700;">
+                    <i class="fas fa-chart-line"></i> Explore Solutions
+                </h5>
+                <p>Discover how our platform can streamline your operations and improve institutional efficiency.</p>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--primary-color);">
+                <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">
+                    <i class="fas fa-clock"></i> Typical Duration
+                </h5>
+                <p>Demos typically last 30-45 minutes. We'll schedule at a time that works best for you.</p>
+            </div>
+        </div>
+
+        <!-- Demo Booking Form -->
+        <div class="col-md-7">
+            <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 10px;">Request a Demo</h3>
+                <p style="color: #666; margin-bottom: 30px;">Fill out the form below and our team will get back to you within 24 business hours to schedule your personalized demo.</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle"></i> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" action="." novalidate id="demoForm">
+                    {% csrf_token %}
+
+                    <!-- Personal Information -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Your Information</h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name <span style="color: red;">*</span></label>
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        id="fullName" 
+                                        name="full_name" 
+                                        placeholder="Your Full Name"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="email">Email Address <span style="color: red;">*</span></label>
+                                    <input 
+                                        type="email" 
+                                        class="form-control" 
+                                        id="email" 
+                                        name="email" 
+                                        placeholder="your.email@example.com"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="phone">Phone Number <span style="color: red;">*</span></label>
+                                    <input 
+                                        type="tel" 
+                                        class="form-control" 
+                                        id="phone" 
+                                        name="phone" 
+                                        placeholder="+254 XXX XXX XXX"
+                                        required
+                                    >
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="role">Role <span style="color: red;">*</span></label>
+                                    <select class="form-select" id="role" name="job_title" required>
+                                        <option value="">-- Select Your Role --</option>
+                                        <option value="principal_headteacher">Principal / Head Teacher</option>
+                                        <option value="ict_officer">ICT Officer</option>
+                                        <option value="deputy_principal">Deputy Principal</option>
+                                        <option value="departmental_head">Departmental Head</option>
+                                        <option value="parent_representative">Parent Representative</option>
+                                        <option value="bursar_finance">Bursar / Finance Officer</option>
+                                        <option value="admissions_registrar">Admissions / Registrar</option>
+                                        <option value="other_staff">Other Staff</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Institution Information -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Institution Information</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="institutionName">Institution Name <span style="color: red;">*</span></label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="institutionName" 
+                                    name="institution_name" 
+                                    placeholder="Your School/University/College Name"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="institutionType">Institution Type <span style="color: red;">*</span></label>
+                                    <select class="form-select" id="institutionType" name="institution_type" required>
+                                        <option value="">-- Select Institution Type --</option>
+                                        <option value="university">University</option>
+                                        <option value="college">College</option>
+                                        <option value="secondary_school">Secondary School</option>
+                                        <option value="primary_school">Primary School</option>
+                                        <option value="vocational">Vocational/Technical Institution</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="studentCount">Approximate Number of Students <span style="color: red;">*</span></label>
+                                    <select class="form-select" id="studentCount" name="student_count" required>
+                                        <option value="">-- Select Range --</option>
+                                        <option value="below_100">Below 100</option>
+                                        <option value="100_500">100 - 500</option>
+                                        <option value="500_1000">500 - 1,000</option>
+                                        <option value="1000_5000">1,000 - 5,000</option>
+                                        <option value="5000_above">5,000+</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="country">Country <span style="color: red;">*</span></label>
+                                <select class="form-select" id="country" name="country" required>
+                                    <option value="">-- Select East African Country --</option>
+                                    <option value="Kenya">Kenya</option>
+                                    <option value="Tanzania">Tanzania</option>
+                                    <option value="Uganda">Uganda</option>
+                                    <option value="Rwanda">Rwanda</option>
+                                    <option value="Burundi">Burundi</option>
+                                    <option value="Somalia">Somalia</option>
+                                    <option value="Ethiopia">Ethiopia</option>
+                                    <option value="South Sudan">South Sudan</option>
+                                    <option value="Malawi">Malawi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div style="border-bottom: 2px solid var(--light-bg); padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Tell Us More</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="challenge">What's your biggest fee management challenge? <span style="color: red;">*</span></label>
+                                <select class="form-select" id="challenge" name="challenge" required>
+                                    <option value="">-- Select Challenge --</option>
+                                    <option value="manual_collection">Manual fee collection processes</option>
+                                    <option value="tracking">Tracking payments and balances</option>
+                                    <option value="reconciliation">Payment reconciliation</option>
+                                    <option value="communication">Communication with students/parents</option>
+                                    <option value="multiple_systems">Multiple disconnected systems</option>
+                                    <option value="security">Data security and protection</option>
+                                    <option value="reporting">Financial reporting</option>
+                                    <option value="other_challenge">Other challenge</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="message">Additional Message (Optional)</label>
+                                <textarea 
+                                    class="form-control" 
+                                    id="message" 
+                                    name="message" 
+                                    rows="4" 
+                                    placeholder="Share any additional information or questions you'd like to discuss during the demo..."
+                                ></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Demo Preferences -->
+                    <div style="padding-bottom: 25px; margin-bottom: 25px;">
+                        <h5 style="color: var(--primary-color); font-weight: 700; margin-bottom: 15px;">Demo Preferences</h5>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="preferredTime">Preferred Time for Demo <span style="color: red;">*</span></label>
+                                <select class="form-select" id="preferredTime" name="preferred_time" required>
+                                    <option value="">-- Select Time --</option>
+                                    <option value="morning">Morning (8:00 AM - 12:00 PM)</option>
+                                    <option value="afternoon">Afternoon (12:00 PM - 4:00 PM)</option>
+                                    <option value="evening">Evening (4:00 PM - 6:00 PM)</option>
+                                    <option value="flexible">I'm flexible</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="includeTeam" 
+                                name="include_team"
+                            >
+                            <label class="form-check-label" for="includeTeam">
+                                I'd like to include other team members in the demo
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="agree" 
+                                name="agree"
+                                required
+                            >
+                            <label class="form-check-label" for="agree">
+                                I agree to the <a href="/privacy/" style="color: var(--primary-color);">Privacy Policy</a> and <a href="/terms/" style="color: var(--primary-color);">Terms of Service</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom btn-lg w-100">
+                        <i class="fas fa-calendar-check"></i> Request Demo
+                    </button>
+
+                    <p style="text-align: center; margin-top: 15px; color: #999; font-size: 0.9rem;">
+                        <i class="fas fa-lock"></i> Your information is secure and will never be shared with third parties.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Success Stories -->
+    <div style="margin-top: 80px; padding: 60px 0;">
+        <h2 style="color: var(--primary-color); font-weight: 700; text-align: center; margin-bottom: 40px;">What Institutions Say About EduPay Africa</h2>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="color: var(--accent-color); margin-bottom: 15px;">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p style="font-style: italic; color: #666; margin-bottom: 15px;">
+                        "EduPay Africa has transformed how we manage our fees. The platform is intuitive and our staff took to it immediately. We've already reduced fee collection time by 40%."
+                    </p>
+                    <p style="font-weight: 600; color: var(--primary-color);">
+                        Dr. Jane Kimani<br>
+                        <span style="font-weight: 400; font-size: 0.9rem; color: #999;">Deputy Principal, Nairobi Academy</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="color: var(--accent-color); margin-bottom: 15px;">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p style="font-style: italic; color: #666; margin-bottom: 15px;">
+                        "The demo was comprehensive and addressed all our concerns. The team really understands the challenges universities face with fee management. We're excited to implement this."
+                    </p>
+                    <p style="font-weight: 600; color: var(--primary-color);">
+                        Prof. David Omondi<br>
+                        <span style="font-weight: 400; font-size: 0.9rem; color: #999;">Finance Director, Kenyatta University</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="color: var(--accent-color); margin-bottom: 15px;">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p style="font-style: italic; color: #666; margin-bottom: 15px;">
+                        "Professional, clear, and focused on our needs. EduPay Africa's team demonstrated real understanding of education finance challenges. Highly recommended!"
+                    </p>
+                    <p style="font-weight: 600; color: var(--primary-color);">
+                        Grace Muturi<br>
+                        <span style="font-weight: 400; font-size: 0.9rem; color: #999;">School Business Manager, St. Mary's International School</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div style="margin-top: 60px; background: var(--light-bg); padding: 40px; border-radius: 10px;">
+        <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Frequently Asked Questions</h3>
+
+        <div class="accordion" id="demoFAQ">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        How long does the demo take?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#demoFAQ">
+                    <div class="accordion-body">
+                        Typical demos last 30-45 minutes. This includes a platform walkthrough, Q&A, and discussion about your institution's specific needs. We're happy to extend if you have more questions.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        Is there a cost for the demo?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#demoFAQ">
+                    <div class="accordion-body">
+                        No, demos are completely free. We want institutions to understand our platform and determine if it's a good fit for your needs. No obligation to proceed.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        Can multiple team members attend?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#demoFAQ">
+                    <div class="accordion-body">
+                        Absolutely! We encourage participation from multiple stakeholders - principals, bursars, finance staff, IT teams, etc. Check the "include team members" box in the form, and we'll arrange a suitable format.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        What's included in Phase 1?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#demoFAQ">
+                    <div class="accordion-body">
+                        Phase 1 includes the public website, demo booking system, and authentication infrastructure. Phase 2 and beyond will include payment processing, payment reconciliation, and institutional dashboards. We'll discuss the roadmap during the demo.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                        How soon will we hear back about scheduling?
+                    </button>
+                </h2>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#demoFAQ">
+                    <div class="accordion-body">
+                        We aim to respond to all demo requests within 24 business hours. We'll contact you using the phone number and email you provided to confirm the demo time.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Validation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('demoForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity() === false) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        }
+    });
+</script>
+
+{% endblock %}

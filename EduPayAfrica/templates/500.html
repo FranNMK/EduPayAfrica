@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error - EduPay Africa{% endblock %}
+
+{% block content %}
+
+<!-- 500 Section -->
+<section style="background: var(--light-bg); padding: 100px 0; text-align: center; min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container-lg">
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div style="font-size: 6rem; color: #dc2626; font-weight: 700; margin-bottom: 20px;">
+                500
+            </div>
+            <h1 style="color: #991b1b; font-weight: 700; margin-bottom: 15px;">Server Error</h1>
+            <p style="font-size: 1.1rem; color: #666; margin-bottom: 30px;">
+                Oops! Something went wrong on our end. Our team has been notified and is working to fix the issue.
+            </p>
+            <div>
+                <a href="/" class="btn btn-primary-custom btn-lg me-2">
+                    <i class="fas fa-home"></i> Go Home
+                </a>
+                <a href="/contact/" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-envelope"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

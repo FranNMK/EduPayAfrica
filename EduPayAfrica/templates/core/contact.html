@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - EduPay Africa{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container-lg">
+        <h1>Get in Touch</h1>
+        <p>We'd love to hear from you. Contact us for inquiries, partnerships, or support.</p>
+    </div>
+</div>
+
+<div class="container-lg py-5">
+    <!-- Contact Info & Form Section -->
+    <div class="row mb-5">
+        <!-- Contact Information -->
+        <div class="col-md-4 mb-4">
+            <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Contact Information</h3>
+            
+            <div class="contact-info-box">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h5>Location</h5>
+                <p>Nairobi, Kenya</p>
+            </div>
+
+            <div class="contact-info-box">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h5>Phone</h5>
+                <p>
+                    <a href="tel:+254700000000" style="color: var(--primary-color); text-decoration: none;">+254 700 000 000</a>
+                </p>
+            </div>
+
+            <div class="contact-info-box">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5>Email</h5>
+                <p>
+                    <a href="mailto:info@edupayafrica.com" style="color: var(--primary-color); text-decoration: none;">info@edupayafrica.com</a>
+                </p>
+                <p style="margin-top: 10px; font-size: 0.9rem;">
+                    <strong>Support:</strong> <a href="mailto:support@edupayafrica.com" style="color: var(--primary-color); text-decoration: none;">support@edupayafrica.com</a>
+                </p>
+            </div>
+
+            <div class="contact-info-box">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h5>Business Hours</h5>
+                <p>
+                    Monday - Friday: 8:00 AM - 6:00 PM EAT<br>
+                    Saturday: 10:00 AM - 2:00 PM EAT<br>
+                    Sunday: Closed
+                </p>
+            </div>
+
+            <div class="contact-info-box">
+                <div class="contact-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h5>Follow Us</h5>
+                <div class="social-links">
+                    <a href="#facebook" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-md-8">
+            <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Send us a Message</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" action="." novalidate id="contactForm">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group">
+                                <label for="fullName">Full Name <span style="color: red;">*</span></label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="fullName" 
+                                    name="full_name" 
+                                    placeholder="Your Full Name"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group">
+                                <label for="email">Email Address <span style="color: red;">*</span></label>
+                                <input 
+                                    type="email" 
+                                    class="form-control" 
+                                    id="email" 
+                                    name="email" 
+                                    placeholder="your.email@example.com"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group">
+                                <label for="phone">Phone Number <span style="color: red;">*</span></label>
+                                <input 
+                                    type="tel" 
+                                    class="form-control" 
+                                    id="phone" 
+                                    name="phone" 
+                                    placeholder="+254 XXX XXX XXX"
+                                    required
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="form-group">
+                                <label for="subject">Subject <span style="color: red;">*</span></label>
+                                <select class="form-select" id="subject" name="subject" required>
+                                    <option value="">-- Select a Subject --</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="support">Technical Support</option>
+                                    <option value="partnership">Partnership Opportunity</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-group">
+                            <label for="message">Message <span style="color: red;">*</span></label>
+                            <textarea 
+                                class="form-control" 
+                                id="message" 
+                                name="message" 
+                                rows="6" 
+                                placeholder="Please share your message or inquiry..."
+                                required
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="privacy" 
+                                name="privacy_agreed"
+                                required
+                            >
+                            <label class="form-check-label" for="privacy">
+                                I agree to the <a href="#privacy" style="color: var(--primary-color);">Privacy Policy</a> and <a href="#terms" style="color: var(--primary-color);">Terms of Service</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom btn-lg w-100">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+
+                <p style="text-align: center; margin-top: 20px; color: #999; font-size: 0.9rem;">
+                    We typically respond to inquiries within 24 business hours.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inquiry Types Section -->
+    <div style="background: var(--light-bg); padding: 40px; border-radius: 10px; margin-bottom: 40px;">
+        <h3 style="color: var(--primary-color); font-weight: 700; text-align: center; margin-bottom: 30px;">How Can We Help?</h3>
+        
+        <div class="row">
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 700;">General Questions</h5>
+                    <p style="font-size: 0.9rem;">Ask anything about EduPay Africa, our vision, and how we can help your institution.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 2.5rem; color: var(--secondary-color); margin-bottom: 15px;">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h5 style="color: var(--secondary-color); margin-bottom: 10px; font-weight: 700;">Technical Support</h5>
+                    <p style="font-size: 0.9rem;">Having issues or need help with the platform? Our support team is here to help.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h5 style="color: var(--accent-color); margin-bottom: 10px; font-weight: 700;">Partnerships</h5>
+                    <p style="font-size: 0.9rem;">Interested in partnering with EduPay Africa? Let's explore opportunities together.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h5 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 700;">Feedback</h5>
+                    <p style="font-size: 0.9rem;">Help us improve. Share your suggestions, ideas, or feedback about our platform.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2>Still Have Questions?</h2>
+        <p>Don't hesitate to reach out. Our team is ready to help you transform education finance at your institution.</p>
+        <a href="/demo/" class="btn btn-light btn-lg" style="background: var(--accent-color); border: none;">
+            <i class="fas fa-calendar-alt"></i> Book a Demo Instead
+        </a>
+    </div>
+</div>
+
+<!-- Custom Validation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('contactForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity() === false) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        }
+    });
+</script>
+
+{% endblock %}

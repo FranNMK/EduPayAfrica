@@ -41,11 +41,19 @@
             {% if articles %}
                 {% for article in articles %}
                 <div class="news-card">
-                    <div style="background: linear-gradient(135deg, {{ article.gradient_start }} 0%, {{ article.gradient_end }} 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
-                        <div style="text-align: center;">
-                            <i class="{{ article.icon_class }}" style="font-size: 3rem;"></i>
+                    <!-- Featured Image or Icon Header -->
+                    {% if article.featured_image %}
+                        <div style="height: 250px; overflow: hidden; border-radius: 10px 10px 0 0;">
+                            <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
-                    </div>
+                    {% else %}
+                        <div style="background: linear-gradient(135deg, {{ article.gradient_start }} 0%, {{ article.gradient_end }} 100%); height: 200px; display: flex; align-items: center; justify-content: center; color: white;">
+                            <div style="text-align: center;">
+                                <i class="{{ article.icon_class }}" style="font-size: 3rem;"></i>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
                     <div class="news-card-body">
                         <h5>{{ article.title }}</h5>
                         <p class="news-date"><i class="fas fa-calendar"></i> {{ article.published_date|date:"F d, Y" }}</p>

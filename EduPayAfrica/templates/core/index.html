@@ -287,4 +287,46 @@
     </div>
 </section>
 
+<style>
+    /* Hover effect for Phase 1 Capabilities boxes */
+    .phase-box {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .phase-box:hover {
+        transform: scale(1.05) translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+    }
+    
+    /* Hover effect for Roadmap gradient boxes */
+    .roadmap-box {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .roadmap-box:hover {
+        transform: scale(1.03) translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.3) !important;
+    }
+    
+    /* Hover effect for Stats boxes */
+    .stat-box {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .stat-box:hover {
+        transform: scale(1.1);
+    }
+    
+    .stat-box:hover h3 {
+        transform: scale(1.15);
+    }
+    
+    .stat-box h3 {
+        transition: all 0.3s ease;
+    }
+</style>
+
 {% endblock %}

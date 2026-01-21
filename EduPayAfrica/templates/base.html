@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -680,5 +681,16 @@
     </script>
 
     {% block extra_js %}{% endblock %}
+
+    <!-- Firebase SDK -->
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
+        "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js"
+      }
+    }
+    </script>
+    <script type="module" src="{% static 'js/firebase-init.js' %}"></script>
 </body>
 </html>

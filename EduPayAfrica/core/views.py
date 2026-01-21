@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import NewsArticle, JobPosition, JobApplication
+from .models import NewsArticle, JobPosition, JobApplication, ContactInquiry
 from .forms import NewsletterSubscriberForm, JobApplicationForm
 
 @require_http_methods(["GET"])
@@ -24,17 +24,28 @@ def contact(request):
         phone = request.POST.get('phone', '')
         subject = request.POST.get('subject', '')
         message = request.POST.get('message', '')
-        privacy_agreed = request.POST.get('privacy_agreed', False)
+        privacy_agreed = request.POST.get('privacy_agreed') == 'on'
         
         # Basic validation
-        if not all([full_name, email, phone, subject, message, privacy_agreed]):
+        if not all([full_name, email, phone, subject, message]):
             messages.error(request, 'Please fill in all required fields.')
             return render(request, 'core/contact.html')
-        
-        # TODO: Save contact inquiry to database and send email
-        # For now, just show success message
+
+        if not privacy_agreed:
+            messages.error(request, 'Please agree to the Privacy Policy and Terms of Service.')
+            return render(request, 'core/contact.html')
+
+        ContactInquiry.objects.create(
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            subject=subject,
+            message=message,
+            privacy_agreed=privacy_agreed,
+        )
+
         messages.success(request, 'Thank you for reaching out! We will get back to you shortly.')
-        return render(request, 'core/contact.html')
+        return redirect('contact')
     
     return render(request, 'core/contact.html')
 

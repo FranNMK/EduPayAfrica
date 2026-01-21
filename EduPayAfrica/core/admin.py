@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import NewsletterSubscriber, NewsArticle, JobPosition, JobApplication
+from .models import NewsletterSubscriber, NewsArticle, JobPosition, JobApplication, ContactInquiry
 
 @admin.register(NewsletterSubscriber)
 class NewsletterSubscriberAdmin(admin.ModelAdmin):
@@ -14,12 +14,16 @@ class NewsArticleAdmin(admin.ModelAdmin):
     list_filter = ('is_published', 'published_date')
     search_fields = ('title', 'content')
     ordering = ('order', '-published_date')
+    readonly_fields = ('published_date',)
     fieldsets = (
         ('Article Content', {
-            'fields': ('title', 'excerpt', 'content', 'featured_image', 'published_date')
+            'fields': ('title', 'excerpt', 'content', 'featured_image')
+        }),
+        ('Publication Info', {
+            'fields': ('published_date', 'is_published')
         }),
         ('Display Settings', {
-            'fields': ('icon_class', 'gradient_start', 'gradient_end', 'order', 'is_published')
+            'fields': ('icon_class', 'gradient_start', 'gradient_end', 'order')
         }),
     )
 
@@ -57,4 +61,12 @@ class JobApplicationAdmin(admin.ModelAdmin):
             'fields': ('status',)
         }),
     )
+
+
+@admin.register(ContactInquiry)
+class ContactInquiryAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'email', 'subject', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('full_name', 'email', 'subject', 'message')
+    readonly_fields = ('full_name', 'email', 'phone', 'subject', 'message', 'privacy_agreed', 'created_at')
 

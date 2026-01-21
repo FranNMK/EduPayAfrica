@@ -252,7 +252,7 @@
         const form = document.getElementById('contactForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                if (!form.checkValidity() === false) {
+                if (form.checkValidity() === false) {
                     e.preventDefault();
                     e.stopPropagation();
                 }

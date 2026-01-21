@@ -55,14 +55,16 @@
 
                 {% if messages %}
                     {% for message in messages %}
+                        {% if 'success' in message.tags %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle"></i> {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
 
-                <form method="post" action="." novalidate id="demoForm">
+                <form method="post" action="{% url 'demo' %}" id="demoForm">
                     {% csrf_token %}
 
                     <!-- Personal Information -->
@@ -256,6 +258,7 @@
                                 type="checkbox" 
                                 id="includeTeam" 
                                 name="include_team"
+                                value="on"
                             >
                             <label class="form-check-label" for="includeTeam">
                                 I'd like to include other team members in the demo
@@ -271,6 +274,7 @@
                                 type="checkbox" 
                                 id="agree" 
                                 name="agree"
+                                value="on"
                                 required
                             >
                             <label class="form-check-label" for="agree">
@@ -279,7 +283,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary-custom btn-lg w-100">
+                    <button type="submit" class="btn btn-primary-custom btn-lg w-100" id="submitBtn">
                         <i class="fas fa-calendar-check"></i> Request Demo
                     </button>
 
@@ -287,6 +291,8 @@
                         <i class="fas fa-lock"></i> Your information is secure and will never be shared with third parties.
                     </p>
                 </form>
+
+                <!-- Using standard POST + redirect; success message shown after refresh -->
             </div>
         </div>
     </div>
@@ -430,7 +436,7 @@
         const form = document.getElementById('demoForm');
         if (form) {
             form.addEventListener('submit', function(e) {
-                if (!form.checkValidity() === false) {
+                if (form.checkValidity() === false) {
                     e.preventDefault();
                     e.stopPropagation();
                 }

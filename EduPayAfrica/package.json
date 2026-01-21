@@ -1,0 +1,14 @@
+{
+  "name": "edupay-africa",
+  "version": "1.0.0",
+  "description": "EduPay Africa - Education Finance Management Platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "python manage.py runserver"
+  },
+  "dependencies": {
+    "firebase": "^10.7.0"
+  },
+  "devDependencies": {}
+}

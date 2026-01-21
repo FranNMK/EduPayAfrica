@@ -110,6 +110,63 @@
             background: rgba(255,255,255,0.3) !important;
         }
 
+        /* Hamburger to X animation */
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            position: relative;
+            width: 40px;
+            height: 40px;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: none;
+        }
+
+        .navbar-toggler-icon {
+            position: relative;
+            transition: all 0.3s ease;
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: white;
+        }
+
+        .navbar-toggler-icon::before,
+        .navbar-toggler-icon::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
+            left: 0;
+        }
+
+        .navbar-toggler-icon::before {
+            top: -8px;
+        }
+
+        .navbar-toggler-icon::after {
+            bottom: -8px;
+        }
+
+        /* X icon when menu is open */
+        .navbar-toggler.active .navbar-toggler-icon {
+            background-color: transparent;
+        }
+
+        .navbar-toggler.active .navbar-toggler-icon::before {
+            transform: rotate(45deg);
+            top: 0;
+        }
+
+        .navbar-toggler.active .navbar-toggler-icon::after {
+            transform: rotate(-45deg);
+            bottom: 0;
+        }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -552,8 +609,8 @@
                 <img src="/static/images/EduPay Africa Logo.png" alt="EduPay Africa Logo">
                 <span>EduPay Africa</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" id="navToggler">
+                <span class="navbar-toggler-icon" id="togglerIcon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
@@ -639,6 +696,35 @@
         // Update copyright year automatically
         document.getElementById('year').textContent = new Date().getFullYear();
         
+        // Hamburger menu toggle animation
+        const navToggler = document.getElementById('navToggler');
+        const navbarCollapse = document.getElementById('navbarNav');
+        
+        if (navToggler) {
+            navToggler.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+
+            // Remove active class when menu is closed
+            navbarCollapse.addEventListener('hidden.bs.collapse', function() {
+                navToggler.classList.remove('active');
+            });
+
+            // Close menu when clicking nav links on mobile
+            const navLinks = document.querySelectorAll('#navbarNav .nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        navToggler.classList.remove('active');
+                        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+                            toggle: false
+                        });
+                        bsCollapse.hide();
+                    }
+                });
+            });
+        }
+        
         // Add active class to current nav item
         document.addEventListener('DOMContentLoaded', function() {
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
@@ -683,6 +769,10 @@
     {% block extra_js %}{% endblock %}
 
     <!-- Firebase SDK -->
+    <!-- Inject Firebase config from Django backend -->
+    <script>
+        window.firebaseConfig = {{ firebase_config|safe }};
+    </script>
     <script type="importmap">
     {
       "imports": {

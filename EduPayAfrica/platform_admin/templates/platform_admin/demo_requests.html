@@ -1,11 +1,10 @@
-{% extends "base.html" %}
-{% block title %}Demo Requests | Super Admin{% endblock %}
-{% block content %}
-<div class="container py-5">
+{% extends "platform_admin/base_admin.html" %}
+{% block admin_title %}Demo Requests{% endblock %}
+{% block admin_content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 fw-bold mb-1">Demo Requests</h1>
-            <p class="text-muted mb-0">Monitor inbound interest and track follow-up status.</p>
+            <p class="text-muted mb-0">Review incoming demo requests and approve institutions.</p>
         </div>
         <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
     </div>
@@ -27,10 +26,9 @@
             <label class="form-label small text-muted">Status</label>
             <select name="status" class="form-select">
                 <option value="">Any</option>
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="demo_completed">Demo Completed</option>
-                <option value="converted">Converted</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
             </select>
         </div>
         <div class="col-md-2">
@@ -55,7 +53,7 @@
                     <th>Type</th>
                     <th>Status</th>
                     <th>Created</th>
-                    <th class="text-end">Update</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,30 +66,108 @@
                         <div class="small text-muted">{{ demo.phone }}</div>
                     </td>
                     <td class="text-capitalize text-muted">{{ demo.get_institution_type_display }}</td>
-                    <td><span class="badge bg-secondary text-uppercase">{{ demo.get_status_display }}</span></td>
-                    <td class="small text-muted">{{ demo.created_at|date:"Y-m-d" }}</td>
+                    <td>
+                        <span class="badge {% if demo.status == 'pending' %}bg-warning{% elif demo.status == 'approved' %}bg-success{% elif demo.status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %} text-uppercase">
+                            {{ demo.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="small text-muted">{{ demo.timestamp|date:"Y-m-d" }}</td>
                     <td class="text-end">
-                        <form method="post" class="d-flex gap-2 align-items-center justify-content-end">
-                            {% csrf_token %}
-                            <input type="hidden" name="demo_id" value="{{ demo.id }}">
-                            <select name="status" class="form-select form-select-sm w-auto">
-                                <option value="new" {% if demo.status == "new" %}selected{% endif %}>New</option>
-                                <option value="contacted" {% if demo.status == "contacted" %}selected{% endif %}>Contacted</option>
-                                <option value="demo_completed" {% if demo.status == "demo_completed" %}selected{% endif %}>Demo Completed</option>
-                                <option value="converted" {% if demo.status == "converted" %}selected{% endif %}>Converted</option>
-                            </select>
-                            <input type="text" name="note" class="form-control form-control-sm" placeholder="Internal note" value="{{ demo.notes }}">
-                            <button class="btn btn-outline-primary btn-sm" type="submit">Save</button>
-                        </form>
+                        {% if demo.status == 'pending' %}
+                        <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ demo.id }}">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ demo.id }}">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                        {% else %}
+                        <span class="text-muted small">No actions available</span>
+                        {% endif %}
                     </td>
                 </tr>
+
+                <!-- Approve Modal -->
+                <div class="modal fade" id="approveModal{{ demo.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Approve Demo Request</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Institution:</strong> {{ demo.institution_name }}</p>
+                                    <p><strong>Contact:</strong> {{ demo.full_name }} ({{ demo.email }})</p>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Assign to Admin</label>
+                                        <select name="admin_user" class="form-select" required>
+                                            <option value="">-- Select an admin --</option>
+                                            {% for admin in admin_users %}
+                                            <option value="{{ admin.id }}">
+                                                {{ admin.get_full_name|default:admin.username }} ({{ admin.email }})
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Onboarding Notes</label>
+                                        <textarea name="onboarding_notes" class="form-control" rows="3" placeholder="Add any onboarding notes..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="demo_id" value="{{ demo.id }}">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reject Modal -->
+                <div class="modal fade" id="rejectModal{{ demo.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Reject Demo Request</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Institution:</strong> {{ demo.institution_name }}</p>
+                                    <p class="text-danger mb-3">This action cannot be undone.</p>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Reason for Rejection</label>
+                                        <textarea name="reason" class="form-control" rows="3" placeholder="Enter reason for rejection..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="demo_id" value="{{ demo.id }}">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-4">No demo requests yet.</td>
+                    <td colspan="6" class="text-center text-muted py-4">No demo requests found.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
 {% endblock %}

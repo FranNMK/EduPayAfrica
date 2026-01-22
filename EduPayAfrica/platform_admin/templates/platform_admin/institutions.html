@@ -1,16 +1,14 @@
-{% extends "base.html" %}
-{% block title %}Institutions | Super Admin{% endblock %}
-{% block content %}
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h4 fw-bold mb-1">Institution Management</h1>
-            <p class="text-muted mb-0">Approve, activate, or suspend institutions without altering operational data.</p>
-        </div>
-        <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
+{% extends "platform_admin/base_admin.html" %}
+{% block admin_title %}Institutions{% endblock %}
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h4 fw-bold mb-1">Institution Management</h1>
+        <p class="text-muted mb-0">Approve, activate, or suspend institutions without altering operational data.</p>
     </div>
+</div>
 
-    <div class="table-responsive shadow-sm rounded bg-white">
+<div class="table-responsive shadow-sm rounded bg-white">
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
@@ -65,5 +63,4 @@
             </tbody>
         </table>
     </div>
-</div>
 {% endblock %}

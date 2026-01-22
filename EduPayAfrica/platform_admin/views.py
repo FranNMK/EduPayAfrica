@@ -113,9 +113,9 @@ def institutions(request):
 @login_required
 @super_admin_required
 def demo_requests(request):
-	"""Read-only and status control for demo requests."""
+	"""View and approve demo requests from institutions."""
 
-	qs = DemoRequest.objects.all().order_by("-created_at")
+	qs = DemoRequest.objects.all().order_by("-timestamp")
 	institution_type = request.GET.get("institution_type")
 	status = request.GET.get("status")
 	date_from = request.GET.get("from")
@@ -128,38 +128,112 @@ def demo_requests(request):
 	if date_from:
 		try:
 			parsed = datetime.strptime(date_from, "%Y-%m-%d")
-			qs = qs.filter(created_at__date__gte=parsed.date())
+			qs = qs.filter(timestamp__date__gte=parsed.date())
 		except ValueError:
 			messages.error(request, "Invalid start date")
 	if date_to:
 		try:
 			parsed = datetime.strptime(date_to, "%Y-%m-%d")
-			qs = qs.filter(created_at__date__lte=parsed.date())
+			qs = qs.filter(timestamp__date__lte=parsed.date())
 		except ValueError:
 			messages.error(request, "Invalid end date")
 
 	if request.method == "POST":
+		action = request.POST.get("action")
 		demo_id = request.POST.get("demo_id")
-		new_status = request.POST.get("status")
-		note = request.POST.get("note", "")
 		demo = get_object_or_404(DemoRequest, pk=demo_id)
-		previous_status = demo.status
-		demo.status = new_status
-		demo.notes = note or demo.notes
-		demo.save()
+		
+		if action == "approve":
+			# Create new institution from demo request
+			admin_user_id = request.POST.get("admin_user")
+			onboarding_notes = request.POST.get("onboarding_notes", "")
+			
+			if not admin_user_id:
+				messages.error(request, "Please select an admin user to assign.")
+				return redirect("platform_admin:demo_requests")
+			
+			try:
+				from django.contrib.auth.models import User
+				admin_user = User.objects.get(pk=admin_user_id)
+			except User.DoesNotExist:
+				messages.error(request, "Selected admin user not found.")
+				return redirect("platform_admin:demo_requests")
+			
+			# Create institution record
+			institution = Institution.objects.create(
+				name=demo.institution_name,
+				institution_type=demo.institution_type,
+				contact_name=demo.full_name,
+				contact_email=demo.email,
+				contact_phone=demo.phone,
+				status="pending",
+				onboarding_notes=onboarding_notes,
+			)
+			
+			# Create relationship to admin user
+			PlatformUserProfile.objects.get_or_create(
+				user=admin_user,
+				defaults={
+					'role': 'admin',
+					'institution': institution,
+					'is_active': True,
+				}
+			)
+			
+			# Record status log
+			InstitutionStatusLog.objects.create(
+				institution=institution,
+				from_status="draft",
+				to_status="pending",
+				changed_by=request.user,
+				reason="Created from demo request approval"
+			)
+			
+			# Record audit log
+			AuditLog.record(
+				action="Demo request approved and institution created",
+				actor=request.user,
+				entity_type="demo_request",
+				entity_id=str(demo.id),
+				description=f"Institution '{institution.name}' created and assigned to {admin_user.get_full_name() or admin_user.username}"
+			)
+			
+			# Update demo request status
+			demo.status = "approved"
+			demo.save()
+			
+			messages.success(request, f"Demo request approved. Institution '{institution.name}' created.")
+			return redirect("platform_admin:demo_requests")
+		
+		elif action == "reject":
+			reason = request.POST.get("reason", "No reason provided")
+			demo.status = "rejected"
+			demo.save()
+			
+			AuditLog.record(
+				action="Demo request rejected",
+				actor=request.user,
+				entity_type="demo_request",
+				entity_id=str(demo.id),
+				description=reason
+			)
+			
+			messages.success(request, "Demo request rejected.")
+			return redirect("platform_admin:demo_requests")
+		
+		else:
+			messages.error(request, "Invalid action")
+			return redirect("platform_admin:demo_requests")
 
-		AuditLog.record(
-			action="Demo request status updated",
-			actor=request.user,
-			entity_type="demo_request",
-			entity_id=str(demo.id),
-			description=f"{previous_status} -> {new_status}. {note}",
-		)
-		messages.success(request, "Demo request updated.")
-		return redirect("platform_admin:demo_requests")
+	# Get active admin users for assignment dropdown
+	from django.contrib.auth.models import User
+	admin_users = User.objects.filter(is_staff=True, is_active=True).exclude(
+		username=request.user.username
+	).order_by("first_name", "last_name")
 
 	context = {
 		"demo_requests": qs,
+		"admin_users": admin_users,
 	}
 	return render(request, "platform_admin/demo_requests.html", context)
 
@@ -167,32 +241,102 @@ def demo_requests(request):
 @login_required
 @super_admin_required
 def user_oversight(request):
-	"""View users by role and toggle account status."""
+	"""View users by role and toggle account status. Create new admin users."""
+	from accounts.firebase_auth import create_firebase_user
 
 	profiles = PlatformUserProfile.objects.select_related("user").all()
 
 	if request.method == "POST":
-		profile_id = request.POST.get("profile_id")
 		action = request.POST.get("action")
-		profile = get_object_or_404(PlatformUserProfile, pk=profile_id)
-		user = profile.user
-		if action == "disable":
-			user.is_active = False
-		elif action == "enable":
-			user.is_active = True
-		else:
-			messages.error(request, "Unsupported action")
+		
+		if action == "create":
+			# Create new user
+			email = request.POST.get("email", "").strip()
+			password = request.POST.get("password", "").strip()
+			full_name = request.POST.get("full_name", "").strip()
+			role = request.POST.get("role", "admin")
+			
+			# Validate inputs
+			if not email or not password or not full_name:
+				messages.error(request, "Email, password, and full name are required.")
+				return redirect("platform_admin:users")
+			
+			if len(password) < 6:
+				messages.error(request, "Password must be at least 6 characters long.")
+				return redirect("platform_admin:users")
+			
+			# Check if email already exists
+			from django.contrib.auth.models import User
+			if User.objects.filter(email=email).exists():
+				messages.error(request, "A user with this email already exists.")
+				return redirect("platform_admin:users")
+			
+			# Create Firebase user
+			firebase_user = create_firebase_user(email, password, full_name)
+			if not firebase_user:
+				messages.error(request, "Failed to create user in Firebase. Please check the password requirements.")
+				return redirect("platform_admin:users")
+			
+			# Create Django user
+			try:
+				first_name, last_name = (full_name.split(' ', 1) + [''])[:2]
+				django_user = User.objects.create_user(
+					username=email,
+					email=email,
+					password=password,  # Create with same password for consistency
+					first_name=first_name,
+					last_name=last_name,
+					is_staff=True,
+					is_active=True,
+				)
+				
+				# Create platform user profile
+				PlatformUserProfile.objects.create(
+					user=django_user,
+					role=role,
+					is_active=True,
+					notes=f"Created by {request.user.username}"
+				)
+				
+				# Record audit log
+				AuditLog.record(
+					action="New admin user created",
+					actor=request.user,
+					entity_type="user",
+					entity_id=str(django_user.id),
+					description=f"Email: {email}, Role: {role}"
+				)
+				
+				messages.success(request, f"User {email} created successfully. Password set in Firebase.")
+				return redirect("platform_admin:users")
+			except Exception as e:
+				messages.error(request, f"Error creating Django user: {str(e)}")
+				return redirect("platform_admin:users")
+		
+		elif action == "disable" or action == "enable":
+			profile_id = request.POST.get("profile_id")
+			profile = get_object_or_404(PlatformUserProfile, pk=profile_id)
+			user = profile.user
+			
+			if action == "disable":
+				user.is_active = False
+			elif action == "enable":
+				user.is_active = True
+			user.save()
+			
+			AuditLog.record(
+				action=f"User {action}",
+				actor=request.user,
+				entity_type="user",
+				entity_id=str(user.id),
+				description=profile.notes or "",
+			)
+			messages.success(request, f"Account {user.get_username()} updated.")
 			return redirect("platform_admin:users")
-		user.save()
-		AuditLog.record(
-			action=f"User {action}",
-			actor=request.user,
-			entity_type="user",
-			entity_id=str(user.id),
-			description=profile.notes,
-		)
-		messages.success(request, f"Account {user.get_username()} updated.")
-		return redirect("platform_admin:users")
+		
+		else:
+			messages.error(request, "Invalid action")
+			return redirect("platform_admin:users")
 
 	context = {
 		"profiles": profiles,

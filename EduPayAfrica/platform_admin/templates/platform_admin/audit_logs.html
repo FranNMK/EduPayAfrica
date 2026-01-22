@@ -1,7 +1,6 @@
-{% extends "base.html" %}
-{% block title %}Audit Logs | Super Admin{% endblock %}
-{% block content %}
-<div class="container py-5">
+{% extends "platform_admin/base_admin.html" %}
+{% block admin_title %}Audit Logs{% endblock %}
+{% block admin_content %}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 fw-bold mb-1">Audit Logging</h1>
@@ -35,6 +34,4 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-</div>
 {% endblock %}

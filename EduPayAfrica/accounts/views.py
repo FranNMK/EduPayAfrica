@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import login
 from django.contrib import messages
+import requests
+import os
 
 from .firebase_auth import firebase_login
 
@@ -47,3 +49,100 @@ def login_view(request):
             return render(request, 'accounts/login.html')
     
     return render(request, 'accounts/login.html')
+
+
+@require_http_methods(["GET", "POST"])
+def password_reset_request(request):
+    """Request password reset - sends reset email via Firebase"""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        
+        if not email:
+            messages.error(request, 'Please enter your email address.')
+            return render(request, 'accounts/password_reset_request.html')
+        
+        try:
+            # Use Firebase REST API to send password reset email
+            api_key = os.environ.get('FIREBASE_API_KEY', '')
+            if not api_key:
+                messages.error(request, 'Password reset service not configured.')
+                return render(request, 'accounts/password_reset_request.html')
+            
+            url = f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={api_key}"
+            payload = {
+                "requestType": "PASSWORD_RESET",
+                "email": email
+            }
+            
+            response = requests.post(url, json=payload)
+            
+            if response.status_code == 200:
+                messages.success(request, 
+                    f'Password reset link has been sent to {email}. Please check your inbox and spam folder.')
+                return redirect('login')
+            else:
+                error_data = response.json()
+                error_msg = error_data.get('error', {}).get('message', 'Failed to send reset email')
+                messages.error(request, f'Error: {error_msg}')
+                return render(request, 'accounts/password_reset_request.html')
+        
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+            print(f"Password reset error: {e}")
+            return render(request, 'accounts/password_reset_request.html')
+    
+    return render(request, 'accounts/password_reset_request.html')
+
+
+@require_http_methods(["GET", "POST"])
+def password_reset_confirm(request):
+    """Confirm password reset with reset code"""
+    if request.method == 'POST':
+        reset_code = request.POST.get('reset_code', '').strip()
+        new_password = request.POST.get('new_password', '').strip()
+        confirm_password = request.POST.get('confirm_password', '').strip()
+        
+        # Validate inputs
+        if not reset_code or not new_password:
+            messages.error(request, 'Please provide all required information.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        
+        if len(new_password) < 6:
+            messages.error(request, 'Password must be at least 6 characters long.')
+            return render(request, 'accounts/password_reset_confirm.html')
+        
+        try:
+            # Use Firebase REST API to reset password
+            api_key = os.environ.get('FIREBASE_API_KEY', '')
+            if not api_key:
+                messages.error(request, 'Password reset service not configured.')
+                return render(request, 'accounts/password_reset_confirm.html')
+            
+            url = f"https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key={api_key}"
+            payload = {
+                "oobCode": reset_code,
+                "newPassword": new_password
+            }
+            
+            response = requests.post(url, json=payload)
+            
+            if response.status_code == 200:
+                messages.success(request, 
+                    'Password has been reset successfully. You can now login with your new password.')
+                return redirect('login')
+            else:
+                error_data = response.json()
+                error_msg = error_data.get('error', {}).get('message', 'Failed to reset password')
+                messages.error(request, f'Error: {error_msg}')
+                return render(request, 'accounts/password_reset_confirm.html')
+        
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+            print(f"Password reset confirm error: {e}")
+            return render(request, 'accounts/password_reset_confirm.html')
+    
+    return render(request, 'accounts/password_reset_confirm.html')

@@ -36,6 +36,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+     "unfold", 
+    # 'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,3 +166,89 @@ FIREBASE_CONFIG = {
 # Firebase Admin SDK Configuration
 FIREBASE_CREDENTIALS_PATH = os.environ.get('FIREBASE_CREDENTIALS_PATH', '')
 SUPER_ADMIN_EMAIL = os.environ.get('SUPER_ADMIN_EMAIL', 'frankmk2025@gmail.com')
+
+
+# JAZZMIN_SETTINGS = {
+#     "site_title": "EduPay Africa Adminstartion",
+#     "copyright": "EduPay Africa Ltd",
+#      "icons": {
+#         "auth": "fas fa-users-cog",
+#         "auth.user": "fas fa-user",
+#         "auth.Group": "fas fa-users",
+#     },
+#        # Icons that are used when one is not manually specified
+#     "default_icon_parents": "fas fa-chevron-circle-right",
+#     "default_icon_children": "fas fa-circle",
+#        # Additional links to include in the user menu on the top right ("app" url type is not allowed)
+#     "usermenu_links": [
+#         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+#         {"model": "auth.user"}
+#     ],
+#       "site_header": "EduPay Africa",
+#        # Links to put along the top menu
+#     "topmenu_links": [
+
+#         # Url that gets reversed (Permissions can be added)
+#         {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+
+#         # external url that opens in a new window (Permissions can be added)
+#         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+
+#         # model admin to link to (Permissions checked against model)
+#         {"model": "auth.User"},
+
+#         # App with dropdown menu to all its models pages (Permissions checked against models)
+       
+#         {"app": "core"},
+
+#         {"app": "leads"},
+
+#         {"app": "platform_admin"},
+
+#     ],
+#     "show_sidebar": True,
+#      # Custom links to append to app groups, keyed on app name
+#     "custom_links": {
+#         "books": [{
+#             "name": "Make Messages", 
+#             "url": "make_messages", 
+#             "icon": "fas fa-comments",
+#             "permissions": ["books.view_book"]
+#         }]
+#     },
+#      "show_ui_builder": True,
+
+# }
+
+# JAZZMIN_UI_TWEAKS = {
+#     "navbar_small_text": False,
+#     "footer_small_text": False,
+#     "body_small_text": False,
+#     "brand_small_text": False,
+#     "brand_colour": "navbar-pink",
+#     "accent": "accent-info",
+#     "navbar": "navbar-lightblue navbar-dark",
+#     "no_navbar_border": False,
+#     "navbar_fixed": True,
+#     "layout_boxed": False,
+#     "footer_fixed": False,
+#     "sidebar_fixed": True,
+#     "sidebar": "sidebar-light-success",
+#     "sidebar_nav_small_text": False,
+#     "sidebar_disable_expand": False,
+#     "sidebar_nav_child_indent": False,
+#     "sidebar_nav_compact_style": False,
+#     "sidebar_nav_legacy_style": False,
+#     "sidebar_nav_flat_style": False,
+#     "theme": "default",
+#     "dark_mode_theme": None,
+#     "button_classes": {
+#         "primary": "btn-primary",
+#         "secondary": "btn-secondary",
+#         "info": "btn-info",
+#         "warning": "btn-warning",
+#         "danger": "btn-danger",
+#         "success": "btn-success"
+#     },
+#     "actions_sticky_top": False
+# }

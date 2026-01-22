@@ -175,3 +175,55 @@ def firebase_login(request, email: str, password: str) -> Optional[User]:
     except Exception as e:
         print(f"Firebase login error: {e}")
         return None
+
+
+def create_firebase_user(email: str, password: str, display_name: str = "") -> Optional[dict]:
+    """
+    Create a new user in Firebase.
+
+    Args:
+        email: User email
+        password: User password (min 6 chars)
+        display_name: Optional display name
+
+    Returns:
+        Firebase user data with uid if successful, None otherwise
+    """
+    try:
+        initialize_firebase()
+        user = auth.create_user(
+            email=email,
+            password=password,
+            display_name=display_name,
+            email_verified=False
+        )
+        return {
+            'uid': user.uid,
+            'email': user.email,
+            'display_name': user.display_name or '',
+        }
+    except Exception as e:
+        print(f"Error creating Firebase user: {e}")
+        return None
+
+
+def send_password_reset_email(email: str) -> bool:
+    """
+    Send a password reset email to the user.
+
+    Args:
+        email: User email
+
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        initialize_firebase()
+        link = auth.generate_password_reset_link(email)
+        # In production, you would send this link via email
+        # For now, just return success
+        print(f"Password reset link for {email}: {link}")
+        return True
+    except Exception as e:
+        print(f"Error generating password reset link: {e}")
+        return False

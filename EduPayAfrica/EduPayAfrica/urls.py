@@ -46,6 +46,8 @@ urlpatterns = [
     
     # Accounts app URLs
     path('login/', accounts_views.login_view, name='login'),
+    path('password-reset/', accounts_views.password_reset_request, name='password_reset_request'),
+    path('password-reset-confirm/', accounts_views.password_reset_confirm, name='password_reset_confirm'),
 ]
 
 # Serve media files in development

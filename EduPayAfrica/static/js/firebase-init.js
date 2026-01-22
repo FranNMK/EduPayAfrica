@@ -1,17 +1,13 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// Firebase initialization for client-side (optional)
+// Note: For the Super Admin login, all authentication happens server-side
+// This file is kept for future client-side Firebase features
 
 // Get Firebase configuration from Django template context
-// This is injected from backend (see base.html)
 const firebaseConfig = window.firebaseConfig;
 
-if (!firebaseConfig || !firebaseConfig.apiKey) {
-    console.error('Firebase configuration is missing. Please check your .env file and settings.');
+if (firebaseConfig && firebaseConfig.apiKey) {
+    console.log('Firebase configuration loaded successfully');
+    console.log('Server-side authentication is active');
 } else {
-    // Initialize Firebase
-    export const app = initializeApp(firebaseConfig);
-    export const analytics = getAnalytics(app);
-    
-    console.log('Firebase initialized successfully');
+    console.warn('Firebase client configuration not loaded - server-side auth only');
 }

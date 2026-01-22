@@ -768,19 +768,11 @@
 
     {% block extra_js %}{% endblock %}
 
-    <!-- Firebase SDK -->
-    <!-- Inject Firebase config from Django backend -->
+    <!-- Firebase Configuration -->
     <script>
+        // Inject Firebase config from Django backend (for future client-side features)
         window.firebaseConfig = {{ firebase_config|safe }};
     </script>
-    <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
-        "firebase/analytics": "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js"
-      }
-    }
-    </script>
-    <script type="module" src="{% static 'js/firebase-init.js' %}"></script>
+    <script src="{% static 'js/firebase-init.js' %}?v=2"></script>
 </body>
 </html>

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Institutions | Super Admin{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h4 fw-bold mb-1">Institution Management</h1>
+            <p class="text-muted mb-0">Approve, activate, or suspend institutions without altering operational data.</p>
+        </div>
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded bg-white">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Onboarding</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for institution in institutions %}
+                <tr>
+                    <td class="fw-semibold">{{ institution.name }}</td>
+                    <td class="text-muted text-capitalize">{{ institution.get_institution_type_display }}</td>
+                    <td>
+                        <div class="fw-semibold">{{ institution.contact_name }}</div>
+                        <div class="small text-muted">{{ institution.contact_email }}</div>
+                        {% if institution.contact_phone %}<div class="small text-muted">{{ institution.contact_phone }}</div>{% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary text-uppercase">{{ institution.get_status_display }}</span>
+                        {% if institution.approval_timestamp %}
+                            <div class="small text-muted">Approved {{ institution.approval_timestamp|date:"Y-m-d" }}</div>
+                        {% endif %}
+                    </td>
+                    <td class="small text-muted">
+                        Created {{ institution.created_at|date:"Y-m-d" }}<br>
+                        Updated {{ institution.updated_at|date:"Y-m-d" }}
+                    </td>
+                    <td class="text-end">
+                        <form method="post" class="d-inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                            <input type="hidden" name="note" value="">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button name="action" value="approve" class="btn btn-outline-success">Approve</button>
+                                <button name="action" value="activate" class="btn btn-outline-primary">Activate</button>
+                                <button name="action" value="suspend" class="btn btn-outline-warning">Suspend</button>
+                                <button name="action" value="deactivate" class="btn btn-outline-secondary">Deactivate</button>
+                                <button name="action" value="reject" class="btn btn-outline-danger">Reject</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No institutions captured yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

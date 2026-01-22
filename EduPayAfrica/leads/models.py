@@ -62,12 +62,12 @@ class DemoRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(
         max_length=50,
-        default='pending',
+        default='new',
         choices=[
-            ('pending', 'Pending'),
-            ('scheduled', 'Scheduled'),
-            ('completed', 'Completed'),
-            ('cancelled', 'Cancelled'),
+            ('new', 'New'),
+            ('contacted', 'Contacted'),
+            ('demo_completed', 'Demo Completed'),
+            ('converted', 'Converted'),
         ]
     )
     notes = models.TextField(blank=True, null=True)

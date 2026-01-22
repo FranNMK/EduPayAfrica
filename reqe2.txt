@@ -1,0 +1,336 @@
+EduPay Africa
+Super Admin System – Requirements Specification
+Document Purpose
+
+This document defines the functional, non-functional, and governance requirements for the Super Admin module of the EduPay Africa platform.
+
+The Super Admin module provides centralized oversight, control, and governance of the entire EduPay Africa ecosystem across all institutions, users, and system operations.
+
+1. Role Definition: Super Admin
+1.1 Role Description
+
+The Super Admin is the highest-privileged role within EduPay Africa, reserved for the platform owner and authorized core operators.
+
+The Super Admin:
+
+Governs the platform
+
+Controls institutional access
+
+Oversees system health and compliance
+
+Does not perform operational or financial tasks on behalf of institutions
+
+1.2 Role Boundaries (Hard Rules)
+
+The Super Admin MUST NOT:
+
+Create or edit student records
+
+Modify fee structures
+
+Process or initiate payments
+
+Act as a bursar, parent, or institution admin
+
+Alter financial balances
+
+The Super Admin MUST:
+
+Maintain neutrality and oversight
+
+Enforce platform rules
+
+Ensure accountability and traceability
+
+2. Super Admin Objectives
+
+The Super Admin system must enable the platform owner to:
+
+Maintain trust and integrity of EduPay Africa
+
+Control institutional onboarding and participation
+
+Monitor system usage and growth
+
+Enforce platform-wide rules and policies
+
+Ensure auditability and compliance
+
+Prepare the platform for secure financial operations in later phases
+
+3. Functional Requirements
+3.1 Dashboard & System Overview
+Description
+
+Provide a high-level, real-time overview of platform status.
+
+Requirements
+
+The system SHALL display:
+
+Total registered institutions
+
+Institutions by status (Active, Pending, Suspended)
+
+Total users (aggregated by role)
+
+Total demo requests
+
+System operational status indicators
+
+Constraints
+
+All data is read-only
+
+No institution-specific financial data displayed
+
+3.2 Institution Management
+Description
+
+Control which institutions are allowed to use EduPay Africa.
+
+Requirements
+
+The system SHALL allow the Super Admin to:
+
+View all institutions
+
+Review institution details
+
+Approve or reject institutions
+
+Activate, suspend, or deactivate institutions
+
+View institution onboarding history
+
+Institution records SHALL include:
+
+Institution name
+
+Institution type
+
+Contact person details
+
+Registration status
+
+Approval timestamps
+
+Rules
+
+Suspended institutions lose platform access
+
+Suspension does not delete historical data
+
+3.3 User & Role Oversight
+Description
+
+Provide visibility and governance over platform users.
+
+Requirements
+
+The system SHALL allow the Super Admin to:
+
+View users by role (Parent, Bursar, Institution Admin)
+
+View account status (Active, Disabled)
+
+Disable or re-enable accounts
+
+Detect role conflicts
+
+Constraints
+
+Super Admin cannot impersonate users
+
+Super Admin cannot modify operational data belonging to users
+
+3.4 Demo Requests & Lead Management
+Description
+
+Manage incoming institutional interest captured during Phase 1.
+
+Requirements
+
+The system SHALL allow the Super Admin to:
+
+View all demo requests
+
+Filter by institution type or date
+
+Track demo request status:
+
+New
+
+Contacted
+
+Demo Completed
+
+Converted
+
+Add internal notes to demo requests
+
+Integration
+
+Demo requests originate from the public website and are stored in the backend database.
+
+3.5 System Configuration & Global Settings
+Description
+
+Control platform-wide configuration values.
+
+Requirements
+
+The system SHALL allow the Super Admin to:
+
+Manage supported institution types
+
+Configure academic year defaults
+
+Enable or disable features by phase
+
+Manage platform email templates (non-transactional)
+
+Configure system-level constants
+
+Rules
+
+Configuration changes affect all institutions
+
+All changes MUST be logged
+
+3.6 Audit Logging & Activity Tracking
+Description
+
+Ensure accountability across the platform.
+
+Requirements
+
+The system SHALL record:
+
+Institution approvals and suspensions
+
+User role changes
+
+System configuration updates
+
+Super Admin actions
+
+Audit logs SHALL include:
+
+Action performed
+
+Actor (Super Admin)
+
+Timestamp
+
+Affected entity
+
+Constraints
+
+Logs are immutable
+
+Logs are read-only
+
+3.7 Security & Access Control
+Description
+
+Protect the platform against misuse or privilege escalation.
+
+Requirements
+
+Only authenticated Super Admins can access the Super Admin module
+
+Authorization SHALL be enforced at the Django level
+
+Firebase authentication SHALL be used for identity verification
+
+Django SHALL handle permissions and role enforcement
+
+4. Non-Functional Requirements
+4.1 Security
+
+All sensitive credentials stored in environment variables
+
+Token validation performed server-side
+
+Principle of least privilege enforced
+
+4.2 Scalability
+
+Must support thousands of institutions
+
+Must support millions of users (aggregated visibility)
+
+4.3 Reliability
+
+System availability target ≥ 99%
+
+Graceful failure handling
+
+4.4 Auditability
+
+Every Super Admin action must be traceable
+
+No silent or hidden operations
+
+5. Technical Architecture Constraints
+
+Backend: Django
+
+API-ready architecture using Django REST Framework
+
+Firebase Authentication for identity
+
+PostgreSQL for persistent storage
+
+Django Admin or custom dashboard (implementation choice)
+
+6. Phase Alignment
+Phase 1
+
+Demo management
+
+Basic institution records
+
+System overview
+
+Phase 2
+
+Institution onboarding
+
+User governance
+
+Aggregated reporting
+
+Phase 3 (Pre-Payments)
+
+Institutional dashboards (read-only)
+
+Compliance monitoring
+
+Financial readiness checks
+
+7. Success Criteria
+
+The Super Admin system is successful if:
+
+Platform access is fully controlled
+
+No unauthorized institution or user operates on the system
+
+Demo requests convert into onboarded institutions
+
+System actions are fully auditable
+
+The platform is ready for secure payment integration
+
+8. Risks & Mitigations
+Risk	Mitigation
+Privilege abuse	Strict role enforcement + audit logs
+Data leakage	Read-only financial visibility
+Operational interference	Clear separation of governance vs operations
+
+Document Status: Super Admin Requirements
+Project: EduPay Africa
+Audience: Platform Owner, Technical Architects, Core Developers

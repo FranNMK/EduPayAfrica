@@ -1,13 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from django.contrib import messages
+
+from .firebase_auth import firebase_login
 
 @require_http_methods(["GET", "POST"])
 def login_view(request):
-    """Login page and authentication"""
+    """Login page with Firebase authentication"""
     if request.method == 'POST':
-        email = request.POST.get('email', '')
+        email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
         remember = request.POST.get('remember', False)
         
@@ -17,8 +19,8 @@ def login_view(request):
             return render(request, 'accounts/login.html')
         
         try:
-            # Attempt authentication
-            user = authenticate(request, username=email, password=password)
+            # Authenticate via Firebase and sync with Django
+            user = firebase_login(request, email, password)
             
             if user is not None:
                 login(request, user)
@@ -30,12 +32,18 @@ def login_view(request):
                     request.session.set_expiry(30 * 24 * 60 * 60)  # 30 days
                 
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
-                return redirect('dashboard')  # TODO: Create dashboard view
+                
+                # Route super admins to platform admin dashboard
+                if user.is_staff and user.is_superuser:
+                    return redirect('platform_admin:dashboard')
+                else:
+                    return redirect('home')
             else:
-                messages.error(request, 'Invalid email or password.')
+                messages.error(request, 'Invalid email or password. Please check your credentials.')
                 return render(request, 'accounts/login.html')
         except Exception as e:
             messages.error(request, 'An error occurred during login. Please try again.')
+            print(f"Login error: {e}")
             return render(request, 'accounts/login.html')
     
     return render(request, 'accounts/login.html')

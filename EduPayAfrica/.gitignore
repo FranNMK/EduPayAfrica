@@ -40,6 +40,10 @@ local_settings.py
 .env.local
 .env.*.local
 
+# Firebase Service Account Keys - NEVER COMMIT THESE!
+*firebase*adminsdk*.json
+edupay-africa-firebase-adminsdk-*.json
+
 # IDE
 .vscode/
 .idea/

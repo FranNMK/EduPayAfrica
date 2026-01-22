@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'EduPayAfrica.middleware.PlatformUserProfileMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -159,3 +160,7 @@ FIREBASE_CONFIG = {
     'appId': os.environ.get('FIREBASE_APP_ID', ''),
     'measurementId': os.environ.get('FIREBASE_MEASUREMENT_ID', '')
 }
+
+# Firebase Admin SDK Configuration
+FIREBASE_CREDENTIALS_PATH = os.environ.get('FIREBASE_CREDENTIALS_PATH', '')
+SUPER_ADMIN_EMAIL = os.environ.get('SUPER_ADMIN_EMAIL', 'frankmk2025@gmail.com')

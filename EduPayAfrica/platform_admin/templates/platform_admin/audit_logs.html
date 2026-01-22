@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Audit Logs | Super Admin{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h4 fw-bold mb-1">Audit Logging</h1>
+            <p class="text-muted mb-0">Immutable record of Super Admin actions.</p>
+        </div>
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded bg-white">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Action</th>
+                    <th>Actor</th>
+                    <th>Entity</th>
+                    <th>Description</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td class="fw-semibold">{{ log.action }}</td>
+                    <td class="text-muted">{{ log.actor }}</td>
+                    <td class="small text-muted">{{ log.entity_type }} {{ log.entity_id }}</td>
+                    <td class="small">{{ log.description }}</td>
+                    <td class="small text-muted">{{ log.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted py-4">No audit events captured yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

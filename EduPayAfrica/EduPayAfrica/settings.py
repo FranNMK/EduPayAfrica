@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'leads',
     'accounts',
+    'platform_admin',
 ]
 
 MIDDLEWARE = [

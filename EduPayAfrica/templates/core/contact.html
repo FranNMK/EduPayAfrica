@@ -198,8 +198,8 @@
         
         <div class="row">
             <div class="col-md-6 col-lg-3 mb-4">
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                <div class="help-box" style="text-align: center; padding: 20px;">
+                    <div class="help-icon" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
                         <i class="fas fa-question-circle"></i>
                     </div>
                     <h5 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 700;">General Questions</h5>
@@ -207,8 +207,8 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3 mb-4">
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 2.5rem; color: var(--secondary-color); margin-bottom: 15px;">
+                <div class="help-box" style="text-align: center; padding: 20px;">
+                    <div class="help-icon" style="font-size: 2.5rem; color: var(--secondary-color); margin-bottom: 15px;">
                         <i class="fas fa-tools"></i>
                     </div>
                     <h5 style="color: var(--secondary-color); margin-bottom: 10px; font-weight: 700;">Technical Support</h5>
@@ -216,8 +216,8 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3 mb-4">
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px;">
+                <div class="help-box" style="text-align: center; padding: 20px;">
+                    <div class="help-icon" style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 15px;">
                         <i class="fas fa-handshake"></i>
                     </div>
                     <h5 style="color: var(--accent-color); margin-bottom: 10px; font-weight: 700;">Partnerships</h5>
@@ -225,8 +225,8 @@
                 </div>
             </div>
             <div class="col-md-6 col-lg-3 mb-4">
-                <div style="text-align: center; padding: 20px;">
-                    <div style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
+                <div class="help-box" style="text-align: center; padding: 20px;">
+                    <div class="help-icon" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 15px;">
                         <i class="fas fa-lightbulb"></i>
                     </div>
                     <h5 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 700;">Feedback</h5>
@@ -247,6 +247,26 @@
 </div>
 
 <!-- Custom Validation -->
+<style>
+    /* Hover effects for How Can We Help boxes */
+    .help-box {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .help-box:hover {
+        transform: scale(1.08) translateY(-8px);
+    }
+    
+    .help-box:hover .help-icon {
+        transform: scale(1.2) rotate(5deg);
+    }
+    
+    .help-icon {
+        transition: all 0.3s ease;
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('contactForm');

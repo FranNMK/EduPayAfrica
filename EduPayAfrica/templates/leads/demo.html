@@ -18,30 +18,30 @@
         <div class="col-md-5 mb-5 mb-md-0">
             <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 30px;">Why Book a Demo?</h3>
 
-            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--primary-color);">
+            <div class="demo-info-box" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--primary-color);">
                 <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">
-                    <i class="fas fa-eye"></i> See the Platform
+                    <i class="fas fa-eye demo-box-icon"></i> See the Platform
                 </h5>
                 <p>Get a comprehensive walkthrough of EduPay Africa's features and how they can benefit your institution.</p>
             </div>
 
-            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--secondary-color);">
+            <div class="demo-info-box" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--secondary-color);">
                 <h5 style="color: var(--secondary-color); margin-bottom: 15px; font-weight: 700;">
-                    <i class="fas fa-comments"></i> Ask Questions
+                    <i class="fas fa-comments demo-box-icon"></i> Ask Questions
                 </h5>
                 <p>Our team will answer your questions and discuss how EduPay Africa addresses your specific fee management challenges.</p>
             </div>
 
-            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--accent-color);">
+            <div class="demo-info-box" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--accent-color);">
                 <h5 style="color: var(--accent-color); margin-bottom: 15px; font-weight: 700;">
-                    <i class="fas fa-chart-line"></i> Explore Solutions
+                    <i class="fas fa-chart-line demo-box-icon"></i> Explore Solutions
                 </h5>
                 <p>Discover how our platform can streamline your operations and improve institutional efficiency.</p>
             </div>
 
-            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--primary-color);">
+            <div class="demo-info-box" style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--primary-color);">
                 <h5 style="color: var(--primary-color); margin-bottom: 15px; font-weight: 700;">
-                    <i class="fas fa-clock"></i> Typical Duration
+                    <i class="fas fa-clock demo-box-icon"></i> Typical Duration
                 </h5>
                 <p>Demos typically last 30-45 minutes. We'll schedule at a time that works best for you.</p>
             </div>
@@ -49,7 +49,7 @@
 
         <!-- Demo Booking Form -->
         <div class="col-md-7">
-            <div style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="demo-form-container" style="background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                 <h3 style="color: var(--primary-color); font-weight: 700; margin-bottom: 10px;">Request a Demo</h3>
                 <p style="color: #666; margin-bottom: 30px;">Fill out the form below and our team will get back to you within 24 business hours to schedule your personalized demo.</p>
 
@@ -431,6 +431,36 @@
 </div>
 
 <!-- Custom Validation -->
+<style>
+    /* Hover effects for demo info boxes */
+    .demo-info-box {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .demo-info-box:hover {
+        transform: scale(1.05) translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+    }
+    
+    .demo-info-box:hover .demo-box-icon {
+        transform: scale(1.15) rotate(5deg);
+    }
+    
+    .demo-box-icon {
+        transition: all 0.3s ease;
+    }
+    
+    /* Hover effect for form container */
+    .demo-form-container {
+        transition: all 0.3s ease;
+    }
+    
+    .demo-form-container:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('demoForm');

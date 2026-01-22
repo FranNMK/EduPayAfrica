@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import NewsArticle, JobPosition, JobApplication, ContactInquiry
 from .forms import NewsletterSubscriberForm, JobApplicationForm
 
@@ -43,6 +45,9 @@ def contact(request):
             message=message,
             privacy_agreed=privacy_agreed,
         )
+        
+        # Send confirmation email
+        send_contact_confirmation_email(full_name, email)
 
         messages.success(request, 'Thank you for reaching out! We will get back to you shortly.')
         return redirect('contact')
@@ -108,4 +113,32 @@ def privacy(request):
 def terms(request):
     """Terms of Service page view"""
     return render(request, 'core/terms.html')
+
+def send_contact_confirmation_email(full_name, email):
+    """Send automated confirmation email to contact inquiry"""
+    subject = "We received your message - EduPay Africa"
+    message = f"""Hello {full_name},
+
+Thank you for contacting EduPay Africa. We have received your inquiry and appreciate you reaching out.
+
+Our team will review your message and get back to you as soon as possible, typically within 24-48 business hours.
+
+If you have any urgent matters, please don't hesitate to call us at +254 700 000 000 or reply to this email.
+
+Best regards,
+The EduPay Africa Team
+support@edupayafrica.com
+"""
+    
+    try:
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        # Log error but don't fail the form submission
+        print(f"Error sending contact confirmation email: {e}")
 

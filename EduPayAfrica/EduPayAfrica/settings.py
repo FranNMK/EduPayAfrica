@@ -129,6 +129,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# Media files (User uploaded content)
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Email Configuration
 # For development, using console backend (prints to console)
 # For production, configure with your email provider (Gmail, SendGrid, etc.)

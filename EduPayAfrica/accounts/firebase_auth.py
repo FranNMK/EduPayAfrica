@@ -227,3 +227,38 @@ def send_password_reset_email(email: str) -> bool:
     except Exception as e:
         print(f"Error generating password reset link: {e}")
         return False
+
+
+def update_firebase_user(current_email: str, new_email: str = None, new_password: str = None, display_name: str = None) -> bool:
+    """
+    Update a Firebase user's email/password/display name.
+
+    Args:
+        current_email: Existing email to look up the user
+        new_email: New email to set (optional)
+        new_password: New password to set (optional, min 6 chars)
+        display_name: New display name (optional)
+
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        initialize_firebase()
+        fb_user = auth.get_user_by_email(current_email)
+
+        updates = {}
+        if new_email:
+            updates['email'] = new_email
+        if new_password:
+            updates['password'] = new_password
+        if display_name:
+            updates['display_name'] = display_name
+
+        if not updates:
+            return True  # Nothing to update
+
+        auth.update_user(fb_user.uid, **updates)
+        return True
+    except Exception as e:
+        print(f"Error updating Firebase user: {e}")
+        return False

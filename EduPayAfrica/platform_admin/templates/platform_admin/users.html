@@ -124,6 +124,34 @@
                                 Actions
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" style="min-width: 280px;">
+                                <li><h6 class="dropdown-header">Edit Details</h6></li>
+                                <li>
+                                    <form method="post" class="px-3 py-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                        <input type="hidden" name="action" value="update_details">
+                                        <div class="mb-2">
+                                            <label class="form-label small">Full Name</label>
+                                            <input type="text" name="full_name" value="{{ profile.user.get_full_name|default:profile.user.username }}" class="form-control form-control-sm" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label small">Email</label>
+                                            <input type="email" name="email" value="{{ profile.user.email }}" class="form-control form-control-sm" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label class="form-label small">New Password (optional)</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="password" name="password" class="form-control" placeholder="Leave blank to keep current">
+                                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Min 6 characters if set.</small>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Save Details</button>
+                                    </form>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
                                 <li><h6 class="dropdown-header">Update Role & Institution</h6></li>
                                 <li>
                                     <form method="post" class="px-3 py-2">
@@ -207,7 +235,7 @@
     </style>
     
     <script>
-        // Password visibility toggle
+        // Password visibility toggle for create modal
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('passwordField');
             const passwordIcon = document.getElementById('passwordIcon');
@@ -221,6 +249,24 @@
                 passwordIcon.classList.remove('fa-eye-slash');
                 passwordIcon.classList.add('fa-eye');
             }
+        });
+
+        // Password visibility toggles inside inline edit forms
+        document.querySelectorAll('.toggle-password').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const input = btn.closest('.input-group').querySelector('input[type="password"], input[type="text"]');
+                const icon = btn.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
         });
     </script>
 {% endblock %}

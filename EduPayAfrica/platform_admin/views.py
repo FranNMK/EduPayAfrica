@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -338,7 +339,7 @@ def demo_requests(request):
 @super_admin_required
 def user_oversight(request):
 	"""View users by role and toggle account status. Create and assign users."""
-	from accounts.firebase_auth import create_firebase_user
+	from accounts.firebase_auth import create_firebase_user, update_firebase_user
 	from django.contrib.auth import get_user_model
 
 	profiles = PlatformUserProfile.objects.select_related("user", "institution").all()
@@ -348,6 +349,62 @@ def user_oversight(request):
 	if request.method == "POST":
 		action = request.POST.get("action")
 		
+		if action == "update_details":
+			profile_id = request.POST.get("profile_id")
+			email = request.POST.get("email", "").strip()
+			full_name = request.POST.get("full_name", "").strip()
+			new_password = request.POST.get("password", "").strip()
+			profile = get_object_or_404(PlatformUserProfile, pk=profile_id)
+			user = profile.user
+			old_email = user.email
+
+			if not email or not full_name:
+				messages.error(request, "Email and full name are required.")
+				return redirect("platform_admin:users")
+
+			if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+				messages.error(request, "Another user already uses this email.")
+				return redirect("platform_admin:users")
+
+			# First update Firebase so login stays in sync
+			if new_password and len(new_password) < 6:
+				messages.error(request, "Password must be at least 6 characters long.")
+				return redirect("platform_admin:users")
+
+			firebase_ok = update_firebase_user(
+				current_email=old_email,
+				new_email=email,
+				new_password=new_password or None,
+				display_name=full_name,
+			)
+			if not firebase_ok:
+				messages.error(request, "Failed to update Firebase user. No changes were applied.")
+				return redirect("platform_admin:users")
+
+			first_name, last_name = (full_name.split(' ', 1) + [''])[:2]
+			user.email = email
+			user.username = email
+			user.first_name = first_name
+			user.last_name = last_name
+
+			if new_password:
+				user.set_password(new_password)
+				if user == request.user:
+					update_session_auth_hash(request, user)
+
+			user.save()
+
+			AuditLog.record(
+				action="User details updated",
+				actor=request.user,
+				entity_type="user",
+				entity_id=str(user.id),
+				description=f"Email updated to {email}{' and password reset' if new_password else ''}",
+			)
+
+			messages.success(request, "User details updated.")
+			return redirect("platform_admin:users")
+
 		if action == "create":
 			# Create new user
 			email = request.POST.get("email", "").strip()

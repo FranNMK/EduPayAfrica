@@ -9,6 +9,16 @@
         <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
     </div>
 
+    <!-- Search Bar -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by institution name, contact name, or email...">
+            </div>
+        </div>
+    </div>
+
     <form method="get" class="row g-3 mb-4">
         <div class="col-md-3">
             <label class="form-label small text-muted">Institution type</label>
@@ -137,4 +147,44 @@
             background-color: rgba(46, 204, 113, 0.05);
         }
     </style>
+
+    <script>
+        // Client-side search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('.table tbody tr');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    if (row.querySelector('td[colspan]')) return;
+
+                    const text = row.textContent.toLowerCase();
+                    const matches = text.includes(searchTerm);
+
+                    row.style.display = matches ? '' : 'none';
+                });
+
+                // Check if any rows are visible
+                const visibleRows = Array.from(tableRows).filter(row => 
+                    row.style.display !== 'none' && !row.querySelector('td[colspan]')
+                );
+
+                if (visibleRows.length === 0) {
+                    let emptyRow = document.querySelector('.no-results-row');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-row';
+                        emptyRow.innerHTML = '<td colspan="6" class="text-center text-muted py-4"><i class="fas fa-search"></i> No matching requests found.</td>';
+                        document.querySelector('.table tbody').appendChild(emptyRow);
+                    }
+                    emptyRow.style.display = '';
+                } else {
+                    const emptyRow = document.querySelector('.no-results-row');
+                    if (emptyRow) emptyRow.style.display = 'none';
+                }
+            });
+        });
+    </script>
 {% endblock %}

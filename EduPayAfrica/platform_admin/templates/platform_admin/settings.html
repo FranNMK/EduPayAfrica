@@ -4,78 +4,221 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 fw-bold mb-1">Platform Settings</h1>
-            <p class="text-muted mb-0">Global controls with full audit logging.</p>
+            <p class="text-muted mb-0">Manage academic years, terms, and platform appearance.</p>
         </div>
         <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
     </div>
 
     <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card shadow-sm h-100">
+        <!-- Academic Years Management -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Academic Years</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Add / Update Setting</h5>
-                    <form method="post">
+                    <form method="post" action="">
                         {% csrf_token %}
+                        <input type="hidden" name="setting_type" value="academic_year">
                         <div class="mb-3">
-                            <label class="form-label small text-muted">Key</label>
-                            <input name="key" class="form-control" placeholder="e.g. academic_year_default" required>
+                            <label class="form-label fw-semibold">Academic Year</label>
+                            <input type="text" name="key" class="form-control" placeholder="e.g., 2025-2026" required>
+                            <small class="text-muted">Format: YYYY-YYYY</small>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-muted">Value</label>
-                            <textarea name="value" class="form-control" rows="3" placeholder="Value" required></textarea>
+                            <label class="form-label fw-semibold">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label small text-muted">Category</label>
-                            <select name="category" class="form-select">
-                                <option value="institution_type">Institution Types</option>
-                                <option value="academic_year">Academic Year</option>
-                                <option value="feature_flag">Feature Flag</option>
-                                <option value="email_template">Email Template</option>
-                                <option value="constant" selected>System Constant</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small text-muted">Description</label>
-                            <textarea name="description" class="form-control" rows="2" placeholder="Optional"></textarea>
+                            <label class="form-label fw-semibold">End Date</label>
+                            <input type="date" name="end_date" class="form-control" required>
                         </div>
                         <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" name="is_active" id="is_active" checked>
-                            <label class="form-check-label" for="is_active">Active</label>
+                            <input class="form-check-input" type="checkbox" name="is_active" id="year_active" checked>
+                            <label class="form-check-label" for="year_active">Set as Current Academic Year</label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Save Setting</button>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>Add Academic Year
+                        </button>
                     </form>
+                    
+                    <hr class="my-4">
+                    
+                    <h6 class="mb-3">Existing Academic Years</h6>
+                    <div class="list-group">
+                        {% for setting in settings %}
+                            {% if setting.category == 'academic_year' %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ setting.key }}</strong>
+                                    {% if setting.description %}
+                                    <br><small class="text-muted">{{ setting.description }}</small>
+                                    {% endif %}
+                                </div>
+                                {% if setting.is_active %}
+                                    <span class="badge bg-success">Current</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% empty %}
+                            <p class="text-muted text-center py-3">No academic years added yet.</p>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-7">
-            <div class="card shadow-sm h-100">
+
+        <!-- Terms Management -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-week me-2"></i>Academic Terms</h5>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">Existing Settings</h5>
-                        <small class="text-muted">Most recent first</small>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="setting_type" value="term">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Term Name</label>
+                            <input type="text" name="key" class="form-control" placeholder="e.g., Term 1, First Semester" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Term Number</label>
+                            <select name="term_number" class="form-select" required>
+                                <option value="">Select term number</option>
+                                <option value="1">Term 1</option>
+                                <option value="2">Term 2</option>
+                                <option value="3">Term 3</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Start Date</label>
+                            <input type="date" name="start_date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">End Date</label>
+                            <input type="date" name="end_date" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fas fa-plus me-2"></i>Add Term
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <h6 class="mb-3">Existing Terms</h6>
+                    <div class="list-group">
+                        {% for setting in settings %}
+                            {% if setting.category == 'constant' and 'term' in setting.key|lower %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>{{ setting.key }}</strong>
+                                    {% if setting.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </div>
+                                {% if setting.description %}
+                                <small class="text-muted">{{ setting.description }}</small>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme Customization -->
+        <div class="col-lg-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-palette me-2"></i>Theme & Appearance</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="setting_type" value="theme">
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Primary Color</label>
+                                <div class="input-group">
+                                    <input type="color" name="primary_color" class="form-control form-control-color" value="#0d6efd" title="Choose primary color">
+                                    <input type="text" class="form-control" value="#0d6efd" placeholder="#0d6efd">
+                                </div>
+                                <small class="text-muted">Main brand color</small>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Secondary Color</label>
+                                <div class="input-group">
+                                    <input type="color" name="secondary_color" class="form-control form-control-color" value="#6c757d" title="Choose secondary color">
+                                    <input type="text" class="form-control" value="#6c757d" placeholder="#6c757d">
+                                </div>
+                                <small class="text-muted">Secondary brand color</small>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">Accent Color</label>
+                                <div class="input-group">
+                                    <input type="color" name="accent_color" class="form-control form-control-color" value="#198754" title="Choose accent color">
+                                    <input type="text" class="form-control" value="#198754" placeholder="#198754">
+                                </div>
+                                <small class="text-muted">Highlight/accent color</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Platform Logo URL</label>
+                                <input type="text" name="logo_url" class="form-control" placeholder="https://example.com/logo.png">
+                                <small class="text-muted">URL to your platform logo</small>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Favicon URL</label>
+                                <input type="text" name="favicon_url" class="form-control" placeholder="https://example.com/favicon.ico">
+                                <small class="text-muted">URL to your favicon</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-semibold">Custom CSS</label>
+                                <textarea name="custom_css" class="form-control" rows="4" placeholder="/* Add custom CSS here */"></textarea>
+                                <small class="text-muted">Advanced: Add custom CSS to override styles</small>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info text-white">
+                            <i class="fas fa-save me-2"></i>Save Theme Settings
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <h6 class="mb-3">Current Theme Settings</h6>
                     <div class="table-responsive">
-                        <table class="table align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Key</th>
-                                    <th>Category</th>
-                                    <th>Status</th>
-                                    <th>Updated</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-sm">
                             <tbody>
                                 {% for setting in settings %}
-                                <tr>
-                                    <td class="fw-semibold">{{ setting.key }}</td>
-                                    <td class="text-muted text-capitalize">{{ setting.get_category_display }}</td>
-                                    <td>
-                                        {% if setting.is_active %}<span class="badge bg-success">Active</span>{% else %}<span class="badge bg-secondary">Disabled</span>{% endif %}
-                                    </td>
-                                    <td class="small text-muted">{{ setting.updated_at|date:"Y-m-d H:i" }}</td>
-                                </tr>
-                                {% empty %}
-                                <tr><td colspan="4" class="text-center text-muted py-4">No settings saved yet.</td></tr>
+                                    {% if setting.category == 'constant' and 'color' in setting.key|lower or 'theme' in setting.key|lower or 'logo' in setting.key|lower %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ setting.key }}</td>
+                                        <td>
+                                            {% if 'color' in setting.key|lower %}
+                                                <span class="badge" style="background-color: {{ setting.value }};">{{ setting.value }}</span>
+                                            {% else %}
+                                                <code>{{ setting.value|truncatewords:10 }}</code>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <small class="text-muted">{{ setting.updated_at|date:"M d, Y" }}</small>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -83,4 +226,5 @@
                 </div>
             </div>
         </div>
+    </div>
 {% endblock %}

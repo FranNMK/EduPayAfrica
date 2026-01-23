@@ -371,6 +371,8 @@ def user_oversight(request):
 				messages.error(request, "Password must be at least 6 characters long.")
 				return redirect("platform_admin:users")
 
+			# Update Firebase user (creates if doesn't exist)
+			print(f"Updating Firebase user: old_email={old_email}, new_email={email}, has_password={bool(new_password)}")
 			firebase_ok = update_firebase_user(
 				current_email=old_email,
 				new_email=email,
@@ -378,7 +380,7 @@ def user_oversight(request):
 				display_name=full_name,
 			)
 			if not firebase_ok:
-				messages.error(request, "Failed to update Firebase user. No changes were applied.")
+				messages.error(request, "Failed to update Firebase user. Check server logs for details.")
 				return redirect("platform_admin:users")
 
 			first_name, last_name = (full_name.split(' ', 1) + [''])[:2]
@@ -389,10 +391,12 @@ def user_oversight(request):
 
 			if new_password:
 				user.set_password(new_password)
+				print(f"Django password updated for user: {user.username}")
 				if user == request.user:
 					update_session_auth_hash(request, user)
 
 			user.save()
+			print(f"Django user saved: {user.username}")
 
 			AuditLog.record(
 				action="User details updated",
@@ -402,7 +406,7 @@ def user_oversight(request):
 				description=f"Email updated to {email}{' and password reset' if new_password else ''}",
 			)
 
-			messages.success(request, "User details updated.")
+			messages.success(request, f"User details updated successfully.{' Password has been changed.' if new_password else ''}")
 			return redirect("platform_admin:users")
 
 		if action == "create":
@@ -545,39 +549,130 @@ def user_oversight(request):
 @login_required
 @super_admin_required
 def settings_view(request):
-	"""Manage platform-wide settings with audit logging."""
+	"""Manage platform-wide settings: academic years, terms, and theme customization."""
 
-	settings_qs = PlatformSetting.objects.all().order_by("key")
+	settings_qs = PlatformSetting.objects.all().order_by("category", "key")
 
 	if request.method == "POST":
-		key = request.POST.get("key", "").strip()
-		value = request.POST.get("value", "")
-		category = request.POST.get("category", "constant")
-		description = request.POST.get("description", "")
-		is_active = request.POST.get("is_active") == "on"
-
-		if not key:
-			messages.error(request, "Key is required")
-			return redirect("platform_admin:settings")
-
-		setting, _created = PlatformSetting.objects.update_or_create(
-			key=key,
-			defaults={
-				"value": value,
-				"category": category,
-				"description": description,
-				"is_active": is_active,
-				"updated_by": request.user,
-			},
-		)
-		AuditLog.record(
-			action="Platform setting updated",
-			actor=request.user,
-			entity_type="setting",
-			entity_id=setting.key,
-			description=description,
-		)
-		messages.success(request, f"Setting {setting.key} saved.")
+		setting_type = request.POST.get("setting_type", "")
+		
+		if setting_type == "academic_year":
+			# Handle academic year
+			year_key = request.POST.get("key", "").strip()
+			start_date = request.POST.get("start_date", "").strip()
+			end_date = request.POST.get("end_date", "").strip()
+			is_active = request.POST.get("is_active") == "on"
+			
+			if not year_key or not start_date or not end_date:
+				messages.error(request, "All fields are required for academic year")
+				return redirect("platform_admin:settings")
+			
+			# If setting as active, deactivate others
+			if is_active:
+				PlatformSetting.objects.filter(category="academic_year").update(is_active=False)
+			
+			value = f"Start: {start_date}, End: {end_date}"
+			description = f"Academic year from {start_date} to {end_date}"
+			
+			setting, created = PlatformSetting.objects.update_or_create(
+				key=year_key,
+				defaults={
+					"value": value,
+					"category": "academic_year",
+					"description": description,
+					"is_active": is_active,
+					"updated_by": request.user,
+				},
+			)
+			
+			AuditLog.record(
+				action=f"Academic year {'added' if created else 'updated'}: {year_key}",
+				actor=request.user,
+				entity_type="setting",
+				entity_id=setting.key,
+				description=description,
+			)
+			messages.success(request, f"✓ Academic year '{year_key}' has been {'added' if created else 'updated'} successfully.")
+			
+		elif setting_type == "term":
+			# Handle term
+			term_name = request.POST.get("key", "").strip()
+			term_number = request.POST.get("term_number", "").strip()
+			start_date = request.POST.get("start_date", "").strip()
+			end_date = request.POST.get("end_date", "").strip()
+			
+			if not term_name or not term_number or not start_date or not end_date:
+				messages.error(request, "All fields are required for term")
+				return redirect("platform_admin:settings")
+			
+			key = f"term_{term_number}_{term_name.lower().replace(' ', '_')}"
+			value = f"Start: {start_date}, End: {end_date}"
+			description = f"{term_name} (Term {term_number}) from {start_date} to {end_date}"
+			
+			setting, created = PlatformSetting.objects.update_or_create(
+				key=key,
+				defaults={
+					"value": value,
+					"category": "constant",
+					"description": description,
+					"is_active": True,
+					"updated_by": request.user,
+				},
+			)
+			
+			AuditLog.record(
+				action=f"Term {'added' if created else 'updated'}: {term_name}",
+				actor=request.user,
+				entity_type="setting",
+				entity_id=setting.key,
+				description=description,
+			)
+			messages.success(request, f"✓ Term '{term_name}' has been {'added' if created else 'updated'} successfully.")
+			
+		elif setting_type == "theme":
+			# Handle theme settings
+			primary_color = request.POST.get("primary_color", "#0d6efd").strip()
+			secondary_color = request.POST.get("secondary_color", "#6c757d").strip()
+			accent_color = request.POST.get("accent_color", "#198754").strip()
+			logo_url = request.POST.get("logo_url", "").strip()
+			favicon_url = request.POST.get("favicon_url", "").strip()
+			custom_css = request.POST.get("custom_css", "").strip()
+			
+			# Save each theme setting
+			theme_settings = [
+				("theme_primary_color", primary_color, "Primary brand color"),
+				("theme_secondary_color", secondary_color, "Secondary brand color"),
+				("theme_accent_color", accent_color, "Accent/highlight color"),
+			]
+			
+			if logo_url:
+				theme_settings.append(("theme_logo_url", logo_url, "Platform logo URL"))
+			if favicon_url:
+				theme_settings.append(("theme_favicon_url", favicon_url, "Platform favicon URL"))
+			if custom_css:
+				theme_settings.append(("theme_custom_css", custom_css, "Custom CSS overrides"))
+			
+			for key, value, desc in theme_settings:
+				PlatformSetting.objects.update_or_create(
+					key=key,
+					defaults={
+						"value": value,
+						"category": "constant",
+						"description": desc,
+						"is_active": True,
+						"updated_by": request.user,
+					},
+				)
+			
+			AuditLog.record(
+				action="Theme settings updated",
+				actor=request.user,
+				entity_type="setting",
+				entity_id="theme",
+				description="Updated platform theme and appearance settings",
+			)
+			messages.success(request, "✓ Theme settings have been updated successfully.")
+		
 		return redirect("platform_admin:settings")
 
 	context = {
@@ -598,14 +693,150 @@ def audit_logs(request):
 @login_required
 @super_admin_required
 def institution_admins(request):
-	"""View all institution admins with their contact details."""
+	"""View all institution admins with CRUD operations."""
+	
+	if request.method == "POST":
+		action = request.POST.get("action")
+		
+		if action == "create_admin":
+			# Create new institution admin
+			username = request.POST.get("username", "").strip()
+			email = request.POST.get("email", "").strip()
+			first_name = request.POST.get("first_name", "").strip()
+			last_name = request.POST.get("last_name", "").strip()
+			institution_id = request.POST.get("institution_id")
+			notes = request.POST.get("notes", "").strip()
+			
+			if not username or not email:
+				messages.error(request, "Username and email are required.")
+				return redirect("platform_admin:institution_admins")
+			
+			from django.contrib.auth import get_user_model
+			User = get_user_model()
+			
+			# Check if user already exists
+			if User.objects.filter(username=username).exists():
+				messages.error(request, f"User with username '{username}' already exists.")
+				return redirect("platform_admin:institution_admins")
+			
+			if User.objects.filter(email=email).exists():
+				messages.error(request, f"User with email '{email}' already exists.")
+				return redirect("platform_admin:institution_admins")
+			
+			# Create user
+			user = User.objects.create_user(
+				username=username,
+				email=email,
+				first_name=first_name,
+				last_name=last_name,
+				is_staff=True,
+				is_active=True
+			)
+			
+			# Create profile
+			institution = None
+			if institution_id:
+				institution = get_object_or_404(Institution, pk=institution_id)
+			
+			profile = PlatformUserProfile.objects.create(
+				user=user,
+				role="institution_admin",
+				institution=institution,
+				notes=notes,
+				is_active=True
+			)
+			
+			AuditLog.record(
+				action="Institution admin created",
+				actor=request.user,
+				entity_type="institution_admin",
+				entity_id=str(user.id),
+				description=f"Created admin {username} for {institution.name if institution else 'no institution'}"
+			)
+			
+			messages.success(request, f"Institution admin {username} created successfully.")
+			return redirect("platform_admin:institution_admins")
+		
+		elif action == "update_admin":
+			# Update existing admin
+			profile_id = request.POST.get("profile_id")
+			profile = get_object_or_404(PlatformUserProfile, pk=profile_id)
+			
+			first_name = request.POST.get("first_name", "").strip()
+			last_name = request.POST.get("last_name", "").strip()
+			email = request.POST.get("email", "").strip()
+			institution_id = request.POST.get("institution_id")
+			notes = request.POST.get("notes", "").strip()
+			is_active = request.POST.get("is_active") == "on"
+			
+			# Update user
+			if first_name:
+				profile.user.first_name = first_name
+			if last_name:
+				profile.user.last_name = last_name
+			if email and email != profile.user.email:
+				from django.contrib.auth import get_user_model
+				User = get_user_model()
+				if User.objects.filter(email=email).exclude(pk=profile.user.pk).exists():
+					messages.error(request, f"Email '{email}' is already in use.")
+					return redirect("platform_admin:institution_admins")
+				profile.user.email = email
+			
+			profile.user.is_active = is_active
+			profile.user.save()
+			
+			# Update profile
+			if institution_id:
+				profile.institution = get_object_or_404(Institution, pk=institution_id)
+			else:
+				profile.institution = None
+			
+			profile.notes = notes
+			profile.is_active = is_active
+			profile.save()
+			
+			AuditLog.record(
+				action="Institution admin updated",
+				actor=request.user,
+				entity_type="institution_admin",
+				entity_id=str(profile.user.id),
+				description=f"Updated admin {profile.user.username}"
+			)
+			
+			messages.success(request, f"Institution admin {profile.user.username} updated successfully.")
+			return redirect("platform_admin:institution_admins")
+		
+		elif action == "delete_admin":
+			# Delete admin
+			profile_id = request.POST.get("profile_id")
+			profile = get_object_or_404(PlatformUserProfile, pk=profile_id)
+			username = profile.user.username
+			user_id = profile.user.id
+			
+			# Delete user (cascade will delete profile)
+			profile.user.delete()
+			
+			AuditLog.record(
+				action="Institution admin deleted",
+				actor=request.user,
+				entity_type="institution_admin",
+				entity_id=str(user_id),
+				description=f"Deleted admin {username}"
+			)
+			
+			messages.success(request, f"Institution admin {username} deleted successfully.")
+			return redirect("platform_admin:institution_admins")
 	
 	# Get all profiles with institution_admin role
 	institution_admins = PlatformUserProfile.objects.filter(
 		role='institution_admin'
 	).select_related('user', 'institution').order_by('-created_at')
 	
+	# Get all institutions for the dropdown
+	institutions = Institution.objects.filter(status__in=["approved", "active"]).order_by("name")
+	
 	context = {
 		'institution_admins': institution_admins,
+		'institutions': institutions,
 	}
 	return render(request, 'platform_admin/institution_admins.html', context)

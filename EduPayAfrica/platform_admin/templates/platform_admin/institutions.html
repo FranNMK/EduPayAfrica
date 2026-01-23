@@ -22,6 +22,47 @@
     </div>
 {% endif %}
 
+<!-- Search and Filter Bar -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search by name, contact, or email...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="typeFilter" class="form-select">
+                    <option value="">All Types</option>
+                    <option value="university">University</option>
+                    <option value="college">College</option>
+                    <option value="secondary_school">Secondary School</option>
+                    <option value="primary_school">Primary School</option>
+                    <option value="vocational">Vocational/Technical</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="statusFilter" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="deactivated">Deactivated</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Create Institution Modal -->
 <div class="modal fade" id="createInstitutionModal" tabindex="-1">
     <div class="modal-dialog">
@@ -281,4 +322,67 @@
             background-color: rgba(46, 204, 113, 0.05);
         }
     </style>
+
+    <script>
+        // Search and Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const typeFilter = document.getElementById('typeFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearBtn = document.getElementById('clearFilters');
+            const tableRows = document.querySelectorAll('.table tbody tr');
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedType = typeFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    // Skip empty state rows
+                    if (row.querySelector('td[colspan]')) return;
+
+                    const text = row.textContent.toLowerCase();
+                    const typeCell = row.children[1]?.textContent.toLowerCase() || '';
+                    const statusCell = row.children[2]?.textContent.toLowerCase() || '';
+
+                    const matchesSearch = text.includes(searchTerm);
+                    const matchesType = !selectedType || typeCell.includes(selectedType);
+                    const matchesStatus = !selectedStatus || statusCell.includes(selectedStatus);
+
+                    row.style.display = (matchesSearch && matchesType && matchesStatus) ? '' : 'none';
+                });
+
+                // Check if any rows are visible
+                const visibleRows = Array.from(tableRows).filter(row => 
+                    row.style.display !== 'none' && !row.querySelector('td[colspan]')
+                );
+
+                // Show/hide empty state
+                if (visibleRows.length === 0) {
+                    let emptyRow = document.querySelector('.no-results-row');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-row';
+                        emptyRow.innerHTML = '<td colspan="6" class="text-center text-muted py-4"><i class="fas fa-search"></i> No matching institutions found.</td>';
+                        document.querySelector('.table tbody').appendChild(emptyRow);
+                    }
+                    emptyRow.style.display = '';
+                } else {
+                    const emptyRow = document.querySelector('.no-results-row');
+                    if (emptyRow) emptyRow.style.display = 'none';
+                }
+            }
+
+            searchInput.addEventListener('input', filterTable);
+            typeFilter.addEventListener('change', filterTable);
+            statusFilter.addEventListener('change', filterTable);
+
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                typeFilter.value = '';
+                statusFilter.value = '';
+                filterTable();
+            });
+        });
+    </script>
 {% endblock %}

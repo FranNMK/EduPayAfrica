@@ -244,7 +244,29 @@ def update_firebase_user(current_email: str, new_email: str = None, new_password
     """
     try:
         initialize_firebase()
-        fb_user = auth.get_user_by_email(current_email)
+        
+        # Try to get existing Firebase user
+        try:
+            fb_user = auth.get_user_by_email(current_email)
+        except auth.UserNotFoundError:
+            # User doesn't exist in Firebase yet - create them
+            print(f"Firebase user not found for {current_email}, creating new user")
+            if new_password:
+                try:
+                    fb_user = auth.create_user(
+                        email=new_email or current_email,
+                        password=new_password,
+                        display_name=display_name or ""
+                    )
+                    print(f"Successfully created Firebase user: {fb_user.uid}")
+                    return True
+                except Exception as create_error:
+                    print(f"Error creating Firebase user: {create_error}")
+                    return False
+            else:
+                # Can't create user without password
+                print(f"Cannot create Firebase user without password")
+                return False
 
         updates = {}
         if new_email:
@@ -258,7 +280,10 @@ def update_firebase_user(current_email: str, new_email: str = None, new_password
             return True  # Nothing to update
 
         auth.update_user(fb_user.uid, **updates)
+        print(f"Successfully updated Firebase user {fb_user.uid}: {list(updates.keys())}")
         return True
     except Exception as e:
         print(f"Error updating Firebase user: {e}")
+        import traceback
+        traceback.print_exc()
         return False

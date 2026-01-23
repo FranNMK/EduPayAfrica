@@ -4,7 +4,53 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 fw-bold mb-1">Institution Admins</h1>
-            <p class="text-muted mb-0">View all institution administrators and their contact details.</p>
+            <p class="text-muted mb-0">Manage institution administrators and their contact details.</p>
+        </div>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createAdminModal">
+            <i class="fas fa-plus"></i> Add Institution Admin
+        </button>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search and Filter Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or email...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="institutionFilter" class="form-select">
+                        <option value="">All Institutions</option>
+                        {% for inst in institutions %}
+                            <option value="{{ inst.name }}">{{ inst.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -14,11 +60,10 @@
                 <tr>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Phone</th>
                     <th>Institution</th>
-                    <th>Job Title</th>
                     <th>Status</th>
-                    <th>Assigned Date</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,15 +79,6 @@
                         </a>
                     </td>
                     <td>
-                        {% if profile.institution and profile.institution.phone %}
-                            <a href="tel:{{ profile.institution.phone }}" class="text-decoration-none">
-                                <i class="fas fa-phone me-1"></i>{{ profile.institution.phone }}
-                            </a>
-                        {% else %}
-                            <span class="text-muted">N/A</span>
-                        {% endif %}
-                    </td>
-                    <td>
                         {% if profile.institution %}
                             <span class="badge bg-success">{{ profile.institution.name }}</span>
                         {% else %}
@@ -50,36 +86,179 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if profile.institution and profile.institution.primary_contact_title %}
-                            <span class="text-muted">{{ profile.institution.primary_contact_title }}</span>
-                        {% else %}
-                            <span class="text-muted">N/A</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if profile.is_active %}
+                        {% if profile.is_active and profile.user.is_active %}
                             <span class="badge bg-success"><i class="fas fa-check-circle"></i> Active</span>
                         {% else %}
                             <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Inactive</span>
                         {% endif %}
                     </td>
                     <td class="text-muted">
-                        {% if profile.institution %}
-                            {{ profile.institution.created_at|date:"M d, Y" }}
-                        {% else %}
-                            <span class="text-muted">N/A</span>
-                        {% endif %}
+                        {{ profile.created_at|date:"M d, Y" }}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editAdminModal{{ profile.id }}"
+                                title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteAdminModal{{ profile.id }}"
+                                title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editAdminModal{{ profile.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Institution Admin</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="update_admin">
+                                <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input type="text" class="form-control" value="{{ profile.user.username }}" disabled>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" class="form-control" name="first_name" value="{{ profile.user.first_name }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" name="last_name" value="{{ profile.user.last_name }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email*</label>
+                                        <input type="email" class="form-control" name="email" value="{{ profile.user.email }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Institution</label>
+                                        <select class="form-select" name="institution_id">
+                                            <option value="">Unassigned</option>
+                                            {% for inst in institutions %}
+                                                <option value="{{ inst.id }}" {% if profile.institution.id == inst.id %}selected{% endif %}>
+                                                    {{ inst.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Notes</label>
+                                        <textarea class="form-control" name="notes" rows="2">{{ profile.notes }}</textarea>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="is_active" {% if profile.is_active %}checked{% endif %}>
+                                        <label class="form-check-label">Active</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Update Admin</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteAdminModal{{ profile.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title">Delete Institution Admin</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_admin">
+                                <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete <strong>{{ profile.user.get_full_name|default:profile.user.username }}</strong>?</p>
+                                    <p class="text-danger"><i class="fas fa-exclamation-triangle"></i> This action cannot be undone and will delete the user account.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 {% empty %}
                 <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
-                        <i class="fas fa-inbox"></i> No institution admins found.
+                    <td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                        <p>No institution admins found.</p>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- Create Admin Modal -->
+    <div class="modal fade" id="createAdminModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Institution Admin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="create_admin">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Username*</label>
+                            <input type="text" class="form-control" name="username" required>
+                            <small class="text-muted">Used for login</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email*</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" name="first_name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" name="last_name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Institution</label>
+                            <select class="form-select" name="institution_id">
+                                <option value="">Select Institution</option>
+                                {% for inst in institutions %}
+                                    <option value="{{ inst.id }}">{{ inst.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2" placeholder="Optional notes about this admin"></textarea>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> A default password will be generated. The admin should reset it on first login.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Admin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <style>
@@ -89,5 +268,73 @@
         .badge.bg-success {
             background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
         }
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(30, 144, 255, 0.3);
+        }
+        .btn-outline-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
     </style>
+
+    <script>
+        // Search and Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const institutionFilter = document.getElementById('institutionFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearBtn = document.getElementById('clearFilters');
+            const tableRows = document.querySelectorAll('.table tbody tr');
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedInstitution = institutionFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    if (row.querySelector('td[colspan]')) return;
+
+                    const nameEmail = (row.children[0]?.textContent + ' ' + row.children[1]?.textContent).toLowerCase();
+                    const institution = row.children[2]?.textContent.toLowerCase() || '';
+                    const status = row.children[3]?.textContent.toLowerCase() || '';
+
+                    const matchesSearch = nameEmail.includes(searchTerm);
+                    const matchesInstitution = !selectedInstitution || institution.includes(selectedInstitution);
+                    const matchesStatus = !selectedStatus || status.includes(selectedStatus);
+
+                    row.style.display = (matchesSearch && matchesInstitution && matchesStatus) ? '' : 'none';
+                });
+
+                const visibleRows = Array.from(tableRows).filter(row => 
+                    row.style.display !== 'none' && !row.querySelector('td[colspan]')
+                );
+
+                if (visibleRows.length === 0) {
+                    let emptyRow = document.querySelector('.no-results-row');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-row';
+                        emptyRow.innerHTML = '<td colspan="6" class="text-center text-muted py-4"><i class="fas fa-search"></i> No matching admins found.</td>';
+                        document.querySelector('.table tbody').appendChild(emptyRow);
+                    }
+                    emptyRow.style.display = '';
+                } else {
+                    const emptyRow = document.querySelector('.no-results-row');
+                    if (emptyRow) emptyRow.style.display = 'none';
+                }
+            }
+
+            searchInput.addEventListener('input', filterTable);
+            institutionFilter.addEventListener('change', filterTable);
+            statusFilter.addEventListener('change', filterTable);
+
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                institutionFilter.value = '';
+                statusFilter.value = '';
+                filterTable();
+            });
+        });
+    </script>
 {% endblock %}

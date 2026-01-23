@@ -82,6 +82,42 @@
         </div>
     </div>
 
+    <!-- Search and Filter Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or email...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="roleFilter" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="super_admin">Super Admin</option>
+                        <option value="institution_admin">Institution Admin</option>
+                        <option value="bursar">Bursar</option>
+                        <option value="parent">Parent</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="disabled">Disabled</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="table-responsive shadow-sm rounded bg-white">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
@@ -235,6 +271,64 @@
     </style>
     
     <script>
+        // Search and Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const roleFilter = document.getElementById('roleFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearBtn = document.getElementById('clearFilters');
+            const tableRows = document.querySelectorAll('.table tbody tr');
+
+            function filterTable() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedRole = roleFilter.value.toLowerCase();
+                const selectedStatus = statusFilter.value.toLowerCase();
+
+                tableRows.forEach(row => {
+                    if (row.querySelector('td[colspan]')) return;
+
+                    const nameEmail = (row.children[0]?.textContent + ' ' + row.children[1]?.textContent).toLowerCase();
+                    const role = row.children[2]?.textContent.toLowerCase() || '';
+                    const status = row.children[4]?.textContent.toLowerCase() || '';
+
+                    const matchesSearch = nameEmail.includes(searchTerm);
+                    const matchesRole = !selectedRole || role.includes(selectedRole);
+                    const matchesStatus = !selectedStatus || status.includes(selectedStatus);
+
+                    row.style.display = (matchesSearch && matchesRole && matchesStatus) ? '' : 'none';
+                });
+
+                const visibleRows = Array.from(tableRows).filter(row => 
+                    row.style.display !== 'none' && !row.querySelector('td[colspan]')
+                );
+
+                if (visibleRows.length === 0) {
+                    let emptyRow = document.querySelector('.no-results-row');
+                    if (!emptyRow) {
+                        emptyRow = document.createElement('tr');
+                        emptyRow.className = 'no-results-row';
+                        emptyRow.innerHTML = '<td colspan="7" class="text-center text-muted py-4"><i class="fas fa-search"></i> No matching users found.</td>';
+                        document.querySelector('.table tbody').appendChild(emptyRow);
+                    }
+                    emptyRow.style.display = '';
+                } else {
+                    const emptyRow = document.querySelector('.no-results-row');
+                    if (emptyRow) emptyRow.style.display = 'none';
+                }
+            }
+
+            searchInput.addEventListener('input', filterTable);
+            roleFilter.addEventListener('change', filterTable);
+            statusFilter.addEventListener('change', filterTable);
+
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                roleFilter.value = '';
+                statusFilter.value = '';
+                filterTable();
+            });
+        });
+
         // Password visibility toggle for create modal
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordField = document.getElementById('passwordField');

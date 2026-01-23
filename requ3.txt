@@ -1,0 +1,268 @@
+# EduPay Africa
+
+## Institution Admin & Bursar Modules – MVP Requirements (Pre-Payments)
+
+---
+
+## 1. Document Purpose
+
+This document defines the **Minimum Viable Product (MVP)** requirements for **institution-side users** of EduPay Africa, specifically:
+
+* Institution Admin
+* Bursar (Finance Officer)
+
+This phase establishes **internal fee management readiness** before any payment integrations are introduced.
+
+---
+
+## 2. Role Definitions
+
+### 2.1 Institution Admin
+
+**Primary Responsibility:**
+Institution-level configuration and governance.
+
+**Scope:**
+
+* Manages institution setup
+* Controls user access
+* Defines academic and fee structures
+
+---
+
+### 2.2 Bursar
+
+**Primary Responsibility:**
+Financial oversight and fee tracking.
+
+**Scope:**
+
+* Manages fee records
+* Tracks balances
+* Produces financial reports
+  *(No payment processing in this phase)*
+
+---
+
+## 3. Institution Admin – Functional Requirements
+
+### 3.1 Institution Profile Management
+
+The system SHALL allow the Institution Admin to:
+
+* View institution profile (read-only core details)
+* Update operational details:
+
+  * Contact email
+  * Phone number
+  * Address
+* Upload institution logo
+
+**Constraints**
+
+* Institution name and type are immutable once approved
+* Changes are logged
+
+---
+
+### 3.2 Academic Structure Setup
+
+The system SHALL allow the Institution Admin to define:
+
+* Academic years (e.g. 2025/2026)
+* Terms / semesters
+* Faculties / schools
+* Courses / programs
+
+**Rules**
+
+* Academic years must not overlap
+* Structures must exist before students are added
+
+---
+
+### 3.3 User Management (Institution-Level)
+
+The Institution Admin SHALL be able to:
+
+* Create bursar accounts
+* Assign roles (Bursar only)
+* Activate / deactivate institution users
+* View user activity logs (limited)
+
+**Constraints**
+
+* Cannot create Super Admins
+* Cannot access other institutions’ users
+
+---
+
+### 3.4 Student Onboarding (Basic)
+
+The system SHALL allow:
+
+* Manual student registration
+* Bulk student upload (CSV)
+* Student profile creation with:
+
+  * Full name
+  * Admission number
+  * Course / program
+  * Academic year
+
+**Constraints**
+
+* No parent accounts yet
+* No authentication for students yet
+
+---
+
+## 4. Bursar – Functional Requirements
+
+### 4.1 Fee Structure Definition
+
+The system SHALL allow the Bursar to:
+
+* Define fee items (tuition, accommodation, etc.)
+* Assign fees to:
+
+  * Courses
+  * Academic years
+  * Terms
+
+**Rules**
+
+* Fee structures are versioned
+* Historical fee data is immutable
+
+---
+
+### 4.2 Student Fee Assignment
+
+The system SHALL allow the Bursar to:
+
+* Assign fees to individual students
+* Apply adjustments (discounts, penalties)
+* Record manual fee postings (non-payment)
+
+**Important**
+
+> These are **accounting entries**, not payments.
+
+---
+
+### 4.3 Fee Balance Tracking
+
+The system SHALL display:
+
+* Total fees billed per student
+* Outstanding balances
+* Overdue indicators (time-based)
+
+**Constraints**
+
+* No payment channels
+* Balances are informational only
+
+---
+
+### 4.4 Financial Reporting (Basic)
+
+The system SHALL provide:
+
+* Fee billing summaries
+* Outstanding balance reports
+* Student fee statements (PDF/export)
+
+Reports MUST be:
+
+* Read-only
+* Institution-scoped
+
+---
+
+## 5. Shared Features (Institution Admin & Bursar)
+
+### 5.1 Dashboards
+
+Each role SHALL have:
+
+* Role-specific dashboard
+* KPIs relevant to their function
+* No cross-role data leakage
+
+---
+
+### 5.2 Audit Logging
+
+The system SHALL log:
+
+* Fee structure changes
+* Student record updates
+* User account changes
+
+Logs MUST include:
+
+* Actor
+* Action
+* Timestamp
+
+---
+
+## 6. Access Control & Security
+
+* Firebase Authentication for identity
+* Django-based role enforcement
+* Institution-level data isolation
+* No cross-institution visibility
+
+---
+
+## 7. Explicit Exclusions (This Phase)
+
+This MVP DOES NOT include:
+
+* Payments (M-Pesa, bank, card)
+* Parent / guardian accounts
+* Student login portals
+* Automatic reconciliation
+* Refund handling
+
+---
+
+## 8. Phase Readiness Outcome
+
+At the end of this phase:
+
+✅ Institutions are fully configured
+✅ Students and fees are structured
+✅ Bursars can track balances
+✅ System is **payment-ready but payment-free**
+
+---
+
+## 9. Why This Order Is Correct (Decision Rationale)
+
+**Hidden assumption to challenge:**
+
+> “We need payments early to show value”
+
+That’s wrong.
+
+**First principles:**
+
+* Payments without clean fee data = chaos
+* Reconciliation requires structure first
+* Institutions care more about **control** than payments
+
+This phase:
+
+* Reduces financial risk
+* Speeds later payment integration
+* Builds institutional trust
+
+---
+
+**Document Status:** Institution Admin & Bursar MVP
+**Phase:** Pre-Payments
+**Project:** EduPay Africa

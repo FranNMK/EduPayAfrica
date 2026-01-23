@@ -6,6 +6,74 @@
         <h1 class="h4 fw-bold mb-1">Institution Management</h1>
         <p class="text-muted mb-0">Approve, activate, or suspend institutions without altering operational data.</p>
     </div>
+    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createInstitutionModal">
+        <i class="fas fa-plus"></i> Add Institution
+    </button>
+</div>
+
+{% if messages %}
+    <div class="mb-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Create Institution Modal -->
+<div class="modal fade" id="createInstitutionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Institution</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Name *</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Institution Type *</label>
+                        <select name="institution_type" class="form-select" required>
+                            <option value="">-- Select --</option>
+                            <option value="university">University</option>
+                            <option value="college">College</option>
+                            <option value="secondary_school">Secondary School</option>
+                            <option value="primary_school">Primary School</option>
+                            <option value="vocational">Vocational/Technical Institution</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Name *</label>
+                        <input type="text" name="contact_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Email *</label>
+                        <input type="email" name="contact_email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="text" name="contact_phone" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea name="note" class="form-control" rows="3" placeholder="Onboarding notes"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <input type="hidden" name="action" value="create_institution">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="table-responsive shadow-sm rounded bg-white">
@@ -41,20 +109,139 @@
                         Updated {{ institution.updated_at|date:"Y-m-d" }}
                     </td>
                     <td class="text-end">
-                        <form method="post" class="d-inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="institution_id" value="{{ institution.id }}">
-                            <input type="hidden" name="note" value="">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button name="action" value="approve" class="btn btn-outline-success">Approve</button>
-                                <button name="action" value="activate" class="btn btn-outline-primary">Activate</button>
-                                <button name="action" value="suspend" class="btn btn-outline-warning">Suspend</button>
-                                <button name="action" value="deactivate" class="btn btn-outline-secondary">Deactivate</button>
-                                <button name="action" value="reject" class="btn btn-outline-danger">Reject</button>
-                            </div>
-                        </form>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="false">Actions</button>
+                            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 240px;">
+                                <li class="px-3 pt-2"><strong>Status</strong></li>
+                                <li>
+                                    <form method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="note" value="">
+                                        <button name="action" value="approve" class="btn btn-link p-0 text-success">Approve</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="note" value="">
+                                        <button name="action" value="activate" class="btn btn-link p-0 text-primary">Activate</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="note" value="">
+                                        <button name="action" value="suspend" class="btn btn-link p-0 text-warning">Suspend</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="note" value="">
+                                        <button name="action" value="deactivate" class="btn btn-link p-0 text-secondary">Deactivate</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" class="px-3 py-1">
+                                        {% csrf_token %}
+        								<input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="note" value="">
+                                        <button name="action" value="reject" class="btn btn-link p-0 text-danger">Reject</button>
+                                    </form>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="px-3 pt-2"><strong>Admin Assignment</strong></li>
+                                <li class="px-3 py-2">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="action" value="assign_admin">
+                                        <select name="user_id" class="form-select form-select-sm mb-2" aria-label="Assign admin">
+                                            <option value="">Assign admin...</option>
+                                            {% for admin in admin_users %}
+                                                <option value="{{ admin.id }}" {% if institution.profiles.first and institution.profiles.first.user_id == admin.id %}selected{% endif %}>
+                                                    {{ admin.get_full_name|default:admin.username }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-outline-success w-100">Save Admin</button>
+                                    </form>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="px-3 pt-2"><strong>Edit</strong></li>
+                                <li class="px-3 pb-2">
+                                    <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#editInstitutionModal{{ institution.id }}">Edit Institution</button>
+                                </li>
+                                <li class="px-3 pb-2">
+                                    <form method="post" onsubmit="return confirm('Delete this institution?');">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                        <input type="hidden" name="action" value="delete_institution">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100">Delete</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
+                <!-- Edit Institution Modal -->
+                <div class="modal fade" id="editInstitutionModal{{ institution.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Institution</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="institution_id" value="{{ institution.id }}">
+                                    <input type="hidden" name="action" value="update_institution">
+                                    <div class="mb-3">
+                                        <label class="form-label">Name *</label>
+                                        <input type="text" name="name" class="form-control" value="{{ institution.name }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Institution Type *</label>
+                                        <select name="institution_type" class="form-select" required>
+                                            <option value="">-- Select --</option>
+                                            <option value="university" {% if institution.institution_type == 'university' %}selected{% endif %}>University</option>
+                                            <option value="college" {% if institution.institution_type == 'college' %}selected{% endif %}>College</option>
+                                            <option value="secondary_school" {% if institution.institution_type == 'secondary_school' %}selected{% endif %}>Secondary School</option>
+                                            <option value="primary_school" {% if institution.institution_type == 'primary_school' %}selected{% endif %}>Primary School</option>
+                                            <option value="vocational" {% if institution.institution_type == 'vocational' %}selected{% endif %}>Vocational/Technical Institution</option>
+                                            <option value="other" {% if institution.institution_type == 'other' %}selected{% endif %}>Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Name *</label>
+                                        <input type="text" name="contact_name" class="form-control" value="{{ institution.contact_name }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Email *</label>
+                                        <input type="email" name="contact_email" class="form-control" value="{{ institution.contact_email }}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Contact Phone</label>
+                                        <input type="text" name="contact_phone" class="form-control" value="{{ institution.contact_phone }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Notes</label>
+                                        <textarea name="note" class="form-control" rows="3">{{ institution.onboarding_notes }}</textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 {% empty %}
                 <tr>
                     <td colspan="6" class="text-center text-muted py-4">No institutions captured yet.</td>
@@ -63,4 +250,35 @@
             </tbody>
         </table>
     </div>
+
+    <style>
+        .dropdown-menu {
+            overflow-y: auto;
+            max-height: 500px;
+            min-width: 240px;
+        }
+        .dropdown-menu li:hover {
+            background: rgba(46, 204, 113, 0.1);
+        }
+        .dropdown-menu .btn-primary {
+            background: linear-gradient(135deg, #2ecc71, #f39c12);
+            border: none;
+        }
+        .dropdown-menu .btn-primary:hover {
+            background: linear-gradient(135deg, #27ae60, #e67e22);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2ecc71, #f39c12);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #27ae60, #e67e22);
+        }
+        .badge.bg-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
+        }
+        .table tbody tr:hover {
+            background-color: rgba(46, 204, 113, 0.05);
+        }
+    </style>
 {% endblock %}

@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h4 fw-bold mb-1">User & Role Oversight</h1>
-            <p class="text-muted mb-0">Create new admin users and manage account status.</p>
+            <p class="text-muted mb-0">Create new users and manage accounts and institution assignments.</p>
         </div>
         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
             <i class="fas fa-user-plus"></i> Create New User
@@ -18,19 +18,10 @@
                 <form method="post">
                     {% csrf_token %}
                     <div class="modal-header">
-                        <h5 class="modal-title">Create New Admin User</h5>
+                        <h5 class="modal-title">Create New User</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        {% if messages %}
-                            {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                            {% endfor %}
-                        {% endif %}
-                        
                         <div class="mb-3">
                             <label class="form-label">Full Name *</label>
                             <input type="text" name="full_name" class="form-control" placeholder="e.g., John Doe" required>
@@ -44,23 +35,39 @@
 
                         <div class="mb-3">
                             <label class="form-label">Password *</label>
-                            <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters" required>
-                            <small class="text-muted">Password will be saved in Firebase. User can reset it later.</small>
+                            <div class="input-group">
+                                <input type="password" id="passwordField" name="password" class="form-control" placeholder="Minimum 6 characters" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye" id="passwordIcon"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Minimum 6 characters.</small>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Role *</label>
                             <select name="role" class="form-select" required>
                                 <option value="">-- Select role --</option>
-                                <option value="admin">Admin</option>
-                                <option value="staff">Staff</option>
-                                <option value="viewer">Viewer</option>
+                                <option value="super_admin">Super Admin</option>
+                                <option value="institution_admin">Institution Admin</option>
+                                <option value="bursar">Bursar</option>
+                                <option value="parent">Parent</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
 
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            The user will be created in Firebase with the provided credentials and can login immediately.
+                        <div class="mb-3">
+                            <label class="form-label">Assign to Institution (optional)</label>
+                            <select name="institution_id" class="form-select">
+                                <option value="">-- None --</option>
+                                {% for institution in institutions %}
+                                    <option value="{{ institution.id }}">{{ institution.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle"></i> User will be created in Firebase and can login immediately.
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -76,12 +83,13 @@
     </div>
 
     <div class="table-responsive shadow-sm rounded bg-white">
-        <table class="table align-middle mb-0">
+        <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
                     <th>User</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Institution</th>
                     <th>Status</th>
                     <th>Created</th>
                     <th class="text-end">Actions</th>
@@ -92,9 +100,10 @@
                 <tr>
                     <td class="fw-semibold">{{ profile.user.get_full_name|default:profile.user.username }}</td>
                     <td class="text-muted">{{ profile.user.email }}</td>
-                    <td class="text-capitalize">
+                    <td>
                         <span class="badge bg-info">{{ profile.get_role_display }}</span>
                     </td>
+                    <td class="text-muted small">{{ profile.institution.name|default:"--" }}</td>
                     <td>
                         {% if profile.user.is_active %}
                         <span class="badge bg-success">Active</span>
@@ -110,31 +119,108 @@
                         {% endif %}
                     </td>
                     <td class="text-end">
-                        <form method="post" class="d-inline">
-                            {% csrf_token %}
-                            <input type="hidden" name="profile_id" value="{{ profile.id }}">
-                            {% if profile.user.is_active %}
-                            <button name="action" value="disable" class="btn btn-outline-danger btn-sm">
-                                <i class="fas fa-ban"></i> Disable
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+                                Actions
                             </button>
-                            {% else %}
-                            <button name="action" value="enable" class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-check"></i> Enable
-                            </button>
-                            {% endif %}
-                        </form>
+                            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 280px;">
+                                <li><h6 class="dropdown-header">Update Role & Institution</h6></li>
+                                <li>
+                                    <form method="post" class="px-3 py-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                        <input type="hidden" name="action" value="update">
+                                        <div class="mb-2">
+                                            <select name="role" class="form-select form-select-sm">
+                                                <option value="super_admin" {% if profile.role == 'super_admin' %}selected{% endif %}>Super Admin</option>
+                                                <option value="institution_admin" {% if profile.role == 'institution_admin' %}selected{% endif %}>Institution Admin</option>
+                                                <option value="bursar" {% if profile.role == 'bursar' %}selected{% endif %}>Bursar</option>
+                                                <option value="parent" {% if profile.role == 'parent' %}selected{% endif %}>Parent</option>
+                                                <option value="other" {% if profile.role == 'other' %}selected{% endif %}>Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <select name="institution_id" class="form-select form-select-sm">
+                                                <option value="">-- No Institution --</option>
+                                                {% for institution in institutions %}
+                                                    <option value="{{ institution.id }}" {% if profile.institution and profile.institution.id == institution.id %}selected{% endif %}>{{ institution.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-primary w-100">Save Changes</button>
+                                    </form>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <form method="post" class="px-3 py-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                        {% if profile.user.is_active %}
+                                        <button name="action" value="disable" class="btn btn-sm btn-outline-warning w-100"><i class="fas fa-ban me-1"></i> Disable Account</button>
+                                        {% else %}
+                                        <button name="action" value="enable" class="btn btn-sm btn-outline-success w-100"><i class="fas fa-check me-1"></i> Enable Account</button>
+                                        {% endif %}
+                                    </form>
+                                </li>
+                                <li>
+                                    <form method="post" onsubmit="return confirm('Permanently delete this user?');" class="px-3 py-2">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="profile_id" value="{{ profile.id }}">
+                                        <input type="hidden" name="action" value="delete">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger w-100"><i class="fas fa-trash me-1"></i> Delete User</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="6" class="text-center text-muted py-4">No admin users created yet. Click "Create New User" to add one.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted py-4"><i class="fas fa-inbox"></i> No users yet. Click "Create New User" to add one.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
     <style>
-        .modal-body .alert {
-            margin-bottom: 0;
+        .dropdown-menu {
+            overflow-y: auto;
+            max-height: 500px;
+            min-width: 240px;
+        }
+        .dropdown-menu li:hover {
+            background: rgba(46, 204, 113, 0.1);
+        }
+        .dropdown-menu .btn-primary {
+            background: linear-gradient(135deg, #2ecc71, #f39c12);
+            border: none;
+        }
+        .dropdown-menu .btn-primary:hover {
+            background: linear-gradient(135deg, #27ae60, #e67e22);
+        }
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+        td .dropdown {
+            position: static;
         }
     </style>
+    
+    <script>
+        // Password visibility toggle
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordField = document.getElementById('passwordField');
+            const passwordIcon = document.getElementById('passwordIcon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 {% endblock %}

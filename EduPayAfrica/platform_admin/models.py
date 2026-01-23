@@ -95,6 +95,14 @@ class PlatformUserProfile(models.Model):
 
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="platform_profile")
 	role = models.CharField(max_length=50, choices=ROLE_CHOICES, default="other")
+	institution = models.ForeignKey(
+		"platform_admin.Institution",
+		on_delete=models.SET_NULL,
+		null=True,
+		blank=True,
+		related_name="profiles",
+	)
+	is_active = models.BooleanField(default=True)
 	role_conflict = models.BooleanField(default=False)
 	notes = models.TextField(blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)

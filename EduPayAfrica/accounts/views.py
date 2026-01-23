@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 import requests
 import os
@@ -106,7 +106,8 @@ def password_reset_confirm(request):
         if not reset_code or not new_password:
             messages.error(request, 'Please provide all required information.')
             return render(request, 'accounts/password_reset_confirm.html')
-        
+
+
         if new_password != confirm_password:
             messages.error(request, 'Passwords do not match.')
             return render(request, 'accounts/password_reset_confirm.html')
@@ -146,3 +147,11 @@ def password_reset_confirm(request):
             return render(request, 'accounts/password_reset_confirm.html')
     
     return render(request, 'accounts/password_reset_confirm.html')
+
+
+@require_http_methods(["GET"])
+def logout_view(request):
+    """Log the user out and return to the login page."""
+    logout(request)
+    messages.success(request, 'You have been logged out.')
+    return redirect('login')

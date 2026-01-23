@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 
 class DemoRequest(models.Model):
@@ -39,11 +40,24 @@ class DemoRequest(models.Model):
         ('flexible', 'I\'m flexible'),
     ]
     
+    JOB_TITLE_CHOICES = [
+        ('director', 'Director'),
+        ('principal', 'Principal'),
+        ('bursar', 'Bursar'),
+        ('accountant', 'Accountant'),
+        ('registrar', 'Registrar'),
+        ('it_manager', 'IT Manager'),
+        ('administrator', 'Administrator'),
+        ('dean', 'Dean'),
+        ('finance_manager', 'Finance Manager'),
+        ('other', 'Other'),
+    ]
+    
     # Personal Information
     full_name = models.CharField(max_length=255)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
-    job_title = models.CharField(max_length=255)
+    job_title = models.CharField(max_length=255, choices=JOB_TITLE_CHOICES)
     
     # Institution Information
     institution_name = models.CharField(max_length=255)
@@ -62,13 +76,31 @@ class DemoRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(
         max_length=50,
-        default='new',
+        default='pending',
         choices=[
+            ('pending', 'Pending'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
             ('new', 'New'),
             ('contacted', 'Contacted'),
             ('demo_completed', 'Demo Completed'),
             ('converted', 'Converted'),
         ]
+    )
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="approved_demo_requests",
+    )
+    institution = models.ForeignKey(
+        "platform_admin.Institution",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="demo_requests",
     )
     notes = models.TextField(blank=True, null=True)
     

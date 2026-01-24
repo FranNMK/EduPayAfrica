@@ -11,22 +11,21 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import os
+
 from dotenv import load_dotenv
 import dj_database_url
 # EduPayAfrica/settings.py (add near top)
-import os, json
+
+import os
+import json
+
 FIREBASE_CONFIG = {}
 _firebase = os.environ.get('FIREBASE_CONFIG')
 if _firebase:
     try:
         FIREBASE_CONFIG = json.loads(_firebase)
-    except Exception:
+    except json.JSONDecodeError:
         FIREBASE_CONFIG = {}
-# then in TEMPLATES add context processor:
-TEMPLATES[0]['OPTIONS']['context_processors'] += [
-    'EduPayAfrica.context_processors.firebase_config',
-]
 # Load environment variables from .env file
 load_dotenv()
 

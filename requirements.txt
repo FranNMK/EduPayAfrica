@@ -53,3 +53,4 @@ psycopg[binary]==3.1.10
 
 # Excel reader used in institutions.views
 openpyxl==3.1.2
+whitenoise

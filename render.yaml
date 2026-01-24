@@ -1,27 +1,2 @@
-services:
-  - type: web
-    name: edupay-africa
-    env: python
-    region: oregon
-    plan: free
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
-    startCommand: "gunicorn EduPayAfrica.wsgi:application"
-    envVars:
-      - key: PYTHON_VERSION
-        value: "3.12.0"
-      - key: DEBUG
-        value: "False"
-      - key: RENDER
-        value: "true"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: edupay-db
-          property: connectionString
-      - key: ALLOWED_HOSTS
-        sync: false
-
-databases:
-  - name: edupay-db
-    plan: free
-    databaseName: edupay_db
-    user: edupay_user
+buildCommand: "cd EduPayAfrica && pip install -r ../requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate"
+startCommand: "cd EduPayAfrica && gunicorn EduPayAfrica.wsgi:application"

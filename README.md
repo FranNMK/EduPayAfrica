@@ -72,22 +72,6 @@ Admin Panel
 - Dropdowns for Institution/Program/Academic Year are styled for readability
 - Staff admin allows setting/updating passwords via custom form fields
 
-Bulk Upload & Sample Data
--------------------------
-- Generate CSV samples to practice imports:
-
-```
-python manage.py generate_sample_data --type students   # 30 student rows
-python manage.py generate_sample_data --type staff      # 30 staff rows
-python manage.py generate_sample_data --type both       # students + staff
-```
-
-- Quickly seed 50 students into the database:
-
-```
-python add_students_quick.py
-```
-
 Environment & Secrets
 ---------------------
 - Do not commit service account JSON or secrets to the repository.

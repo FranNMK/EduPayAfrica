@@ -51,3 +51,5 @@ urllib3==2.6.3
 # PostgreSQL adapter required by Django on Render
 psycopg[binary]
 
+openpyxl
+

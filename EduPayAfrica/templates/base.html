@@ -784,8 +784,8 @@
         // Inject Firebase config from Django backend (for future client-side features)
         window.firebaseConfig = {{ firebase_config|safe }};
     </script>
-    <script src="{% static 'js/firebase-init.js' %}?v=2"></script> -->
-
+    <script src="{% static 'js/firebase-init.js' %}?v=2"></script>
+ -->
 
     <script>
   window.firebaseConfig = {{ firebase_config|default:"{}"|safe }};

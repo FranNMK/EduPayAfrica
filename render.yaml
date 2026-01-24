@@ -19,8 +19,6 @@ services:
           property: connectionString
       - key: ALLOWED_HOSTS
         sync: false
-      - key: SECRET_KEY
-        generateValue: true
 
 databases:
   - name: edupay-db

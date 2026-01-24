@@ -119,12 +119,14 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.template.context_processors.csrf',
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
                 'EduPayAfrica.context_processors.firebase_config',
             ],
         },
     },
 ]
 
+# Remove code that tries to append context processors after definition
 WSGI_APPLICATION = 'EduPayAfrica.wsgi.application'
 
 

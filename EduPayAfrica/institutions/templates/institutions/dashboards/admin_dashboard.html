@@ -1,0 +1,113 @@
+{% extends 'institutions/base_institution.html' %}
+{% load static %}
+
+{% block institution_title %}Admin Dashboard{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ institution.institution_name }} - Admin Dashboard</h1>
+            {% if active_academic_year %}
+                <small class="text-muted">Active Year: {{ active_academic_year.year_code }}</small>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <h2>{{ students_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Fees Billed</h5>
+                    <h2>{{ total_fees_billed|floatformat:0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Outstanding Balance</h5>
+                    <h2>{{ total_outstanding|floatformat:0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Overdue Cases</h5>
+                    <h2>{{ overdue_count }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'institutions:staff_management' %}" class="btn btn-primary">Manage Staff</a>
+                    <a href="{% url 'institutions:students' %}" class="btn btn-success">Manage Students</a>
+                    <a href="{% url 'institutions:program_management' %}" class="btn btn-info">Manage Programs</a>
+                    <a href="{% url 'institutions:academic_structure' %}" class="btn btn-warning">Academic Structure</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Overview -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Staff Members</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_list %}
+                            <tr>
+                                <td>{{ staff.full_name }}</td>
+                                <td><span class="badge badge-info">{{ staff.get_role_display }}</span></td>
+                                <td>{{ staff.email }}</td>
+                                <td>
+                                    {% if staff.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No staff members added yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

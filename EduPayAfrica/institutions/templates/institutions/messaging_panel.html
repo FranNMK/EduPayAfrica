@@ -1,0 +1,147 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Messages{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Principal Messaging Panel</h1>
+            <p class="text-muted">Send messages to parents and guardians about fees and announcements</p>
+        </div>
+    </div>
+
+    <!-- Send Message Form -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Send New Message</h5>
+                </div>
+                <form method="post" action="{% url 'institutions:send_message' %}" class="card-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Message Type</label>
+                        <select name="message_type" class="form-control" required>
+                            <option value="">-- Select Type --</option>
+                            {% for value, label in message_types %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" name="subject" class="form-control" placeholder="Message subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Message Content</label>
+                        <textarea name="content" class="form-control" rows="6" placeholder="Write your message here..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Target Recipients</label>
+                        <select name="target_type" class="form-control" id="target-type" required>
+                            <option value="all">All Active Students</option>
+                            <option value="overdue">Students with Overdue Fees</option>
+                            <option value="specific">Specific Students</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="specific-students-group" style="display: none;">
+                        <label>Select Students</label>
+                        <div class="alert alert-info">
+                            In a full implementation, you would select specific students here.
+                        </div>
+                    </div>
+
+                    <hr>
+                    <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Message Tips -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Message Tips</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Effective Messages</h6>
+                    <ul>
+                        <li>Be clear and concise</li>
+                        <li>Include due dates</li>
+                        <li>State required action</li>
+                        <li>Be professional</li>
+                        <li>Provide contact info</li>
+                    </ul>
+
+                    <h6 class="mt-3">Message Types</h6>
+                    <ul>
+                        <li><strong>Reminder:</strong> Fee payment due soon</li>
+                        <li><strong>Urgent:</strong> Immediate payment needed</li>
+                        <li><strong>Announcement:</strong> General school news</li>
+                        <li><strong>Congratulations:</strong> Academic achievements</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Messages -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Message History</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Recipients</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for msg in messages %}
+                            <tr>
+                                <td>{{ msg.sent_date|date:"M d, Y H:i" }}</td>
+                                <td>{{ msg.subject }}</td>
+                                <td><span class="badge badge-info">{{ msg.get_message_type_display }}</span></td>
+                                <td>{{ msg.target_students.count }} students</td>
+                                <td>
+                                    {% if msg.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                        <span class="badge badge-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No messages sent yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('target-type').addEventListener('change', function() {
+    const specificGroup = document.getElementById('specific-students-group');
+    if (this.value === 'specific') {
+        specificGroup.style.display = 'block';
+    } else {
+        specificGroup.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

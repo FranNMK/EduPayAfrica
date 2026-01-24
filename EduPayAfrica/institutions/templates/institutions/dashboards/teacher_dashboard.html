@@ -1,0 +1,48 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Teacher Dashboard{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ institution.institution_name }} - Teacher Portal</h1>
+            <small class="text-muted">Welcome, {{ request.user.first_name }}</small>
+        </div>
+    </div>
+
+    <!-- Overview -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Students</h5>
+                    <h2>{{ students_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Active Year</h5>
+                    <p>{% if active_academic_year %}{{ active_academic_year.year_code }}{% else %}N/A{% endif %}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Institution</h5>
+                    <p>{{ institution.institution_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coming Soon -->
+    <div class="alert alert-info">
+        <h4>Coming Soon</h4>
+        <p>More features will be available soon, including class management, attendance tracking, and grading tools.</p>
+    </div>
+</div>
+{% endblock %}

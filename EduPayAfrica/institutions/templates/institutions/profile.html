@@ -1,0 +1,103 @@
+{% extends "institutions/base_institution.html" %}
+
+{% block institution_title %}Institution Profile{% endblock %}
+
+{% block institution_content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h3 fw-bold">Institution Profile</h1>
+            <p class="text-muted">Manage your institution details and contact information</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'institutions:dashboard' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">Profile Information</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Institution Name (Read-only)</label>
+                            <input type="text" class="form-control" value="{{ institution.institution_name }}" disabled>
+                            <small class="text-muted">This cannot be changed after approval</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Institution Type (Read-only)</label>
+                            <input type="text" class="form-control" value="{{ institution.institution_type }}" disabled>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Contact Email</label>
+                            <input type="email" name="contact_email" class="form-control" 
+                                   value="{{ institution.contact_email }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="tel" name="phone_number" class="form-control" 
+                                   value="{{ institution.phone_number }}" placeholder="+256 700 000000">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Address</label>
+                            <textarea name="address" class="form-control" rows="3" 
+                                      placeholder="Institution address">{{ institution.address }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Logo</label>
+                            <input type="file" name="logo_url" class="form-control" accept="image/*">
+                            {% if institution.logo_url %}
+                            <div class="mt-2">
+                                <img src="{{ institution.logo_url }}" alt="Logo" style="max-height: 100px;">
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">Account Status</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Status:</strong> 
+                        {% if institution.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                    <p class="mb-2">
+                        <strong>Created:</strong> {{ institution.created_at|date:"M d, Y" }}
+                    </p>
+                    <p class="mb-0">
+                        <strong>Last Updated:</strong> {{ institution.updated_at|date:"M d, Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

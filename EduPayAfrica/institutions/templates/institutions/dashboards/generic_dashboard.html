@@ -1,0 +1,32 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Dashboard{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ institution.institution_name }}</h1>
+            <p class="text-muted">{{ request.user.first_name }}, welcome to the institution portal</p>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <h4>Your Access</h4>
+        <p>Your role: <strong>{{ staff_role|default:"Staff Member" }}</strong></p>
+        <p>Active Academic Year: <strong>{% if active_academic_year %}{{ active_academic_year.year_code }}{% else %}None Set{% endif %}</strong></p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Quick Links</h5>
+        </div>
+        <div class="card-body">
+            <a href="{% url 'institutions:profile' %}" class="btn btn-outline-primary">View Institution Profile</a>
+            <a href="{% url 'institutions:academic_structure' %}" class="btn btn-outline-success">Academic Structure</a>
+            <a href="{% url 'institutions:reports' %}" class="btn btn-outline-info">Reports</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

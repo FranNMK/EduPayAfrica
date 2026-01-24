@@ -1,0 +1,94 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Principal Dashboard{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ institution.institution_name }} - Principal Dashboard</h1>
+            <small class="text-muted">Welcome, {{ request.user.first_name }}</small>
+        </div>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Messages Sent</h5>
+                    <h2 class="text-primary">{{ messages_sent }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Staff Members</h5>
+                    <h2 class="text-success">{{ staff_list.count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Active Year</h5>
+                    <p>{% if active_academic_year %}{{ active_academic_year.year_code }}{% else %}None{% endif %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'institutions:messaging_panel' %}" class="btn btn-primary">Send Message to Parents</a>
+                    <a href="{% url 'institutions:fee_analysis' %}" class="btn btn-info">View Fee Analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Messages -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Messages</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Type</th>
+                                <th>Recipients</th>
+                                <th>Date Sent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for msg in recent_messages %}
+                            <tr>
+                                <td>{{ msg.subject }}</td>
+                                <td><span class="badge badge-info">{{ msg.get_message_type_display }}</span></td>
+                                <td>{{ msg.target_students.count }} students</td>
+                                <td>{{ msg.sent_date|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No messages sent yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "institutions/base_institution.html" %}
+
+{% block institution_title %}Fee Management{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="h3 fw-bold">Fee Management</h1>
+            <p class="text-muted">Define and assign fee structures</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'institutions:dashboard' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="structure-tab" data-bs-toggle="tab" 
+                    data-bs-target="#structure" type="button" role="tab">
+                <i class="fas fa-list me-2"></i>Fee Structures
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="assignments-tab" data-bs-toggle="tab" 
+                    data-bs-target="#assignments" type="button" role="tab">
+                <i class="fas fa-tasks me-2"></i>Fee Assignments
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Fee Structures -->
+        <div class="tab-pane fade show active" id="structure" role="tabpanel">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Fee structures are versioned.</strong> Create a new version to make changes to fees.
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Institution</th>
+                            <th>Version</th>
+                            <th>Status</th>
+                            <th>Items Count</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for structure in fee_structures %}
+                        <tr>
+                            <td><strong>{{ structure.institution.institution_name }}</strong></td>
+                            <td>v{{ structure.version }}</td>
+                            <td>
+                                {% if structure.is_active %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ structure.fee_items.count }} items</td>
+                            <td>{{ structure.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <button class="btn btn-xs btn-info" data-bs-toggle="modal" 
+                                        data-bs-target="#structureModal{{ structure.pk }}">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No fee structures defined yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Fee Assignments -->
+        <div class="tab-pane fade" id="assignments" role="tabpanel">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>These are accounting entries only.</strong> No actual payments are processed at this stage.
+            </div>
+
+            <p class="text-muted">Fee assignments will appear here after fees are assigned to students.</p>
+        </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>How It Works</h6>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Create Fee Structures:</strong> Define version-controlled fee templates</li>
+                        <li><strong>Add Fee Items:</strong> Add tuition, accommodation, lab fees, etc.</li>
+                        <li><strong>Assign to Students:</strong> Apply fee structures to students per term/year</li>
+                        <li><strong>Track Balances:</strong> Monitor outstanding fees and overdue records</li>
+                    </ol>
+                    <p class="mb-0 text-muted"><small>Manage detailed fee configurations in the Admin Panel.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

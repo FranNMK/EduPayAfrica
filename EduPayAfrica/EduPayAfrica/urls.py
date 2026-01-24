@@ -31,6 +31,7 @@ from accounts import views as accounts_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('platform-admin/', include('platform_admin.urls')),
+    path('institution/', include('institutions.urls')),
     
     # Core app URLs
     path('', core_views.index, name='home'),

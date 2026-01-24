@@ -35,9 +35,16 @@ def login_view(request):
                 
                 messages.success(request, f'Welcome back, {user.first_name or user.username}!')
                 
-                # Route super admins to platform admin dashboard
+                # Route users based on their role
                 if user.is_staff and user.is_superuser:
+                    # Super admins go to platform admin dashboard
                     return redirect('platform_admin:dashboard')
+                elif hasattr(user, 'platform_profile'):
+                    # Check if user has institution admin role
+                    if user.platform_profile.role == 'institution_admin':
+                        return redirect('institutions:dashboard')
+                    else:
+                        return redirect('home')
                 else:
                     return redirect('home')
             else:

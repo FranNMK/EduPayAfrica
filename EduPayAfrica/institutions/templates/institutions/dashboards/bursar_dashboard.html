@@ -1,0 +1,130 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Bursar Dashboard{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>{{ institution.institution_name }} - Bursar/Finance Dashboard</h1>
+            <small class="text-muted">Financial Management & Fee Control</small>
+        </div>
+    </div>
+
+    <!-- Financial KPIs -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Billed</h5>
+                    <h2>{{ total_billed|floatformat:0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Paid</h5>
+                    <h2>{{ total_paid|floatformat:0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Outstanding</h5>
+                    <h2>{{ total_outstanding|floatformat:0 }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Collection Rate</h5>
+                    <h2>{{ collection_rate }}%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Fee Management</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'institutions:fee_structure_management' %}" class="btn btn-primary">Manage Fee Structures</a>
+                    <a href="{% url 'institutions:program_management' %}" class="btn btn-success">Manage Programs</a>
+                    <a href="{% url 'institutions:fee_analysis' %}" class="btn btn-info">View Detailed Analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Programs Overview -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Active Programs</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Program Name</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for program in programs %}
+                            <tr>
+                                <td>{{ program.program_name }}</td>
+                                <td><span class="badge badge-success">{{ program.get_program_type_display }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">No programs configured</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fee Structures -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Fee Structures</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for structure in fee_structures %}
+                            <tr>
+                                <td>Version {{ structure.version }}</td>
+                                <td>{{ structure.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center text-muted">No fee structures created</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

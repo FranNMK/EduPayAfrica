@@ -1,0 +1,97 @@
+{% extends 'institutions/base_institution.html' %}
+
+{% block institution_title %}Staff Management{% endblock %}
+
+{% block institution_content %}
+<div class="container-fluid mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Staff Management</h1>
+            <p class="text-muted">Add and manage institution staff members with different roles</p>
+        </div>
+    </div>
+
+    <!-- Add Staff Form -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add New Staff Member</h5>
+                </div>
+                <form method="post" action="{% url 'institutions:add_staff' %}" class="card-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="full_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone_number" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" class="form-control" required>
+                            <option value="">-- Select Role --</option>
+                            {% for value, label in roles %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Staff Member</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff List -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Current Staff Members</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Date Hired</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staff_list %}
+                            <tr>
+                                <td>{{ staff.full_name }}</td>
+                                <td><span class="badge badge-info">{{ staff.get_role_display }}</span></td>
+                                <td>{{ staff.email }}</td>
+                                <td>{{ staff.phone_number|default:"-" }}</td>
+                                <td>{{ staff.date_hired|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if staff.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No staff members added yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

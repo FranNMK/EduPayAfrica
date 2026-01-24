@@ -1,3 +1,109 @@
+EduPayAfrica — Django Platform for Institutions
+==============================================
+
+Overview
+--------
+EduPayAfrica is a Django-based platform for managing educational institutions: programs, academic years, staff, students, and fee structures, with an admin UI optimized for institutional workflows. It supports role-based administration, CSV bulk uploads, and streamlined data entry for school admins.
+
+Key Features
+------------
+- Institution management: `InstitutionProfile`, academic years, terms, faculties, and programs
+- Student records with program and academic year associations
+- Staff management with password set/update in admin
+- Admin UI improvements (Jazzmin theme overrides for readable dropdowns)
+- Bulk data import workflows using CSV
+- Sample data generators and quick commands
+
+Tech Stack
+----------
+- Backend: Django
+- Database: SQLite (development)
+- Admin UI: Django Admin + Jazzmin tweaks
+- Deployment: Render (Procfile, render.yaml)
+
+Repository Structure
+--------------------
+- Root
+   - `requirements.txt` — Python dependencies
+   - `Procfile`, `render.yaml` — deployment configuration
+   - `README.md` — this guide
+   - `EduPayAfrica/` — main Django project and apps
+
+Project Apps (high level)
+-------------------------
+- `institutions/` — core institutional models, admin customizations, management commands
+- `accounts/` — authentication helpers and views
+- `core/`, `leads/`, `platform_admin/` — additional domain modules
+
+Getting Started
+---------------
+1) Install dependencies
+    - Create/activate your virtual environment
+    - Install requirements
+
+```
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+2) Apply migrations
+
+```
+cd EduPayAfrica
+python manage.py migrate
+```
+
+3) Create a superuser
+
+```
+python manage.py createsuperuser
+```
+
+4) Run the development server
+
+```
+python manage.py runserver
+```
+
+Admin Panel
+-----------
+- URL: `http://localhost:8000/admin/`
+- Dropdowns for Institution/Program/Academic Year are styled for readability
+- Staff admin allows setting/updating passwords via custom form fields
+
+Bulk Upload & Sample Data
+-------------------------
+- Generate CSV samples to practice imports:
+
+```
+python manage.py generate_sample_data --type students   # 30 student rows
+python manage.py generate_sample_data --type staff      # 30 staff rows
+python manage.py generate_sample_data --type both       # students + staff
+```
+
+- Quickly seed 50 students into the database:
+
+```
+python add_students_quick.py
+```
+
+Environment & Secrets
+---------------------
+- Do not commit service account JSON or secrets to the repository.
+- Use environment variables or external secret managers for credentials.
+
+Deployment (Render)
+-------------------
+- The repo includes `Procfile` and `render.yaml` for Render deployment.
+- Ensure environment variables are configured in Render dashboard.
+
+Notes
+-----
+- Default database is SQLite for local development; switch to Postgres or MySQL in production.
+- Keep `requirements.txt` updated when adding packages.
+- Avoid placing secrets in the repo.
+
 # EduPay Africa
 
 ## Overview

@@ -1,0 +1,111 @@
+CHATGPT PROMPT FOR GENERATING SAMPLE BULK UPLOAD DATA
+========================================================
+
+OPTION 1: STUDENT DATA (30 ROWS)
+================================
+
+Copy and paste this into ChatGPT:
+
+---
+
+Generate 30 rows of sample student data in CSV format. The data should be realistic and diverse.
+
+Use these exact column headers:
+full_name,admission_number,email,phone_number,institution,program,academic_year,admission_date,is_active
+
+Requirements:
+- full_name: Mix of male and female names (FirstName LastName format)
+- admission_number: Format as ADM2026#### (where #### is sequential 0001-0030)
+- email: Realistic email addresses (firstname.lastname+number@edupay.com)
+- phone_number: Kenya phone numbers (254xxxxxxxxx format where x is random digits)
+- institution: Use ID "1" for all rows
+- program: Use ID "2" for all rows
+- academic_year: Use ID "2" for all rows
+- admission_date: Random dates within the past year (YYYY-MM-DD format)
+- is_active: Mostly "True" with 2-3 "False" values
+
+Please output only the CSV with header and 30 data rows, nothing else.
+
+---
+
+OPTION 2: STAFF DATA (30 ROWS)
+==============================
+
+Copy and paste this into ChatGPT:
+
+---
+
+Generate 30 rows of sample staff data in CSV format. The data should be realistic and diverse.
+
+Use these exact column headers:
+first_name,last_name,email,phone_number,institution,department,role,employment_date,is_active
+
+Requirements:
+- first_name: Realistic first names (mix of male and female)
+- last_name: Realistic last names
+- email: Realistic email addresses (firstname.lastname+number@edupay-staff.com)
+- phone_number: Kenya phone numbers (254xxxxxxxxx format where x is random digits)
+- institution: Use ID "1" for all rows
+- department: Choose from: Administration, Finance, Academic, Support Services, IT
+- role: Choose from: Director, Coordinator, Officer, Assistant, Manager
+- employment_date: Random dates within the past 2 years (YYYY-MM-DD format)
+- is_active: Mostly "True" with 1-2 "False" values
+
+Please output only the CSV with header and 30 data rows, nothing else.
+
+---
+
+OPTION 3: BOTH STUDENTS AND STAFF (60 ROWS TOTAL)
+=================================================
+
+Copy and paste this into ChatGPT:
+
+---
+
+Generate two separate CSV datasets.
+
+DATASET 1 - STUDENTS (30 rows):
+Headers: full_name,admission_number,email,phone_number,institution,program,academic_year,admission_date,is_active
+- full_name: Mix of male and female names
+- admission_number: ADM2026#### (0001-0030)
+- email: firstname.lastname+number@edupay.com
+- phone_number: 254xxxxxxxxx (Kenya format)
+- institution: 1
+- program: 2
+- academic_year: 2
+- admission_date: Random dates in past year (YYYY-MM-DD)
+- is_active: Mostly True
+
+DATASET 2 - STAFF (30 rows):
+Headers: first_name,last_name,email,phone_number,institution,department,role,employment_date,is_active
+- first_name: Realistic first names
+- last_name: Realistic last names
+- email: firstname.lastname+number@edupay-staff.com
+- phone_number: 254xxxxxxxxx (Kenya format)
+- institution: 1
+- department: Administration, Finance, Academic, Support Services, or IT
+- role: Director, Coordinator, Officer, Assistant, or Manager
+- employment_date: Random dates in past 2 years (YYYY-MM-DD)
+- is_active: Mostly True
+
+Output both datasets separated by a blank line and section headers. Include only CSV data, nothing else.
+
+---
+
+AFTER GENERATING:
+================
+
+1. Copy the CSV output from ChatGPT
+2. Paste into a text editor (Notepad, VS Code, etc.)
+3. Save as:
+   - "students.csv" for student data
+   - "staff.csv" for staff data
+4. Use the file in your bulk upload feature in the admin panel
+
+TIPS:
+====
+- Keep IDs consistent (institution=1, program=2, academic_year=2)
+- Ensure emails are unique
+- Use realistic Kenya phone numbers (254xxxxxxxxx)
+- Dates should be in YYYY-MM-DD format
+- Use "True" or "False" for boolean fields (not true/false)

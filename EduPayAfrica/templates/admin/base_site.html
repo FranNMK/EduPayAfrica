@@ -1,0 +1,31 @@
+{% extends "admin/base_site.html" %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <style>
+        /* Fix dropdown visibility in Jazzmin admin */
+        select.admin-select-readable,
+        select.admin-select-readable:focus,
+        .admin-select-readable {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ccc !important;
+            padding: 5px;
+        }
+        
+        /* Override Jazzmin select styling */
+        .form-row .field-institution select,
+        .form-row .field-program select,
+        .form-row .field-academic_year select {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #ccc !important;
+        }
+        
+        /* General select dropdown fixes */
+        select {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        }
+    </style>
+{% endblock %}

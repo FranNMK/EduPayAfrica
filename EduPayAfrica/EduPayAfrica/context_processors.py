@@ -9,5 +9,5 @@ from django.utils.safestring import mark_safe
 def firebase_config(request):
     """Add Firebase configuration to template context"""
     return {
-        'firebase_config': mark_safe(json.dumps(settings.FIREBASE_CONFIG))
+        'firebase_config': settings.FIREBASE_CONFIG
     }

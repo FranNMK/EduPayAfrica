@@ -1,3 +1,5 @@
+
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -6,6 +8,90 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from datetime import datetime, timedelta
+import csv
+import openpyxl
+from io import BytesIO
+
+from .models import (
+    InstitutionProfile,
+    AcademicYear,
+    Term,
+    Faculty,
+    Program,
+    Student,
+    FeeStructure,
+    FeeItem,
+    StudentFeeAssignment,
+    InstitutionAuditLog,
+    InstitutionStaff,
+    ParentGuardian,
+    PrincipalMessage,
+    FeeAnalysisSnapshot,
+)
+
+# Ensure require_role is defined before its first use
+def require_role(*allowed_roles):
+    """Decorator to check user role at institution."""
+    def decorator(view_func):
+        def wrapper(request, *args, **kwargs):
+            institution = get_institution_or_404(request)
+            if not institution:
+                messages.error(request, "You don't have an institution profile.")
+                return redirect("home")
+            staff_role = get_staff_role(request, institution)
+            if not staff_role or staff_role not in allowed_roles:
+                messages.error(request, f"You don't have permission. Required role: {', '.join(allowed_roles)}")
+                return redirect("institutions:dashboard")
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+@login_required
+@require_role("admin")
+def edit_staff(request, staff_id):
+    """Edit staff member details."""
+    institution = get_institution_or_404(request)
+    staff = get_object_or_404(InstitutionStaff, pk=staff_id, institution=institution)
+    if request.method == "POST":
+        staff.full_name = request.POST.get("full_name", staff.full_name)
+        staff.email = request.POST.get("email", staff.email)
+        staff.phone_number = request.POST.get("phone_number", staff.phone_number)
+        staff.role = request.POST.get("role", staff.role)
+        password = request.POST.get("password", "")
+        staff.save()
+        # Update password if provided
+        if password and len(password) >= 6:
+            user = staff.user
+            user.set_password(password)
+            user.save()
+            # Update Firebase password
+            try:
+                from accounts.firebase_auth import update_firebase_user
+                update_firebase_user(current_email=staff.email, new_password=password, display_name=staff.full_name)
+            except Exception as e:
+                messages.warning(request, f"Password updated in Django but failed in Firebase: {e}")
+        elif password:
+            messages.warning(request, "Password must be at least 6 characters long.")
+        messages.success(request, "Staff member updated successfully!")
+        return redirect("institutions:staff_management")
+    context = {
+        "institution": institution,
+        "staff": staff,
+        "roles": InstitutionStaff.ROLE_CHOICES,
+    }
+    return render(request, "institutions/edit_staff.html", context)
+
+@login_required
+@require_role("admin")
+@require_http_methods(["POST"])
+def delete_staff(request, staff_id):
+    """Delete staff member."""
+    institution = get_institution_or_404(request)
+    staff = get_object_or_404(InstitutionStaff, pk=staff_id, institution=institution)
+    staff.delete()
+    messages.success(request, "Staff member deleted successfully!")
+    return redirect("institutions:staff_management")
 import csv
 import openpyxl
 from io import BytesIO
@@ -214,15 +300,31 @@ def add_staff(request):
         email = request.POST.get("email")
         phone = request.POST.get("phone_number")
         role = request.POST.get("role")
-        
-        # Create user if doesn't exist
+        password = request.POST.get("password")
+
+        if not password or len(password) < 6:
+            messages.error(request, "Password must be at least 6 characters long.")
+            return redirect("institutions:staff_management")
+
+
         from django.contrib.auth.models import User
+        from accounts.firebase_auth import create_firebase_user
         user, created = User.objects.get_or_create(
             email=email,
             defaults={"username": email.split("@")[0], "first_name": full_name}
         )
-        
-        # Create staff record
+        if created:
+            user.set_password(password)
+            user.save()
+            # Create user in Firebase
+            fb_result = create_firebase_user(email=email, password=password, display_name=full_name)
+            if not fb_result or not fb_result.get("uid"):
+                messages.warning(request, f"Staff added to Django but failed to add to Firebase: {fb_result}")
+        else:
+            # Optionally allow updating password for existing user
+            user.set_password(password)
+            user.save()
+
         staff = InstitutionStaff.objects.create(
             institution=institution,
             user=user,
@@ -231,8 +333,7 @@ def add_staff(request):
             phone_number=phone,
             role=role,
         )
-        
-        # Log action
+
         InstitutionAuditLog.objects.create(
             institution=institution,
             actor=request.user,
@@ -241,10 +342,10 @@ def add_staff(request):
             entity_id=str(staff.pk),
             description=f"Added {full_name} as {role}",
         )
-        
+
         messages.success(request, f"Staff member {full_name} added successfully!")
         return redirect("institutions:staff_management")
-    
+
     except Exception as e:
         messages.error(request, f"Error adding staff: {str(e)}")
         return redirect("institutions:staff_management")

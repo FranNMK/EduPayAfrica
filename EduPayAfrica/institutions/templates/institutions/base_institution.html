@@ -183,11 +183,11 @@
                 </a>
             </li>
             
-            {% if staff_role == 'admin' or staff_role == 'principal' or staff_role == 'deputy_principal' %}
+            {% if staff_role == 'admin' %}
             <li>
                 <a href="{% url 'institutions:staff_management' %}" class="{% if 'staff' in request.resolver_match.url_name %}active{% endif %}">
                     <i class="fas fa-users"></i>
-                    <span>Staff Management</span>
+                    <span>School Staff</span>
                 </a>
             </li>
             {% endif %}

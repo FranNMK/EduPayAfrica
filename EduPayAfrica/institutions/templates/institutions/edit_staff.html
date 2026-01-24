@@ -1,0 +1,65 @@
+{% extends 'institutions/base_institution.html' %}
+{% block institution_title %}Edit Staff Member{% endblock %}
+{% block institution_content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Edit Staff Member</h5>
+                </div>
+                <form method="post" class="card-body">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ staff.full_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ staff.email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone_number" class="form-control" value="{{ staff.phone_number }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select name="role" class="form-control" required>
+                            {% for value, label in roles %}
+                            <option value="{{ value }}" {% if staff.role == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>New Password (leave blank to keep unchanged)</label>
+                        <div class="input-group">
+                            <input type="password" name="password" id="edit-staff-password" class="form-control" minlength="6">
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-edit-password-visibility" tabindex="-1">
+                                <i class="fa fa-eye" id="toggle-edit-password-icon"></i>
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">Password must be at least 6 characters. Leave blank to keep current password.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'institutions:staff_management' %}" class="btn btn-secondary">Cancel</a>
+                    <script>
+                    document.getElementById('toggle-edit-password-visibility').addEventListener('click', function() {
+                        var input = document.getElementById('edit-staff-password');
+                        var icon = document.getElementById('toggle-edit-password-icon');
+                        if (input.type === 'password') {
+                            input.type = 'text';
+                            icon.classList.remove('fa-eye');
+                            icon.classList.add('fa-eye-slash');
+                        } else {
+                            input.type = 'password';
+                            icon.classList.remove('fa-eye-slash');
+                            icon.classList.add('fa-eye');
+                        }
+                    });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

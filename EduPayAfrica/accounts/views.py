@@ -39,14 +39,38 @@ def login_view(request):
                 if user.is_staff and user.is_superuser:
                     # Super admins go to platform admin dashboard
                     return redirect('platform_admin:dashboard')
-                elif hasattr(user, 'platform_profile'):
-                    # Check if user has institution admin role
-                    if user.platform_profile.role == 'institution_admin':
+                # Check if user is institution admin or staff
+                from institutions.models import InstitutionStaff, InstitutionProfile
+                try:
+                    # Institution admin (one-to-one)
+                    if hasattr(user, 'institution_profile'):
                         return redirect('institutions:dashboard')
-                    else:
-                        return redirect('home')
-                else:
-                    return redirect('home')
+                    # Institution staff (many-to-one)
+                    staff = InstitutionStaff.objects.filter(user=user, is_active=True).first()
+                    if staff:
+                        # Redirect based on staff role
+                        if staff.role == 'principal':
+                            return redirect('institutions:principal_dashboard')
+                        elif staff.role == 'bursar':
+                            return redirect('institutions:bursar_dashboard')
+                        elif staff.role == 'teacher':
+                            return redirect('institutions:teacher_dashboard')
+                        elif staff.role == 'accountant':
+                            return redirect('institutions:accountant_dashboard')
+                        elif staff.role == 'registrar':
+                            return redirect('institutions:registrar_dashboard')
+                        elif staff.role == 'support_staff':
+                            return redirect('institutions:support_staff_dashboard')
+                        elif staff.role == 'deputy_principal':
+                            return redirect('institutions:deputy_principal_dashboard')
+                        elif staff.role == 'admin':
+                            return redirect('institutions:dashboard')
+                        else:
+                            return redirect('institutions:dashboard')
+                except Exception as e:
+                    print(f"Staff role routing error: {e}")
+                # Fallback
+                return redirect('home')
             else:
                 messages.error(request, 'Invalid email or password. Please check your credentials.')
                 return render(request, 'accounts/login.html')

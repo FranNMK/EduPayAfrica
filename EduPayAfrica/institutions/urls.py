@@ -13,6 +13,8 @@ urlpatterns = [
     # Staff Management (Admin only)
     path("staff/", views.staff_management, name="staff_management"),
     path("staff/add/", views.add_staff, name="add_staff"),
+    path("staff/<int:staff_id>/edit/", views.edit_staff, name="edit_staff"),
+    path("staff/<int:staff_id>/delete/", views.delete_staff, name="delete_staff"),
     
     # Academic Structure
     path("academic-structure/", views.academic_structure, name="academic_structure"),

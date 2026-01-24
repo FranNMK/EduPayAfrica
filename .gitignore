@@ -52,6 +52,11 @@ edupay-africa-firebase-adminsdk-fbsvc-5166074225.json
 firebase-adminsdk-*.json
 *firebase*credentials*.json
 
+# Local helper assets
+CHATGPT_PROMPT_SAMPLE_DATA.txt
+generate_sample_data.py
+render.yaml
+
 # OS
 Thumbs.db
 .DS_Store

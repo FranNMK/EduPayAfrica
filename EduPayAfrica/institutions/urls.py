@@ -18,6 +18,7 @@ urlpatterns = [
     path("academic-structure/", views.academic_structure, name="academic_structure"),
     path("academic-year/add/", views.add_academic_year, name="add_academic_year"),
     path("term/add/", views.add_term, name="add_term"),
+    path("faculty/add/", views.add_faculty, name="add_faculty"),
     
     # Student Management
     path("students/", views.student_management, name="students"),

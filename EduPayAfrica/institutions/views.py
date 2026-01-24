@@ -723,16 +723,58 @@ def academic_structure(request):
     academic_years = AcademicYear.objects.filter(institution=institution)
     terms = Term.objects.filter(academic_year__institution=institution)
     faculties = Faculty.objects.filter(institution=institution)
+    programs = Program.objects.filter(institution=institution)
     
     context = {
         "institution": institution,
         "academic_years": academic_years,
         "terms": terms,
         "faculties": faculties,
+        "programs": programs,
         "term_choices": Term.TERM_CHOICES,
     }
     
     return render(request, "institutions/academic_structure.html", context)
+
+
+@login_required
+@require_role("admin")
+@require_http_methods(["POST"])
+def add_faculty(request):
+    """Add a faculty/school to the institution."""
+    institution = get_institution_or_404(request)
+
+    try:
+        name = request.POST.get("name")
+        code = request.POST.get("code")
+        description = request.POST.get("description", "")
+
+        if not name or not code:
+            messages.error(request, "Name and code are required for a faculty.")
+            return redirect("institutions:academic_structure")
+
+        faculty = Faculty.objects.create(
+            institution=institution,
+            name=name,
+            code=code,
+            description=description,
+        )
+
+        InstitutionAuditLog.objects.create(
+            institution=institution,
+            actor=request.user,
+            action="faculty_created",
+            entity_type="Faculty",
+            entity_id=str(faculty.pk),
+            description=f"Created faculty {name}",
+        )
+
+        messages.success(request, f"Faculty {name} created successfully!")
+        return redirect("institutions:academic_structure")
+
+    except Exception as e:
+        messages.error(request, f"Error creating faculty: {str(e)}")
+        return redirect("institutions:academic_structure")
 
 
 @login_required

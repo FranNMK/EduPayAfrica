@@ -6,9 +6,14 @@
             <h1 class="h4 fw-bold mb-1">User & Role Oversight</h1>
             <p class="text-muted mb-0">Create new users and manage accounts and institution assignments.</p>
         </div>
-        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
-            <i class="fas fa-user-plus"></i> Create New User
-        </button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="window.location.reload()" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                <i class="fas fa-user-plus"></i> Create New User
+            </button>
+        </div>
     </div>
 
     <!-- Create User Modal -->

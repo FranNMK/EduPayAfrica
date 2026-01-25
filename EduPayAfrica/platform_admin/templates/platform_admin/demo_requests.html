@@ -6,7 +6,12 @@
             <h1 class="h4 fw-bold mb-1">Demo Requests</h1>
             <p class="text-muted mb-0">Review incoming demo requests and approve institutions.</p>
         </div>
-        <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="window.location.reload()" title="Refresh">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <a class="btn btn-outline-secondary btn-sm" href="{% url 'platform_admin:dashboard' %}">Back to dashboard</a>
+        </div>
     </div>
 
     <!-- Search Bar -->
